@@ -39,7 +39,7 @@ Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. N
 - 予定日: アプリの規則(移植=播種+35日、Pitan、MD、PI、冠水、3F4D 6回、出穂、収穫)。Schedule タブのSettingsで日数を変更できる。
 
 ## 3F4Dのマニュアル
-- Help タブと Share タブの「Downloads」に、リンクがあります。英語: https://doi.org/10.5281/zenodo.22932287 、ベンガル語: https://doi.org/10.5281/zenodo.23075395
+- Help と、More ▸ For the teacher の「Downloads」に、リンクがあります。英語: https://doi.org/10.5281/zenodo.22932287 、ベンガル語: https://doi.org/10.5281/zenodo.23075395
 
 ## Googleシートへの自動書き込み・比較・必須項目・デモ
 - Googleシートへの保存は必須です。保存(Save entry など)のたびに、共有シートのスクリプト(Google Apps Script)を通して、そのATIのデータが自動で書き込まれます。ダッシュボードと Compare には、シートにあるデータが出ます。端末には、書き込みが済むまでの控えが残ります。
