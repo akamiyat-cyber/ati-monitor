@@ -1,2 +1,59 @@
-# anti-monitor
-ATI_monitoring App 261017
+# ATI Water Monitor (offline web app)
+
+水位モニタリング(FP vs 3F4D+MD)のスタンドアローン・Webアプリ。サーバー不要、GitHub Pages に置くだけで動き、初回アクセス後はオフラインで使えます。
+Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. No server needed: host it on GitHub Pages; after the first visit it works offline.
+
+## できること / Features
+- ATI名・場所・播種日・苗齢・区画・TP/b の入力 (Setup)
+- 3F4D+MDアプリ(Professionalモード)と同じ規則で予定日を自動計算 (Schedule)。上書き・実績日の入力も可
+- FP / 3F4D+MD の毎日の水位・灌漑・降雨の入力、TP/b の再測定の記録 (Entry)
+- グラフ(水位、累積灌漑量、日減水量、節水量)とデータチェック (Dashboard)
+- 閲覧専用リンク(データはURLに埋め込み。サーバーへは送信されません)、JSON/CSVの書き出し・読み込み (Share)
+- 英語 / ベンガル語(ベンガル語は草稿です)
+
+## GitHub Pages への置き方 / Deploy
+1. GitHub で新しいリポジトリを作る(例: `ati-water-monitor`、Public)。
+2. このフォルダの中身(`index.html`, `plotly.min.js`, `sw.js`, `manifest.webmanifest`, `icon.svg`)をリポジトリの直下にアップロードする(「Add file ▸ Upload files」)。
+3. リポジトリの Settings ▸ Pages で、Source を「Deploy from a branch」、Branch を `main` / `(root)` にして Save。
+4. 数分後、`https://<ユーザー名>.github.io/ati-water-monitor/` で開ける。スマホで開いて「ホーム画面に追加」するとアプリとして使える。初回に開いたあとは、ネットがなくても動く。
+
+ファイルを更新したら、`sw.js` の `VERSION` を変えてください(古いキャッシュが入れ替わります)。
+
+## 使い方 / How to use
+1. **Setup**: ATI名、場所、播種日、苗齢、TP と b、測定日を入れる。
+2. **Schedule**: 予定日が自動で出る。実際に作業した日は「Actual」に入れる。
+3. **Entry**: 毎朝、日付・水位の読み(m)を入れる。灌漑した日は「Yes」にして、前後の読みと時間を入れる。
+4. **Dashboard**: グラフを見る。
+5. **Share**: 「Create link」で閲覧専用リンクを作り、WhatsApp などで送る。入力を足したら新しいリンクを作り直す。
+
+## データの扱い / Data
+- データは、使っているブラウザの中(localStorage)にだけ保存されます。ブラウザのデータを消すと失われるので、Share ▸ Export file で定期的にバックアップしてください。
+- 閲覧専用リンクを開いた人の端末にも、データは保存されません(「Open an editable copy」を押した場合を除く)。
+- 農家名は扱いません。ATI名と緯度経度は、共有リンクを開いた人に見えます。
+
+## 計算の定義 / Calculations
+- 水位(cm) = m − TP + b(TP・bは、その日以前で一番新しい測定値)
+- 灌漑量(mm) = (灌漑後の水位 − max(灌漑前の水位, 0)) × 10
+- 日減水量(mm) = (前日の1日の終わりの水位 − 当日朝の水位) × 10
+- 予定日: アプリの規則(移植=播種+35日、Pitan、MD、PI、冠水、3F4D 6回、出穂、収穫)。Schedule タブのSettingsで日数を変更できる。
+
+## 3F4Dのマニュアル
+- Help タブと Share タブの「Downloads」に、リンクがあります。英語: https://doi.org/10.5281/zenodo.22932287 、ベンガル語: https://doi.org/10.5281/zenodo.23075395
+
+## 共有Googleシート・比較・必須項目・デモ
+- 雛形Excelとマニュアル(PDF)は、アプリの Share タブの「Downloads」からダウンロードできます(GitHubには、このフォルダごと上げてください: `ATI_Monitor_Shared_TEMPLATE.xlsx` と `manual/` を含む)。
+- スクリプトは不要です。雛形 `ATI_Monitor_Shared_TEMPLATE.xlsx` をGoogleドライブに上げ、「Googleスプレッドシートとして保存」します。共有リンク(編集者)と、シート「Data」の「ウェブに公開」CSVリンクを、学生に渡します(手順は manual フォルダ)。
+- Share タブの「Copy my data」で数値をコピーし、シートの「Data」タブの最終行の下に貼り付けます。Compare タブで、CSVリンクから読み込み、他のATIと比べます。
+- * の項目が空だと「Save entry」「Add」は押せません。✎ で入力を直せます。
+- Setup の「Try with demo data」(アドレスの末尾 `#demo`)で、例のデータを試せます。何も保存されません。
+
+## 施肥・農薬・分げつ数
+- Entry タブの「Field records」に入力します。
+  - 施肥: 日付、プロット(FP / 3F4D+MD / 両方)、肥料9種(Urea, TSP, DAP, Gypsum, MOP, Boron, Zinc, Magnesium, Thiovit)の量(kg)、メモ。
+  - 農薬: 日付、プロット、種類(殺虫剤・殺菌剤・除草剤・その他)、薬剤名、目的、メモ。
+  - 分げつ数: 日付、プロット、5株の茎数。使う値は、大きい方から2・3・4番目の平均。同じ日・同じプロットに入れ直すと上書きされます。
+- Dashboard に、分げつ数のグラフと、施肥・農薬の記録表が出ます。共有リンクとJSONに含まれます。CSVは「Export records CSV」で別ファイルに出ます。
+
+## 限界 / Limits
+- 複数人が入力した内容を自動で統合する機能はありません(閲覧のみの共有)。入力は、1つの端末で行うか、JSONファイルで受け渡してください。
+- 共有リンクは、データが増えると長くなります(93日分で約2.5KB)。7,000文字を超えると警告が出ます。

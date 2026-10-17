@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#00755a">
+<title>ATI Water Monitor</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#eef3f0;--fg:#13201a;--mut:#5b6a62;--card:#fff;--line:#dfe8e3;--accent:#00755a;--accent2:#009a74;--soft:#e2f4ec;--warn:#b4570a;--ok:#0a7a4b;--in:#f6faf8;--onacc:#fff;--shadow:0 1px 2px rgba(10,40,30,.05),0 8px 24px rgba(10,40,30,.07);--req:#e11d48}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1511;--fg:#e7efea;--mut:#98a89f;--card:#16211b;--line:#25332b;--accent:#3ddc97;--accent2:#1fb77d;--soft:#173226;--warn:#f0b35a;--ok:#4cc38a;--in:#101a15;--onacc:#06231a;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);--req:#ff6b86}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Bengali","Nirmala UI",sans-serif;padding-bottom:84px}
+header{background:linear-gradient(135deg,#00604a 0%,#00a07a 100%);color:#fff;padding:18px max(16px,calc((100% - 1100px)/2)) 30px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;border-radius:0 0 28px 28px}
+header .brand{display:flex;gap:12px;align-items:center;min-width:0}
+header .logo{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none}
+header .logo svg{width:26px;height:26px}
+h1{font-size:20px;line-height:1.2;margin:0;font-weight:700;letter-spacing:.2px}
+header .muted{color:rgba(255,255,255,.85);font-size:13px}
+header button{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);font-weight:600}
+header button:hover{background:rgba(255,255,255,.3);color:#fff;border-color:#fff}
+h2{font-size:18px;margin:0 0 8px;font-weight:700}
+h3{font-size:15px}
+.muted{color:var(--mut);font-size:13.5px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;overflow-x:auto;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(10,40,30,.08);padding:6px 6px calc(6px + env(safe-area-inset-bottom));scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:1 0 62px;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;border-radius:14px;padding:6px 4px;font-size:11px;font-weight:600;color:var(--mut)}
+nav button svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+nav button span{max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+nav button:hover{background:var(--soft);color:var(--accent)}
+nav button.on{background:var(--soft);color:var(--accent)}
+main{max-width:1100px;margin:-14px auto 0;padding:0 14px 24px}
+section.pane{display:none}
+section.pane.on{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border-radius:20px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 14px}
+label{display:block;font-size:13.5px;font-weight:600;color:var(--mut);margin:2px 0 4px}
+input,select,textarea{width:100%;font:inherit;font-size:16px;min-height:46px;padding:9px 12px;border:1.5px solid var(--line);border-radius:14px;background:var(--in);color:var(--fg);transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 4px var(--soft)}
+input[readonly]{background:transparent;border-style:dashed}
+input[type=checkbox]{min-height:0;width:20px;height:20px;accent-color:var(--accent)}
+textarea{min-height:76px;resize:vertical}
+button{font:inherit;font-size:14.5px;font-weight:600;min-height:42px;padding:8px 18px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);cursor:pointer;transition:transform .08s,background .15s,border-color .15s}
+button:hover{border-color:var(--accent);color:var(--accent)}
+button:active{transform:scale(.97)}
+button.pri{background:var(--accent);border-color:var(--accent);color:var(--onacc);box-shadow:0 4px 12px rgba(0,117,90,.25)}
+button.pri:hover{background:var(--accent2);border-color:var(--accent2);color:var(--onacc)}
+button.del{color:var(--warn);border-color:transparent;background:transparent;padding:6px 10px;min-height:36px}
+button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+button:disabled:hover{border-color:var(--line);color:inherit}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{color:var(--mut);font-weight:700;font-size:12.5px;background:var(--in)}
+tbody tr:nth-child(even) td{background:rgba(0,0,0,.015)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto;border-radius:14px}
+.warn{color:var(--warn);font-weight:700}
+.okc{color:var(--ok);font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+.kpis div{border-radius:16px;padding:12px 14px;background:var(--soft)}
+.kpis b{display:block;font-size:26px;line-height:1.15;color:var(--accent);font-weight:800}
+.kpis span{font-size:12.5px;color:var(--mut);font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+.plot{width:100%;min-height:300px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.plotbox{border-radius:16px;padding:14px;margin-top:10px;background:var(--in);border:1.5px solid var(--line)}
+.plotbox>b{font-size:17px}
+.banner{background:var(--accent);color:var(--onacc);padding:10px 16px;text-align:center;font-size:14px;font-weight:600}
+.banner button{margin-left:8px;min-height:34px;padding:4px 14px}
+#msg{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#14221b;color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;transition:opacity .25s;pointer-events:none;z-index:40;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+#msg.on{opacity:.97}
+details{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+summary{cursor:pointer;color:var(--accent);font-weight:700;padding:6px 0}
+code,.mono{font-family:Consolas,Menlo,monospace;font-size:12.5px}
+.ro .editonly{display:none!important}
+.req:after{content:" *";color:var(--req);font-weight:800}
+.demo-b{background:#7b1fa2;color:#fff}
+.demo-b button{background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.5)}
+.cmpl label{display:inline-flex;gap:8px;align-items:center;margin:4px 14px 4px 0;color:var(--fg);width:auto;font-weight:500}
+.cmpl input{width:auto}
+.help h3{margin:18px 0 4px}.help li{margin:4px 0}
+.help img,#p-setup img,#p-entry img{border-radius:12px}
+#entTbl td,#entTbl th,#tpbTbl td,#tpbTbl th{white-space:nowrap}
+a{color:var(--accent)} a button{pointer-events:none}
+@media(min-width:761px){
+  body{padding-bottom:24px}
+  nav{position:sticky;top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);box-shadow:0 6px 20px rgba(10,40,30,.06);padding:8px max(16px,calc((100% - 1100px)/2));gap:6px;justify-content:flex-start}
+  nav button{flex:0 0 auto;flex-direction:row;gap:8px;font-size:14px;padding:8px 16px;border-radius:999px}
+  nav button span{max-width:none}
+  #msg{bottom:24px}
+  header{border-radius:0 0 32px 32px}
+}
+</style>
+<script src="plotly.min.js" charset="utf-8"></script>
+</head>
+<body>
+<div id="banner" class="banner" style="display:none"></div>
+<header>
+  <div class="brand"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 4.2 6 7 6 10.5a6 6 0 0 1-12 0C6 10 9 7.200 12 3z"/><path d="M9.500 14.500a2.800 2.800 0 0 0 2.500 2"/></svg></div>
+  <div style="min-width:0"><h1 id="title">ATI Water Monitor</h1>
+    <div class="muted" id="sub"></div></div></div>
+  <div class="row"><button id="langBtn" type="button">বাংলা</button></div>
+</header>
+<nav id="nav"></nav>
+<main id="main">
+
+<!-- ================= SETUP ================= -->
+<section class="pane" id="p-setup">
+  <div class="card editonly" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+    <button type="button" id="demoBtn" data-t="b_demo">Try with demo data</button><span class="muted" data-t="n_demo">Opens the app with example data (nothing is saved). You can try every tab, including Compare.</span>
+  </div>
+  <p class="muted"><b class="req"></b> <span data-t="n_req">= required</span></p>
+  <div class="card">
+    <h2 data-t="h_site">ATI and field</h2>
+    <div class="grid">
+      <div><label data-t="f_name">ATI name</label><input data-b="site.name" placeholder="e.g. Chougachha ATI"></div>
+      <div><label data-t="f_place">Place (district / upazila)</label><input data-b="site.place" placeholder="e.g. Chougachha, Jashore"></div>
+      <div><label data-t="f_lat">Latitude</label><input data-b="site.lat" inputmode="decimal" placeholder="23.10"></div>
+      <div><label data-t="f_lon">Longitude</label><input data-b="site.lon" inputmode="decimal" placeholder="89.00"></div>
+      <div><label data-t="f_var">Variety</label><input data-b="site.variety"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2 data-t="h_dates">Sowing and seedling age</h2>
+    <div class="grid">
+      <div><label data-t="f_sow">Sowing date</label><input type="date" data-b="site.sow"></div>
+      <div><label data-t="f_age">Seedling age at transplanting (days)</label><input inputmode="numeric" data-b="site.age" placeholder="e.g. 49"></div>
+      <div><label data-t="f_trans">Transplanting date (calculated)</label><input id="o-trans" readonly></div>
+      <div><label data-t="f_day0">Date to enter in the scheduling app (sowing + seedling age − 35)</label><input id="o-day0" readonly></div>
+    </div>
+    <p class="muted" data-t="n_day0">The scheduling app assumes transplanting 35 days after sowing. If your seedlings are older, enter the "app date" above as the sowing date of the app. This app does the same calculation for you in the Schedule tab.</p>
+  </div>
+  <div class="card">
+    <h2 data-t="h_plots">Plots and water-pipe settings (TP and b)</h2>
+    <div class="tw"><table>
+      <tr><th></th><th data-t="f_pid">Plot ID</th><th data-t="f_area">Area (decimal)</th><th>TP (cm)</th><th>b (cm)</th></tr>
+      <tr><td><b>FP</b></td><td><input data-b="site.fpId"></td><td><input inputmode="decimal" data-b="site.fpArea"></td><td><input inputmode="decimal" data-b="site.fpTP"></td><td><input inputmode="decimal" data-b="site.fpB"></td></tr>
+      <tr><td><b>3F4D+MD</b></td><td><input data-b="site.mdId"></td><td><input inputmode="decimal" data-b="site.mdArea"></td><td><input inputmode="decimal" data-b="site.mdTP"></td><td><input inputmode="decimal" data-b="site.mdB"></td></tr>
+    </table></div>
+    <div class="grid" style="margin-top:8px"><div><label data-t="f_tpdate">Date TP and b were measured</label><input type="date" data-b="site.tpDate"></div></div>
+    <p class="muted" data-t="n_tp">Water level (cm) = m − TP + b, where m = tape reading at the water surface, TP = tape reading at the top of the pipe, b = height of the pipe top above the ground. Negative = water below the soil surface.</p>
+    <a href="water_level.png" target="_blank" rel="noopener"><img src="water_level.png" alt="Water level measurement: m, TP and b" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px;margin-top:6px"></a><div class="muted" data-t="n_fig">Tap the figure to enlarge. m = reading at the water surface, TP = reading at the top of the pipe, b = height of the pipe top above the ground. Water level = m - TP + b.</div>
+  </div>
+</section>
+
+<!-- ================= SCHEDULE ================= -->
+<section class="pane" id="p-sched">
+  <div class="card">
+    <h2 data-t="h_sched">3F4D+MD schedule</h2>
+    <p class="muted" data-t="n_sched">Planned dates are calculated from the sowing date and seedling age with the same rules as the 3F4D+MD scheduling app (Professional mode). Type a date in "Override" to correct a planned date. Enter the date an event really happened in "Actual".</p>
+    <div class="kpis" id="schedInfo"></div>
+    <div class="tw"><table id="schedTbl"></table></div>
+    <details><summary data-t="h_set">Settings (days) – change only if you changed them in the scheduling app</summary>
+      <div class="grid" id="setGrid" style="margin-top:8px"></div>
+    </details>
+  </div>
+</section>
+
+<!-- ================= ENTRY ================= -->
+<section class="pane" id="p-entry">
+  <div class="card">
+    <h2 data-t="h_entry">Daily water level</h2>
+    <div class="grid">
+      <div><label data-t="f_date">Date of measurement</label><input type="date" id="e-date"></div>
+      <div><label data-t="f_rain">Rain (mm)</label><input id="e-rain" inputmode="decimal"></div>
+      <div><label data-t="f_temp">Temperature (°C)</label><input id="e-temp" inputmode="decimal"></div>
+      <div><label data-t="f_rh">Relative humidity (%)</label><input id="e-rh" inputmode="decimal"></div>
+    </div>
+    <details style="margin-top:8px"><summary data-t="h_howm">How to read m, TP and b (figure)</summary><a href="water_level.png" target="_blank" rel="noopener"><img src="water_level.png" alt="Water level measurement: m, TP and b" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px;margin-top:6px"></a><div class="muted" data-t="n_fig">Tap the figure to enlarge. m = reading at the water surface, TP = reading at the top of the pipe, b = height of the pipe top above the ground. Water level = m - TP + b.</div></details>
+    <div class="two" style="margin-top:10px">
+      <div class="plotbox" id="e-fp"></div>
+      <div class="plotbox" id="e-md"></div>
+    </div>
+    <div style="margin-top:10px"><label data-t="f_note">Note</label><textarea id="e-note"></textarea></div>
+    <div class="row" style="margin-top:10px"><button class="pri" id="e-save" type="button" data-t="b_save">Save entry</button><button id="e-new" type="button" data-t="b_clear">Clear form</button><span class="muted" id="e-status"></span></div><div id="e-hint" style="margin-top:6px;font-size:13px"></div>
+  </div>
+  <div class="card">
+    <h2 data-t="h_tpb">Re-measure TP and b</h2>
+    <p class="muted" data-t="n_tpb">After Pitan and mid-season drainage the soil shrinks and b changes. Measure TP and b again and record them here. Water levels from that date use the new values.</p>
+    <div class="grid">
+      <div><label data-t="f_plot">Plot</label><select id="t-plot"><option>FP</option><option>3F4D+MD</option></select></div>
+      <div><label data-t="f_date">Date</label><input type="date" id="t-date"></div>
+      <div><label>TP (cm)</label><input id="t-tp" inputmode="decimal"></div>
+      <div><label>b (cm)</label><input id="t-b" inputmode="decimal"></div>
+    </div>
+    <div class="row" style="margin-top:8px"><button id="t-add" type="button" data-t="b_add">Add</button><button type="button" class="rcancel" style="display:none" data-t="b_cancel">Cancel</button></div>
+    <div class="tw" style="margin-top:8px"><table id="tpbTbl"></table></div>
+  </div>
+  <div class="card">
+    <h2 data-t="h_rec">Field records</h2>
+    <p class="muted" data-t="n_rec">Record fertilizer, pesticide and tiller counts. They are included in the share link and the exports.</p>
+    <details open><summary data-t="h_fert">Fertilizer</summary>
+      <div class="grid" style="margin-top:8px">
+        <div><label data-t="f_date">Date</label><input type="date" id="rf-d"></div>
+        <div><label data-t="f_plot">Plot</label><select id="rf-p"><option value="FP">FP</option><option value="3F4D+MD">3F4D+MD</option><option value="Both">Both plots</option></select></div>
+      </div>
+      <div class="grid" id="rf-g" style="margin-top:8px"></div>
+      <div style="margin-top:8px"><label data-t="f_note">Note</label><input id="rf-n"></div>
+      <div class="row" style="margin-top:8px"><button type="button" id="rf-add" data-t="b_add">Add</button><button type="button" class="rcancel" style="display:none" data-t="b_cancel">Cancel</button></div>
+      <div class="tw" style="margin-top:8px"><table id="fertTbl"></table></div>
+    </details>
+    <details><summary data-t="h_pest">Pesticide</summary>
+      <div class="grid" style="margin-top:8px">
+        <div><label data-t="f_date">Date</label><input type="date" id="rp-d"></div>
+        <div><label data-t="f_plot">Plot</label><select id="rp-p"><option value="FP">FP</option><option value="3F4D+MD">3F4D+MD</option><option value="Both">Both plots</option></select></div>
+        <div><label data-t="f_ptype">Type</label><select id="rp-t"></select></div>
+        <div><label data-t="f_pname">Chemical name</label><input id="rp-c"></div>
+        <div><label data-t="f_ppurp">Purpose</label><input id="rp-u"></div>
+        <div><label data-t="f_note">Note</label><input id="rp-n"></div>
+      </div>
+      <div class="row" style="margin-top:8px"><button type="button" id="rp-add" data-t="b_add">Add</button><button type="button" class="rcancel" style="display:none" data-t="b_cancel">Cancel</button></div>
+      <div class="tw" style="margin-top:8px"><table id="pestTbl"></table></div>
+    </details>
+    <details><summary data-t="h_till">Tiller count</summary>
+      <p class="muted" data-t="n_till">Count tillers on 5 hills. The value used is the mean of the 2nd, 3rd and 4th largest counts.</p>
+      <div class="grid" style="margin-top:8px">
+        <div><label data-t="f_date">Date</label><input type="date" id="rt-d"></div>
+        <div><label data-t="f_plot">Plot</label><select id="rt-p"><option value="FP">FP</option><option value="3F4D+MD">3F4D+MD</option></select></div>
+      </div>
+      <div class="grid" style="margin-top:8px">
+        <div><label>Hill 1</label><input id="rt-1" inputmode="numeric"></div><div><label>Hill 2</label><input id="rt-2" inputmode="numeric"></div>
+        <div><label>Hill 3</label><input id="rt-3" inputmode="numeric"></div><div><label>Hill 4</label><input id="rt-4" inputmode="numeric"></div>
+        <div><label>Hill 5</label><input id="rt-5" inputmode="numeric"></div>
+      </div>
+      <div class="row" style="margin-top:8px"><button type="button" id="rt-add" data-t="b_add">Add</button><button type="button" class="rcancel" style="display:none" data-t="b_cancel">Cancel</button></div>
+      <div class="tw" style="margin-top:8px"><table id="tillTbl"></table></div>
+    </details>
+  </div>
+  <div class="card">
+    <h2 data-t="h_list">Entries</h2>
+    <div class="tw" style="max-height:420px;overflow-y:auto"><table id="entTbl"></table></div>
+  </div>
+</section>
+
+<!-- ================= DASHBOARD ================= -->
+<section class="pane" id="p-dash">
+  <div id="dash"></div>
+</section>
+
+<!-- ================= COMPARE ================= -->
+<section class="pane" id="p-compare">
+  <div class="card">
+    <h2 data-t="h_cmp">Compare ATIs</h2>
+    <p class="muted" data-t="n_cmp">Your ATI is shown with thick lines. Other ATIs come from the shared sheet. X axis: days after transplanting (DAT).</p>
+    <div class="row"><button class="pri" id="c-load" type="button" data-t="b_load">Load from shared sheet</button><span class="muted" id="c-info"></span></div>
+    <div class="row" style="margin-top:8px"><label style="width:auto" data-t="c_mode">View</label><select id="c-mode" style="width:auto"><option value="overlay" data-t="c_overlay">Overlay (compare)</option><option value="each" data-t="c_each">Each ATI</option></select></div>
+    <div class="cmpl" id="c-list" style="margin-top:8px"></div>
+  </div>
+  <div id="c-out"></div>
+</section>
+
+<!-- ================= HELP ================= -->
+<section class="pane" id="p-help">
+  <div class="card help">
+    <h2>Help</h2>
+    <h3>3F4D manual</h3>
+    <p>How to practise 3F4D+MD (needs internet):</p>
+    <div class="row"><a href="https://doi.org/10.5281/zenodo.22932287" target="_blank" rel="noopener"><button type="button" data-t="b_3f_en">3F4D manual (English)</button></a><a href="https://doi.org/10.5281/zenodo.23075395" target="_blank" rel="noopener"><button type="button" data-t="b_3f_bn">3F4D manual (Bengali)</button></a></div>
+    <h3>1. First time</h3>
+    <ol><li><b>Setup</b> tab: enter ATI name, place, sowing date, seedling age, and TP / b of both plots (items marked <b style="color:#c62828">*</b> are required).</li>
+    <li><b>Schedule</b> tab: planned dates appear automatically. Enter the real date in "Actual" when each event happens.</li>
+    <li><b>Share</b> tab &gt; Shared Google Sheet: type the shared sheet link and the compare link given by your teacher.</li></ol>
+    <h3>2. Every day</h3>
+    <p>How to read m, TP and b:</p><a href="water_level.png" target="_blank" rel="noopener"><img src="water_level.png" alt="Water level measurement: m, TP and b" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px;margin-top:6px"></a><div class="muted">Tap the figure to enlarge. m = reading at the water surface, TP = reading at the top of the pipe, b = height of the pipe top above the ground. Water level = m - TP + b.</div>
+    <ol><li><b>Entry</b> tab: choose the date, enter the tape reading (m) of FP and 3F4D+MD. If you irrigated, answer Yes and enter the readings before and after irrigation.</li>
+    <li>"Save entry" is enabled only when all required items (*) are filled and the values are in range.</li>
+    <li>Press <b>Share &gt; Copy my data</b>, open the shared sheet, click the first empty cell of column A in the tab "Data" and paste.</li></ol>
+    <h3>3. Correct a mistake</h3>
+    <ul><li>Water-level entry: in the Entries table press ✎, change the values and press Save entry again (same date = overwrite). ✕ deletes the day.</li>
+    <li>Fertilizer, pesticide, tillers, TP/b: press ✎ in the list, change, press Update. ✕ deletes.</li>
+    <li>After any correction, press "Copy my data" and paste again below the last row. The newest paste of your ATI is used.</li></ul>
+    <h3>4. Fertilizer, pesticide, tillers</h3>
+    <p>Entry tab &gt; Field records. Tillers: count 5 hills; the value used is the mean of the 2nd, 3rd and 4th largest.</p>
+    <h3>5. Compare</h3>
+    <p>Compare tab &gt; "Load from shared sheet". Select the ATIs to show. Charts: cumulative irrigation and water level (FP and 3F4D+MD), total irrigation and saving, tiller number. To see how Compare looks without internet, use the demo (Setup &gt; Try with demo data).</p>
+    <h3>6. Demo and backup</h3>
+    <p>Setup &gt; "Try with demo data" opens example data; nothing is saved. Share &gt; Export file (JSON) makes a backup of your data. Data are stored only in this browser.</p>
+    <h3>7. Install on a phone</h3>
+    <p>Open the app address in Chrome once with internet, then choose "Add to Home screen". After that it also opens without internet; paste your data into the sheet when you are online.</p>
+  </div>
+</section>
+
+<!-- ================= SHARE ================= -->
+<section class="pane" id="p-share">
+  <div class="card" id="dl-card">
+    <h2 data-t="h_dl">Downloads</h2>
+    <p class="muted" data-t="n_dl">For the administrator and teachers: the Excel template of the shared sheet and the manuals.</p>
+    <div class="row">
+      <a href="ATI_Monitor_Shared_TEMPLATE.xlsx" download><button type="button" data-t="b_dlx">Excel template (shared sheet)</button></a>
+      <a href="manual/ATI_Monitor_App_Manual_EN.pdf" target="_blank" rel="noopener"><button type="button" data-t="b_dlm_en">Manual (English, PDF)</button></a>
+      <a href="manual/ATI_Monitor_App_Manual_JP.pdf" target="_blank" rel="noopener"><button type="button" data-t="b_dlm_jp">Manual (Japanese, PDF)</button></a>
+    </div>
+    <div class="row" style="margin-top:8px"><a href="https://doi.org/10.5281/zenodo.22932287" target="_blank" rel="noopener"><button type="button" data-t="b_3f_en">3F4D manual (English)</button></a><a href="https://doi.org/10.5281/zenodo.23075395" target="_blank" rel="noopener"><button type="button" data-t="b_3f_bn">3F4D manual (Bengali)</button></a></div>
+  </div>
+  <div class="card editonly" id="sync-card">
+    <h2 data-t="h_sync2">Shared Google Sheet</h2>
+    <p class="muted" data-t="n_sync2">The shared sheet is made by your teacher. No password or script is needed: you copy your numbers here and paste them into the sheet.</p>
+    <ol class="muted" style="margin:6px 0 8px 18px;padding:0">
+      <li data-t="y_s1">Press "Copy my data".</li><li data-t="y_s2">Open the shared sheet (button below), go to the tab "Data" and click the first empty cell of column A (below the last row).</li><li data-t="y_s3">Paste (Ctrl+V, or long-press and Paste on a phone).</li></ol>
+    <div class="row"><button class="pri" id="y-copy" type="button" data-t="b_copy2">Copy my data</button><button id="y-dl" type="button" data-t="b_dl2">Download as CSV</button><button id="y-open" type="button" data-t="b_open2">Open shared sheet</button></div>
+    <div class="muted" id="y-info" style="margin-top:6px"></div>
+    <div class="grid" style="margin-top:8px">
+      <div><label data-t="f_sheet">Shared sheet link (edit link from your teacher)</label><input data-b="sync.sheet" placeholder="https://docs.google.com/spreadsheets/d/..."></div>
+      <div><label data-t="f_csv">Compare link (published CSV link from your teacher)</label><input data-b="sync.csv" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?output=csv"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2 data-t="h_share">Share a view-only link</h2>
+    <p class="muted" data-t="n_share">The link contains a snapshot of all data (nothing is uploaded to a server). Anyone who opens it sees the dashboard, read-only. After you add new entries, create a new link.</p>
+    <div class="row"><button class="pri" id="s-make" type="button" data-t="b_link">Create link</button><button id="s-copy" type="button" data-t="b_copy">Copy</button><button id="s-share" type="button" data-t="b_share">Share…</button></div>
+    <textarea id="s-link" readonly style="margin-top:8px" class="mono"></textarea>
+    <div class="muted" id="s-info"></div>
+  </div>
+  <div class="card editonly">
+    <h2 data-t="h_backup">Backup and restore</h2>
+    <p class="muted" data-t="n_backup">Data are stored in this browser only. Export a file regularly as a backup, or to move the data to another phone.</p>
+    <div class="row"><button id="x-exp" type="button" data-t="b_export">Export file (JSON)</button><button id="x-imp" type="button" data-t="b_import">Import file…</button><input type="file" id="x-file" accept=".json,application/json" style="display:none"><button id="x-csv" type="button" data-t="b_csv">Export CSV</button><button id="x-csv2" type="button" data-t="b_csv2">Export records CSV</button><button class="del" id="x-reset" type="button" data-t="b_reset">Delete all data</button></div>
+  </div>
+  <div class="card">
+    <h2 data-t="h_about">About</h2>
+    <p class="muted" id="aboutTxt">ATI Water Monitor works offline after the first visit. Schedule rules follow the 3F4D+MD scheduling app (Professional mode).</p>
+  </div>
+</section>
+</main>
+<div id="msg"></div>
+
+<script>
+'use strict';
+/* ====================================================== constants */
+var TR = ['FP', '3F4D+MD'];
+var FERTS = ['Urea', 'TSP', 'DAP', 'Gypsum', 'MOP', 'Boron', 'Zinc', 'Magnesium', 'Thiovit'];
+var PESTT = ['Insecticide', 'Fungicide', 'Herbicide', 'Other'];
+var PLOTSEL = ['FP', '3F4D+MD', 'Both'];
+var COL = {'FP': '#D55E00', '3F4D+MD': '#0072B2'};
+var KEY = 'ati_monitor_v1', LKEY = 'ati_monitor_lang';
+var EVENTS = [
+  ['Pitan start', 'পিটান শুরু'], ['Pitan end', 'পিটান শেষ'], ['MD start', 'এমডি শুরু'], ['MD end', 'এমডি শেষ'], ['PI check', 'পিআই পরীক্ষা'],
+  ['Flood start', 'জমি প্লাবিত করা শুরু'], ['Flood end', 'জমি প্লাবিত করা শেষ'],
+  ['3F4D cycle 1', '৩এফ৪ডি চক্র ১'], ['3F4D cycle 2', '৩এফ৪ডি চক্র ২'], ['3F4D cycle 3', '৩এফ৪ডি চক্র ৩'], ['3F4D cycle 4', '৩এফ৪ডি চক্র ৪'],
+  ['Heading', 'শীষ বের হওয়া'], ['3F4D cycle 5', '৩এফ৪ডি চক্র ৫'], ['3F4D cycle 6', '৩এফ৪ডি চক্র ৬'], ['3F4D end', '৩এফ৪ডি শেষ'],
+  ['Last irrigation', 'শেষ সেচ'], ['Harvest', 'ধান কাটা']
+];
+var SETTINGS = [
+  ['Days from sowing to transplanting (app)', 'অ্যাপে বপন থেকে রোপণ পর্যন্ত দিন', 35],
+  ['Pitan start: days after transplanting', 'পিটান শুরু: রোপণের পর দিন', 30],
+  ['Pitan duration (days)', 'পিটানের সময়কাল (দিন)', 3],
+  ['MD start: days after sowing', 'এমডি শুরু: বপনের পর দিন', 66],
+  ['MD duration (days)', 'এমডির সময়কাল (দিন)', 8],
+  ['PI check: days after MD start', 'পিআই পরীক্ষা: এমডি শুরুর পর দিন', 6],
+  ['Heading: days after sowing', 'শীষ বের হওয়া: বপনের পর দিন', 111],
+  ['Flooding before heading (days)', 'শীষ বের হওয়ার আগে প্লাবন (দিন)', 25],
+  ['3F4D start before heading (days)', 'শীষ বের হওয়ার আগে ৩এফ৪ডি শুরু (দিন)', 21],
+  ['Harvest: days after heading', 'শীষ বের হওয়ার পর ধান কাটা (দিন)', 28]
+];
+var I18N = {
+  en: {
+    h_rec: 'Field records', n_rec: 'Record fertilizer, pesticide and tiller counts. They are included in the share link and the exports.', h_fert: 'Fertilizer', h_pest: 'Pesticide', h_till: 'Tiller count',
+    f_ptype: 'Type', f_pname: 'Chemical name', f_ppurp: 'Purpose', n_till: 'Count tillers on 5 hills. The value used is the mean of the 2nd, 3rd and 4th largest counts.', c_tiller: 'Tillers/hill', c_amt: 'Amount (kg)', c_type: 'Type', c_chem: 'Chemical', c_purp: 'Purpose', c_note: 'Note', c_hills: 'Hills',
+    d_rec: 'Fertilizer, pesticide and tillers', d_fert: 'Fertilizer applied', d_pest: 'Pesticide applied', d_till: 'Tiller count', d_norec: 'No records', rec_bad: 'Check date and values (tillers: 5 whole numbers)', rec_bad2: 'Enter date and at least one amount',
+    pt_Insecticide: 'Insecticide', pt_Fungicide: 'Fungicide', pt_Herbicide: 'Herbicide', pt_Other: 'Other', plot_Both: 'Both plots',
+    tab_compare: 'Compare', tab_help: 'Help', n_req: '= required', v_setup: 'Complete Setup first', v_need: 'Required:', b_update: 'Update', b_cancel: 'Cancel',
+    b_demo: 'Try with demo data', n_demo: 'Opens the app with example data (nothing is saved). You can try every tab, including Compare.', demo_banner: 'DEMO data - nothing is saved.', demo_exit: 'Exit demo',
+    h_sync: 'Shared Google Sheet', n_sync: 'Send your data to the shared Google Sheet made by your teacher. Use the web app URL and class key your teacher gives you. Press "Send my data" after each entry session; it replaces your earlier upload. The key stays in this browser and is never put in a share link.',
+    f_surl: 'Web app URL', f_skey: 'Class key', b_push: 'Send my data', b_test: 'Test connection', y_ok: 'Sent', y_need: 'Enter web app URL, class key, ATI name and at least one entry', y_fail: 'Could not connect. Check the URL, the key and the internet connection.',
+    y_demo: 'Demo mode: nothing is sent', y_over: 'An ATI with this name was updated by someone else after your last upload. Replace it?', y_last: 'Last sent', y_conn: 'Connected. ATIs in the sheet:', y_badkey: 'Wrong class key',
+    h_cmp: 'Compare ATIs', n_cmp: 'Your ATI is shown with thick lines. Other ATIs come from the shared sheet. X axis: days after transplanting (DAT).', b_load: 'Load from shared sheet', b_cdemo: 'Show demo ATIs',
+    c_you: '(you)', c_none: 'No other ATIs loaded yet', c_loaded: 'Loaded', c_ati: 'ATI', c_last: 'Last entry', c_days: 'Days', c_fp: 'FP (mm)', c_md: '3F4D+MD (mm)', c_save: 'Saving (%)', cmp_nodata: 'No data to compare yet.', cmp_cfg: 'Enter the web app URL and class key in the Share tab first.', v_range: 'out of range',
+    h_howm: 'How to read m, TP and b (figure)', n_fig: 'Tap the figure to enlarge. m = reading at the water surface, TP = reading at the top of the pipe, b = height of the pipe top above the ground. Water level = m - TP + b.',
+    h_sync2: 'Shared Google Sheet', n_sync2: 'The shared sheet is made by your teacher. No password or script is needed: you copy your numbers here and paste them into the sheet.',
+    y_s1: 'Press "Copy my data".', y_s2: 'Open the shared sheet (button below), go to the tab "Data" and click the first empty cell of column A (below the last row).', y_s3: 'Paste (Ctrl+V, or long-press and Paste on a phone).',
+    b_copy2: 'Copy my data', b_dl2: 'Download as CSV', b_open2: 'Open shared sheet', f_sheet: 'Shared sheet link (edit link from your teacher)', f_csv: 'Compare link (published CSV link from your teacher)',
+    y_copied: 'Copied. Now paste it into the shared sheet. Rows:', y_nocopy: 'Could not copy. Use "Download as CSV" instead.', y_none: 'Complete Setup and save at least one entry first.', y_nosheet: 'Enter the shared sheet link first.', y_badlink: 'This is not a Google Sheets link.', y_nocsv: 'Enter the compare link (published CSV) first.', y_csvfail: 'Could not read the sheet. Check the compare link and the internet connection.', y_empty: 'The sheet has no ATI data yet.',
+    h_dl: 'Downloads', n_dl: 'For the administrator and teachers: the Excel template of the shared sheet and the manuals.', b_dlx: 'Excel template (shared sheet)', b_dlm_en: 'Manual (English, PDF)', b_dlm_jp: 'Manual (Japanese, PDF)',
+    c_mode: 'View', c_overlay: 'Overlay (compare)', c_each: 'Each ATI (one panel per ATI)',
+    b_3f_en: '3F4D manual (English)', b_3f_bn: '3F4D manual (Bengali)',
+    tab_setup: 'Setup', tab_sched: 'Schedule', tab_entry: 'Entry', tab_dash: 'Dashboard', tab_share: 'Share',
+    h_site: 'ATI and field', f_name: 'ATI name', f_place: 'Place (district / upazila)', f_lat: 'Latitude', f_lon: 'Longitude', f_var: 'Variety',
+    h_dates: 'Sowing and seedling age', f_sow: 'Sowing date', f_age: 'Seedling age at transplanting (days)', f_trans: 'Transplanting date (calculated)',
+    f_day0: 'Date to enter in the scheduling app (sowing + seedling age − 35)',
+    n_day0: 'The scheduling app assumes transplanting 35 days after sowing. If your seedlings are older, the "app date" above is what the scheduling app needs as sowing date. This app does the same calculation for you in the Schedule tab.',
+    h_plots: 'Plots and water-pipe settings (TP and b)', f_pid: 'Plot ID', f_area: 'Area (decimal)', f_tpdate: 'Date TP and b were measured',
+    n_tp: 'Water level (cm) = m − TP + b, where m = tape reading at the water surface, TP = tape reading at the top of the pipe, b = height of the pipe top above the ground. Negative = water below the soil surface.',
+    h_sched: '3F4D+MD schedule',
+    n_sched: 'Planned dates are calculated from the sowing date and seedling age with the same rules as the 3F4D+MD scheduling app (Professional mode). Type a date in "Override" to correct a planned date. Enter the date an event really happened in "Actual".',
+    c_event: 'Event', c_plan: 'Planned', c_ovr: 'Override', c_act: 'Actual', c_stat: 'Status',
+    h_set: 'Settings (days) – change only if you changed them in the scheduling app',
+    h_entry: 'Daily water level', f_date: 'Date of measurement', f_rain: 'Rain (mm)', f_temp: 'Temperature (°C)', f_rh: 'Relative humidity (%)', f_note: 'Note',
+    f_m: 'Water level reading m (cm)', f_irr: 'Irrigated today?', f_bef: 'Before irrigation m (cm)', f_aft: 'After irrigation m (cm)', f_time: 'Irrigation time (mm:ss)',
+    yes: 'Yes', no: 'No', b_save: 'Save entry', b_clear: 'Clear form', saved: 'Saved', deleted: 'Deleted',
+    h_tpb: 'Re-measure TP and b', n_tpb: 'After Pitan and mid-season drainage the soil shrinks and b changes. Measure TP and b again and record them here. Water levels from that date use the new values.',
+    f_plot: 'Plot', b_add: 'Add', h_list: 'Entries', c_date: 'Date', c_wl: 'Water level (cm)', c_irr: 'Irrigation (mm)', c_qc: 'Check',
+    h_share: 'Share a view-only link', n_share: 'The link contains a snapshot of all data (nothing is uploaded to a server). Anyone who opens it sees the dashboard, read-only. After you add new entries, create a new link.',
+    b_link: 'Create link', b_copy: 'Copy', b_share: 'Share…', h_backup: 'Backup and restore',
+    n_backup: 'Data are stored in this browser only. Export a file regularly as a backup, or to move the data to another phone.',
+    b_export: 'Export file (JSON)', b_import: 'Import file…', b_csv: 'Export CSV', b_csv2: 'Export records CSV', b_reset: 'Delete all data', h_about: 'About',
+    about: 'ATI Water Monitor works offline after the first visit. Schedule rules follow the 3F4D+MD scheduling app (Professional mode). Bengali text is a draft.',
+    d_none: 'No entries yet. Add entries in the Entry tab.', d_sav: 'saving', d_fp: 'FP irrigation (mm)', d_md: '3F4D+MD irrigation (mm)', d_n: 'irrigations FP / 3F4D+MD',
+    d_data: 'Data', d_to: 'to', d_days: 'days', d_last: 'last entry', d_qc: 'Checks (last 30 days)', d_noqc: 'No flags.', d_loc: 'Location',
+    view_banner: 'View-only snapshot', view_edit: 'Open an editable copy',
+    copied: 'Link copied', copyfail: 'Select the link and copy it', imp_ok: 'Imported', imp_bad: 'This file could not be read', reset_q: 'Delete ALL data in this browser?',
+    link_len: 'Link length', link_long: 'The link is long; some apps may cut it. Use the exported file instead.', link_none: 'Nothing to share yet.',
+    st_ok: 'OK', st_late: 'LATE', st_over: 'OVERDUE', st_up: 'upcoming', st_none: 'no plan', ago0: 'today', ago1: 'yesterday', agoN: 'days ago', noentry: 'no entry for', ndays: 'days'
+  },
+  bn: {
+    h_rec: 'মাঠের রেকর্ড', n_rec: 'সার, বালাইনাশক ও কুশির সংখ্যা লিখুন। এগুলো শেয়ার লিংক ও এক্সপোর্টে থাকবে।', h_fert: 'সার', h_pest: 'বালাইনাশক', h_till: 'কুশির সংখ্যা',
+    f_ptype: 'ধরন', f_pname: 'রাসায়নিকের নাম', f_ppurp: 'উদ্দেশ্য', n_till: '৫টি গোছায় কুশি গণনা করুন। ব্যবহৃত মান হলো ২য়, ৩য় ও ৪র্থ বৃহত্তম সংখ্যার গড়।', c_tiller: 'কুশি/গোছা', c_amt: 'পরিমাণ (কেজি)', c_type: 'ধরন', c_chem: 'রাসায়নিক', c_purp: 'উদ্দেশ্য', c_note: 'মন্তব্য', c_hills: 'গোছা',
+    d_rec: 'সার, বালাইনাশক ও কুশি', d_fert: 'প্রয়োগকৃত সার', d_pest: 'প্রয়োগকৃত বালাইনাশক', d_till: 'কুশির সংখ্যা', d_norec: 'কোনো রেকর্ড নেই', rec_bad: 'তারিখ ও মান পরীক্ষা করুন (কুশি: ৫টি পূর্ণসংখ্যা)', rec_bad2: 'তারিখ ও অন্তত একটি পরিমাণ দিন',
+    pt_Insecticide: 'কীটনাশক', pt_Fungicide: 'ছত্রাকনাশক', pt_Herbicide: 'আগাছানাশক', pt_Other: 'অন্যান্য', plot_Both: 'দুটি প্লটই',
+    tab_compare: 'তুলনা', tab_help: 'সহায়তা', n_req: '= আবশ্যক', v_setup: 'আগে সেটআপ সম্পূর্ণ করুন', v_need: 'আবশ্যক:', b_update: 'আপডেট', b_cancel: 'বাতিল',
+    b_demo: 'ডেমো তথ্য দিয়ে দেখুন', n_demo: 'উদাহরণ তথ্য দিয়ে অ্যাপ খোলে (কিছু সংরক্ষিত হয় না)।', demo_banner: 'ডেমো তথ্য - কিছু সংরক্ষিত হচ্ছে না।', demo_exit: 'ডেমো থেকে বের হন',
+    h_sync: 'শেয়ার্ড গুগল শিট', f_surl: 'ওয়েব অ্যাপ URL', f_skey: 'ক্লাস কী', b_push: 'আমার তথ্য পাঠান', b_test: 'সংযোগ পরীক্ষা', y_ok: 'পাঠানো হয়েছে', y_last: 'সর্বশেষ পাঠানো',
+    h_cmp: 'এটিআই তুলনা', b_load: 'শিট থেকে লোড করুন', b_cdemo: 'ডেমো এটিআই দেখান', c_you: '(আপনি)', c_ati: 'এটিআই', c_last: 'সর্বশেষ তথ্য', c_days: 'দিন', c_save: 'সাশ্রয় (%)',
+    h_howm: 'm, TP ও b কীভাবে পড়বেন (চিত্র)', n_fig: 'চিত্রে ট্যাপ করে বড় করুন। m = পানির উপরিতলের পাঠ, TP = পাইপের মাথার পাঠ, b = মাটির উপরে পাইপের উচ্চতা। পানির স্তর = m - TP + b।',
+    h_sync2: 'শেয়ার্ড গুগল শিট', y_s1: '"আমার তথ্য কপি" চাপুন।', y_s3: 'পেস্ট করুন।', b_copy2: 'আমার তথ্য কপি', b_dl2: 'CSV ডাউনলোড', b_open2: 'শেয়ার্ড শিট খুলুন', f_sheet: 'শেয়ার্ড শিটের লিংক', f_csv: 'তুলনার লিংক (প্রকাশিত CSV)', y_copied: 'কপি হয়েছে। এখন শেয়ার্ড শিটে পেস্ট করুন। সারি:',
+    h_dl: 'ডাউনলোড', b_dlx: 'এক্সেল টেমপ্লেট (শেয়ার্ড শিট)', b_dlm_en: 'ম্যানুয়াল (ইংরেজি, PDF)', b_dlm_jp: 'ম্যানুয়াল (জাপানি, PDF)',
+    c_mode: 'প্রদর্শন', c_overlay: 'একসাথে (তুলনা)', c_each: 'প্রতিটি এটিআই আলাদা',
+    b_3f_en: '৩এফ৪ডি ম্যানুয়াল (ইংরেজি)', b_3f_bn: '৩এফ৪ডি ম্যানুয়াল (বাংলা)',
+    tab_setup: 'সেটআপ', tab_sched: 'সময়সূচি', tab_entry: 'তথ্য দিন', tab_dash: 'ড্যাশবোর্ড', tab_share: 'শেয়ার',
+    h_site: 'এটিআই ও মাঠ', f_name: 'এটিআইয়ের নাম', f_place: 'স্থান (জেলা / উপজেলা)', f_lat: 'অক্ষাংশ', f_lon: 'দ্রাঘিমাংশ', f_var: 'জাত',
+    h_dates: 'বীজ বপন ও চারার বয়স', f_sow: 'বীজ বপনের তারিখ', f_age: 'রোপণের সময় চারার বয়স (দিন)', f_trans: 'রোপণের তারিখ (হিসাবকৃত)',
+    f_day0: 'সময়সূচি অ্যাপে দেওয়ার তারিখ (বপন + চারার বয়স − ৩৫)',
+    n_day0: 'সময়সূচি অ্যাপ ধরে নেয় বপনের ৩৫ দিন পর রোপণ। চারার বয়স বেশি হলে উপরের "অ্যাপের তারিখ"-ই অ্যাপের বপনের তারিখ। এই অ্যাপ সময়সূচি ট্যাবে একই হিসাব নিজেই করে।',
+    h_plots: 'প্লট ও পাইপের তথ্য (TP ও b)', f_pid: 'প্লট আইডি', f_area: 'আয়তন (শতক)', f_tpdate: 'TP ও b মাপার তারিখ',
+    n_tp: 'পানির স্তর (সেমি) = m − TP + b; m = পানির উপরিতলে ফিতার পাঠ, TP = পাইপের মাথায় ফিতার পাঠ, b = মাটি থেকে পাইপের মাথার উচ্চতা। ঋণাত্মক মান মানে পানি মাটির নিচে।',
+    h_sched: '৩এফ৪ডি+এমডি সময়সূচি',
+    n_sched: 'বপনের তারিখ ও চারার বয়স থেকে ৩এফ৪ডি+এমডি সময়সূচি অ্যাপের (প্রফেশনাল মোড) নিয়মে পরিকল্পিত তারিখ হিসাব করা হয়। তারিখ ঠিক করতে "সংশোধন" ঘরে লিখুন। কাজ আসলে যেদিন হয়েছে তা "প্রকৃত" ঘরে লিখুন।',
+    c_event: 'ঘটনা', c_plan: 'পরিকল্পিত', c_ovr: 'সংশোধন', c_act: 'প্রকৃত', c_stat: 'অবস্থা',
+    h_set: 'সেটিংস (দিন) – সময়সূচি অ্যাপে বদলালে তবেই বদলান',
+    h_entry: 'দৈনিক পানির স্তর', f_date: 'মাপার তারিখ', f_rain: 'বৃষ্টি (মিমি)', f_temp: 'তাপমাত্রা (°সে)', f_rh: 'আপেক্ষিক আর্দ্রতা (%)', f_note: 'মন্তব্য',
+    f_m: 'পানির স্তরের পাঠ m (সেমি)', f_irr: 'আজ সেচ দিয়েছেন?', f_bef: 'সেচের আগে m (সেমি)', f_aft: 'সেচের পরে m (সেমি)', f_time: 'সেচের সময় (মি:সে)',
+    yes: 'হ্যাঁ', no: 'না', b_save: 'সংরক্ষণ করুন', b_clear: 'ফর্ম পরিষ্কার', saved: 'সংরক্ষিত', deleted: 'মুছে ফেলা হয়েছে',
+    h_tpb: 'TP ও b আবার মাপা', n_tpb: 'পিটান ও মাঝ-মৌসুমের শুকানোর পর মাটি বসে যায় ও b বদলায়। TP ও b আবার মেপে এখানে লিখুন। সেই তারিখ থেকে নতুন মান ব্যবহার হবে।',
+    f_plot: 'প্লট', b_add: 'যোগ করুন', h_list: 'তথ্যের তালিকা', c_date: 'তারিখ', c_wl: 'পানির স্তর (সেমি)', c_irr: 'সেচ (মিমি)', c_qc: 'যাচাই',
+    h_share: 'শুধু দেখার লিংক শেয়ার', n_share: 'লিংকে সব তথ্যের একটি কপি থাকে (কোনো সার্ভারে যায় না)। লিংক খুললে যে কেউ শুধু ড্যাশবোর্ড দেখতে পারবে। নতুন তথ্য দিলে নতুন লিংক বানান।',
+    b_link: 'লিংক বানান', b_copy: 'কপি', b_share: 'শেয়ার…', h_backup: 'ব্যাকআপ ও পুনরুদ্ধার',
+    n_backup: 'তথ্য শুধু এই ব্রাউজারে থাকে। নিয়মিত ফাইল এক্সপোর্ট করে ব্যাকআপ রাখুন, বা অন্য ফোনে নিন।',
+    b_export: 'ফাইল এক্সপোর্ট (JSON)', b_import: 'ফাইল ইমপোর্ট…', b_csv: 'CSV এক্সপোর্ট', b_csv2: 'রেকর্ড CSV এক্সপোর্ট', b_reset: 'সব তথ্য মুছুন', h_about: 'পরিচিতি',
+    about: 'প্রথমবার খোলার পর এই অ্যাপ অফলাইনে চলে। সময়সূচির নিয়ম ৩এফ৪ডি+এমডি সময়সূচি অ্যাপ (প্রফেশনাল মোড) অনুসারে। বাংলা লেখা খসড়া।',
+    d_none: 'এখনও কোনো তথ্য নেই। "তথ্য দিন" ট্যাবে যোগ করুন।', d_sav: 'সাশ্রয়', d_fp: 'এফপি সেচ (মিমি)', d_md: '৩এফ৪ডি+এমডি সেচ (মিমি)', d_n: 'সেচের সংখ্যা এফপি / ৩এফ৪ডি+এমডি',
+    d_data: 'তথ্য', d_to: 'থেকে', d_days: 'দিন', d_last: 'শেষ তথ্য', d_qc: 'যাচাই (শেষ ৩০ দিন)', d_noqc: 'কোনো সমস্যা নেই।', d_loc: 'অবস্থান',
+    view_banner: 'শুধু দেখার কপি', view_edit: 'সম্পাদনাযোগ্য কপি খুলুন',
+    copied: 'লিংক কপি হয়েছে', copyfail: 'লিংক নির্বাচন করে কপি করুন', imp_ok: 'ইমপোর্ট হয়েছে', imp_bad: 'ফাইলটি পড়া যায়নি', reset_q: 'এই ব্রাউজারের সব তথ্য মুছবেন?',
+    link_len: 'লিংকের দৈর্ঘ্য', link_long: 'লিংক বড়; কিছু অ্যাপে কেটে যেতে পারে। এক্সপোর্ট ফাইল ব্যবহার করুন।', link_none: 'শেয়ার করার মতো কিছু নেই।',
+    st_ok: 'ঠিক আছে', st_late: 'দেরি', st_over: 'সময় পার', st_up: 'আসছে', st_none: 'পরিকল্পনা নেই', ago0: 'আজ', ago1: 'গতকাল', agoN: 'দিন আগে', noentry: 'তথ্য নেই', ndays: 'দিন'
+  }
+};
+
+var DEMO = {"v":1,"site":{"name":"ATI-01 DUMMY","place":"Chougachha, Jashore","lat":"23.1","lon":"89","variety":"","sow":"2025-12-02","age":"49","fpId":"FP-1","mdId":"MD-1","fpArea":"","mdArea":"","fpTP":"295","fpB":"16","mdTP":"415","mdB":"16","tpDate":"2026-01-20"},"set":[35,30,3,66,8,6,111,25,21,28],"ovr":{},"act":{"3F4D cycle 5":"2026-04-14","3F4D cycle 6":"2026-04-21","3F4D end":"2026-04-28"},"rem":[{"p":"FP","d":"2026-02-22","tp":295,"b":15},{"p":"3F4D+MD","d":"2026-02-22","tp":415,"b":15}],"days":[{"d":"2026-01-20","rain":"","temp":"25","rh":"49","note":"","p":{"FP":{"m":"280","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.3","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-01-21","rain":"","temp":"25","rh":"53","note":"","p":{"FP":{"m":"279.9","irr":"Yes","bf":"279.9","af":"280.6","t":"15:00"},"3F4D+MD":{"m":"400","irr":"Yes","bf":"400","af":"400.5","t":"15:00"}}},{"d":"2026-01-22","rain":"","temp":"23","rh":"51","note":"","p":{"FP":{"m":"280.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.3","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-01-23","rain":"","temp":"20","rh":"66","note":"","p":{"FP":{"m":"280","irr":"Yes","bf":"280","af":"282.5","t":"40:00"},"3F4D+MD":{"m":"400","irr":"Yes","bf":"400","af":"402.5","t":"40:00"}}},{"d":"2026-01-24","rain":"","temp":"17","rh":"85","note":"","p":{"FP":{"m":"282.1","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"402.2","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-01-25","rain":"","temp":"23","rh":"60","note":"","p":{"FP":{"m":"281.4","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401.3","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-01-26","rain":"","temp":"22","rh":"67","note":"","p":{"FP":{"m":"281.2","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401.1","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-01-27","rain":"","temp":"21","rh":"64","note":"","p":{"FP":{"m":"280.5","irr":"Yes","bf":"280.5","af":"282.4","t":"40:00"},"3F4D+MD":{"m":"400.5","irr":"Yes","bf":"400.5","af":"402.4","t":"40:00"}}},{"d":"2026-01-28","rain":"","temp":"23","rh":"61","note":"","p":{"FP":{"m":"281.8","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"402","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-01-29","rain":"","temp":"19","rh":"76","note":"","p":{"FP":{"m":"281.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401.5","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-01-30","rain":"","temp":"24","rh":"55","note":"","p":{"FP":{"m":"281.1","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-01-31","rain":"","temp":"24","rh":"55","note":"","p":{"FP":{"m":"280.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.5","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-01","rain":"","temp":"24","rh":"44","note":"","p":{"FP":{"m":"280.3","irr":"Yes","bf":"280.3","af":"282","t":"30:00"},"3F4D+MD":{"m":"400.3","irr":"Yes","bf":"400.3","af":"402","t":"30:00"}}},{"d":"2026-02-02","rain":"","temp":"23","rh":"58","note":"","p":{"FP":{"m":"281.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401.5","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-03","rain":"","temp":"17","rh":"85","note":"","p":{"FP":{"m":"281.1","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-04","rain":"","temp":"24","rh":"65","note":"","p":{"FP":{"m":"280.4","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.5","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-05","rain":"","temp":"24","rh":"52","note":"","p":{"FP":{"m":"280.2","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.3","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-06","rain":"","temp":"23","rh":"42","note":"","p":{"FP":{"m":"280","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.1","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-07","rain":"","temp":"24","rh":"45","note":"","p":{"FP":{"m":"279.9","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-08","rain":"","temp":"21","rh":"65","note":"","p":{"FP":{"m":"279.7","irr":"Yes","bf":"279.7","af":"282.5","t":"20:00"},"3F4D+MD":{"m":"399.5","irr":"Yes","bf":"399.5","af":"401.5","t":"20:00"}}},{"d":"2026-02-09","rain":"","temp":"25","rh":"45","note":"","p":{"FP":{"m":"281.6","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401.3","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-10","rain":"","temp":"19","rh":"72","note":"","p":{"FP":{"m":"281.4","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-11","rain":"","temp":"25","rh":"52","note":"","p":{"FP":{"m":"280.9","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.5","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-13","rain":"","temp":"23","rh":"51","note":"","p":{"FP":{"m":"280.1","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-14","rain":"","temp":"24","rh":"49","note":"","p":{"FP":{"m":"279.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"398.8","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-15","rain":"","temp":"24","rh":"49","note":"","p":{"FP":{"m":"278.5","irr":"Yes","bf":"278.5","af":"281.4","t":"25:00"},"3F4D+MD":{"m":"398.3","irr":"Yes","bf":"398.3","af":"401.3","t":"25:00"}}},{"d":"2026-02-16","rain":"","temp":"20","rh":"70","note":"","p":{"FP":{"m":"281","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-17","rain":"","temp":"18","rh":"76","note":"","p":{"FP":{"m":"280.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.7","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-18","rain":"","temp":"21","rh":"73","note":"","p":{"FP":{"m":"280.3","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.5","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-19","rain":"","temp":"21","rh":"69","note":"","p":{"FP":{"m":"279.9","irr":"Yes","bf":"279.9","af":"283","t":"40:00"},"3F4D+MD":{"m":"400","irr":"Yes","bf":"400","af":"403","t":"40:00"}}},{"d":"2026-02-20","rain":"","temp":"25","rh":"58","note":"","p":{"FP":{"m":"282.8","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"402.8","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-21","rain":"","temp":"28","rh":"48","note":"","p":{"FP":{"m":"282.3","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"402.2","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-22","rain":"","temp":"24","rh":"65","note":"","p":{"FP":{"m":"281.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401.5","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-23","rain":"","temp":"24","rh":"70","note":"","p":{"FP":{"m":"280","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-24","rain":"3.2","temp":"23","rh":"72","note":"","p":{"FP":{"m":"279.7","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"399.7","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-25","rain":"","temp":"27","rh":"62","note":"","p":{"FP":{"m":"279","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"399","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-26","rain":"","temp":"28","rh":"45","note":"","p":{"FP":{"m":"277","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"395","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-27","rain":"","temp":"21","rh":"76","note":"","p":{"FP":{"m":"275","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"392","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-02-28","rain":"","temp":"21","rh":"76","note":"Drain","p":{"FP":{"m":"272","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-01","rain":"","temp":"22","rh":"97","note":"","p":{"FP":{"m":"265","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-02","rain":"","temp":"26","rh":"91","note":"","p":{"FP":{"m":"265","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-03","rain":"","temp":"30","rh":"31","note":"","p":{"FP":{"m":"265","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-04","rain":"","temp":"31","rh":"29","note":"","p":{"FP":{"m":"265","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-05","rain":"","temp":"24","rh":"50","note":"","p":{"FP":{"m":"265","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-06","rain":"","temp":"28","rh":"59","note":"","p":{"FP":{"m":"265","irr":"Yes","bf":"265","af":"281.5","t":"30:00"},"3F4D+MD":{"m":"385","irr":"Yes","bf":"385","af":"401.5","t":"30:00"}}},{"d":"2026-03-07","rain":"","temp":"29","rh":"49","note":"","p":{"FP":{"m":"281","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-08","rain":"","temp":"31","rh":"46","note":"","p":{"FP":{"m":"280.7","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.7","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-09","rain":"","temp":"29","rh":"58","note":"","p":{"FP":{"m":"280.2","irr":"Yes","bf":"280.2","af":"282","t":"30:00"},"3F4D+MD":{"m":"400.2","irr":"Yes","bf":"400.2","af":"402","t":"30:00"}}},{"d":"2026-03-10","rain":"","temp":"29","rh":"59","note":"","p":{"FP":{"m":"281.7","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401.7","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-11","rain":"","temp":"31","rh":"54","note":"","p":{"FP":{"m":"281","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-12","rain":"","temp":"28","rh":"65","note":"","p":{"FP":{"m":"280.5","irr":"Yes","bf":"280.5","af":"283.5","t":"40:00"},"3F4D+MD":{"m":"400.5","irr":"Yes","bf":"400.5","af":"402.7","t":"40:00"}}},{"d":"2026-03-13","rain":"","temp":"31","rh":"65","note":"","p":{"FP":{"m":"282.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401.6","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-14","rain":"","temp":"33","rh":"44","note":"","p":{"FP":{"m":"282","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-15","rain":"","temp":"26","rh":"78","note":"","p":{"FP":{"m":"281.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.7","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-16","rain":"","temp":"32","rh":"55","note":"","p":{"FP":{"m":"281","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.3","irr":"Yes","bf":"400.3","af":"401.3","t":"20:00"}}},{"d":"2026-03-17","rain":"","temp":"33","rh":"42","note":"","p":{"FP":{"m":"280.7","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.8","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-18","rain":"","temp":"31","rh":"60","note":"","p":{"FP":{"m":"280.1","irr":"Yes","bf":"280.1","af":"282.5","t":"20:00"},"3F4D+MD":{"m":"400.4","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-19","rain":"","temp":"29","rh":"64","note":"","p":{"FP":{"m":"280","irr":"Yes","bf":"280","af":"282","t":"20:00"},"3F4D+MD":{"m":"397","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-20","rain":"","temp":"31","rh":"54","note":"","p":{"FP":{"m":"281","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"394","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-22","rain":"","temp":"23","rh":"69","note":"","p":{"FP":{"m":"280.2","irr":"Yes","bf":"280.2","af":"281","t":"10:00"},"3F4D+MD":{"m":"389","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-23","rain":"","temp":"28","rh":"49","note":"","p":{"FP":{"m":"280.9","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"388","irr":"Yes","bf":"388","af":"401.5","t":"20:00"}}},{"d":"2026-03-24","rain":"7.3","temp":"31","rh":"47","note":"","p":{"FP":{"m":"280","irr":"Yes","bf":"280","af":"282","t":"20:00"},"3F4D+MD":{"m":"401","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-25","rain":"","temp":"28","rh":"68","note":"","p":{"FP":{"m":"281","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.5","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-26","rain":"","temp":"32","rh":"48","note":"","p":{"FP":{"m":"280.7","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"396","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-27","rain":"","temp":"24","rh":"85","note":"","p":{"FP":{"m":"280.3","irr":"Yes","bf":"280.3","af":"281","t":"20:00"},"3F4D+MD":{"m":"391","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-28","rain":"","temp":"23","rh":"77","note":"","p":{"FP":{"m":"280.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"388","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-29","rain":"","temp":"22","rh":"86","note":"","p":{"FP":{"m":"280","irr":"Yes","bf":"280","af":"282","t":"30:00"},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-03-30","rain":"2.1","temp":"32","rh":"61","note":"","p":{"FP":{"m":"281","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"Yes","bf":"385","af":"402","t":"30:00"}}},{"d":"2026-03-31","rain":"","temp":"29","rh":"68","note":"","p":{"FP":{"m":"280.7","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-01","rain":"","temp":"28","rh":"81","note":"","p":{"FP":{"m":"280.5","irr":"Yes","bf":"280.5","af":"282","t":"20:00"},"3F4D+MD":{"m":"400.5","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-02","rain":"","temp":"34","rh":"50","note":"","p":{"FP":{"m":"281","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"398","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-03","rain":"","temp":"37","rh":"36","note":"","p":{"FP":{"m":"280.7","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"393","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-04","rain":"","temp":"36","rh":"34","note":"","p":{"FP":{"m":"280.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"388","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-05","rain":"","temp":"34","rh":"38","note":"","p":{"FP":{"m":"280.1","irr":"Yes","bf":"280.1","af":"282.2","t":"20:00"},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-06","rain":"7.3","temp":"33","rh":"43","note":"","p":{"FP":{"m":"281.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"Yes","bf":"385","af":"402","t":"30:00"}}},{"d":"2026-04-07","rain":"2","temp":"31","rh":"53","note":"","p":{"FP":{"m":"281","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"401.5","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-08","rain":"1.1","temp":"29","rh":"64","note":"","p":{"FP":{"m":"280.7","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400.3","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-09","rain":"21.1","temp":"24","rh":"80","note":"","p":{"FP":{"m":"282","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"402","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-10","rain":"","temp":"31","rh":"44","note":"","p":{"FP":{"m":"281.7","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"399","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-11","rain":"","temp":"32","rh":"38","note":"","p":{"FP":{"m":"281","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"394.3","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-12","rain":"","temp":"33","rh":"42","note":"","p":{"FP":{"m":"280.6","irr":"Yes","bf":"280.6","af":"282","t":"25:00"},"3F4D+MD":{"m":"389","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-13","rain":"","temp":"34","rh":"51","note":"","p":{"FP":{"m":"281.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"386","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-14","rain":"","temp":"35","rh":"42","note":"","p":{"FP":{"m":"281","irr":"Yes","bf":"281","af":"283.5","t":"25:00"},"3F4D+MD":{"m":"385","irr":"Yes","bf":"385","af":"404.5","t":"35:00"}}},{"d":"2026-04-15","rain":"","temp":"35","rh":"51","note":"100%","p":{"FP":{"m":"282.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"403","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-16","rain":"","temp":"33","rh":"56","note":"","p":{"FP":{"m":"281.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"402","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-17","rain":"15.8","temp":"31","rh":"72","note":"","p":{"FP":{"m":"282.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"403","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-18","rain":"","temp":"34","rh":"51","note":"","p":{"FP":{"m":"282","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"402","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-19","rain":"","temp":"35","rh":"54","note":"","p":{"FP":{"m":"281.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"400","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-20","rain":"","temp":"37","rh":"46","note":"","p":{"FP":{"m":"280.5","irr":"Yes","bf":"280.5","af":"282","t":"20:00"},"3F4D+MD":{"m":"397","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-21","rain":"","temp":"36","rh":"46","note":"","p":{"FP":{"m":"281.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"390","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-22","rain":"","temp":"36","rh":"46","note":"","p":{"FP":{"m":"280","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-23","rain":"","temp":"37","rh":"40","note":"","p":{"FP":{"m":"273.5","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}},{"d":"2026-04-24","rain":"","temp":"32","rh":"64","note":"","p":{"FP":{"m":"265","irr":"No","bf":"","af":"","t":""},"3F4D+MD":{"m":"385","irr":"No","bf":"","af":"","t":""}}}],"ferts":[{"d":"2026-01-22","p":"Both","kg":{"Urea":6,"TSP":4,"MOP":3,"Gypsum":2},"n":"basal"},{"d":"2026-02-12","p":"Both","kg":{"Urea":5},"n":"1st top dressing"},{"d":"2026-03-08","p":"Both","kg":{"Urea":4,"MOP":2},"n":"2nd top dressing"}],"pests":[{"d":"2026-02-20","p":"Both","t":"Insecticide","c":"Demo-Insecticide","u":"stem borer","n":""},{"d":"2026-03-25","p":"FP","t":"Fungicide","c":"Demo-Fungicide","u":"sheath blight","n":""}],"tillers":[{"d":"2026-02-10","p":"FP","h":[6,8,7,9,7]},{"d":"2026-02-10","p":"3F4D+MD","h":[6,7,7,8,6]},{"d":"2026-02-25","p":"FP","h":[12,14,13,15,12]},{"d":"2026-02-25","p":"3F4D+MD","h":[11,13,14,12,13]},{"d":"2026-03-12","p":"FP","h":[16,18,15,17,19]},{"d":"2026-03-12","p":"3F4D+MD","h":[18,20,17,19,21]},{"d":"2026-03-27","p":"FP","h":[15,17,16,14,18]},{"d":"2026-03-27","p":"3F4D+MD","h":[19,22,20,18,21]}],"sync":{"url":"","key":"","last":""}};
+
+/* ====================================================== helpers */
+var lang = 'en';
+function t(k) { return (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k; }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); }
+function num(v) { if (v === '' || v == null) return null; var n = Number(String(v).replace(/,/g, '').trim()); return isFinite(n) ? n : null; }
+function r1(x) { return x == null ? null : (x < 0 ? -1 : 1) * Math.round(Math.abs(x) * 10 + 1e-9) / 10; }
+function fmt(x, d) { return (x == null || !isFinite(x)) ? '-' : x.toFixed(d == null ? 1 : d); }
+function mean(a) { a = a.filter(function (v) { return v != null; }); return a.length ? a.reduce(function (s, v) { return s + v; }, 0) / a.length : null; }
+function lastNonNull(a) { for (var i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; }
+function isDate(s) { return /^\d{4}-\d{2}-\d{2}$/.test(s || ''); }
+function dayDiff(a, b) { return Math.round((Date.parse(a + 'T00:00:00Z') - Date.parse(b + 'T00:00:00Z')) / 86400000); }
+function addDays(s, n) { return new Date(Date.parse(s + 'T00:00:00Z') + n * 86400000).toISOString().slice(0, 10); }
+function todayStr() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function $(id) { return document.getElementById(id); }
+function toast(m) { var e = $('msg'); e.textContent = m; e.className = 'on'; clearTimeout(toast._t); toast._t = setTimeout(function () { e.className = ''; }, 2200); }
+function getPath(o, p) { return p.split('.').reduce(function (a, k) { return a == null ? '' : a[k]; }, o); }
+function setPath(o, p, v) { var ks = p.split('.'), last = ks.pop(); var x = ks.reduce(function (a, k) { return a[k]; }, o); x[last] = v; }
+
+/* ====================================================== state */
+function defaults() {
+  return {v: 1,
+    site: {name: '', place: '', lat: '', lon: '', variety: '', sow: '', age: '', fpId: 'FP-1', mdId: 'MD-1', fpArea: '', mdArea: '', fpTP: '', fpB: '', mdTP: '', mdB: '', tpDate: ''},
+    set: SETTINGS.map(function (s) { return s[2]; }), ovr: {}, act: {}, rem: [], days: [], ferts: [], pests: [], tillers: [], sync: {sheet: '', csv: ''}};
+}
+var S = defaults(), readOnly = false, snapshotTime = '', demo = false, editing = null;
+var mem = null;
+function loadLocal() {
+  try { var j = localStorage.getItem(KEY); if (j) return JSON.parse(j); } catch (e) { return mem; }
+  return null;
+}
+function saveLocal() {
+  if (readOnly || demo) return;
+  var j = JSON.stringify(S);
+  try { localStorage.setItem(KEY, j); } catch (e) { mem = JSON.parse(j); }
+}
+function normalize(o) {
+  var d = defaults();
+  if (!o || typeof o !== 'object') return d;
+  Object.keys(d.site).forEach(function (k) { if (o.site && o.site[k] != null) d.site[k] = o.site[k]; });
+  if (Array.isArray(o.set) && o.set.length === d.set.length) d.set = o.set.map(function (v, i) { var n = num(v); return n == null ? SETTINGS[i][2] : n; });
+  d.ovr = o.ovr && typeof o.ovr === 'object' ? o.ovr : {};
+  d.act = o.act && typeof o.act === 'object' ? o.act : {};
+  d.rem = Array.isArray(o.rem) ? o.rem.filter(function (r) { return r && isDate(r.d); }) : [];
+  d.days = Array.isArray(o.days) ? o.days.filter(function (r) { return r && isDate(r.d); }) : [];
+  d.ferts = Array.isArray(o.ferts) ? o.ferts.filter(function (r) { return r && isDate(r.d) && r.kg && typeof r.kg === 'object'; }).map(function (r) {
+    var kg = {}; FERTS.forEach(function (f) { if (num(r.kg[f]) != null && num(r.kg[f]) > 0) kg[f] = num(r.kg[f]); });
+    return {d: r.d, p: PLOTSEL.indexOf(r.p) >= 0 ? r.p : 'Both', kg: kg, n: String(r.n || '')}; }) : [];
+  d.pests = Array.isArray(o.pests) ? o.pests.filter(function (r) { return r && isDate(r.d); }).map(function (r) {
+    return {d: r.d, p: PLOTSEL.indexOf(r.p) >= 0 ? r.p : 'Both', t: PESTT.indexOf(r.t) >= 0 ? r.t : 'Other', c: String(r.c || ''), u: String(r.u || ''), n: String(r.n || '')}; }) : [];
+  d.tillers = Array.isArray(o.tillers) ? o.tillers.filter(function (r) { return r && isDate(r.d) && TR.indexOf(r.p) >= 0 && Array.isArray(r.h) && r.h.length === 5 && r.h.every(function (v) { return num(v) != null && num(v) >= 0; }); }).map(function (r) {
+    return {d: r.d, p: r.p, h: r.h.map(num)}; }) : [];
+  if (o.sync && typeof o.sync === 'object') ['sheet', 'csv'].forEach(function (k) { d.sync[k] = String(o.sync[k] || ''); });
+  return d;
+}
+function stripSync(o) { var c = JSON.parse(JSON.stringify(o)); delete c.sync; return c; }
+function tillerMean(h) { var a = h.slice().sort(function (x, y) { return y - x; }); return (a[1] + a[2] + a[3]) / 3; }
+
+/* ====================================================== calculations (same rules as the Google Sheet version) */
+function day0() { var s = S.site; if (!isDate(s.sow) || num(s.age) == null) return ''; return addDays(s.sow, num(s.age) - 35); }
+function transDate() { var s = S.site; if (!isDate(s.sow) || num(s.age) == null) return ''; return addDays(s.sow, num(s.age)); }
+function planned() {
+  var d0 = day0(), p = S.set, out = {};
+  if (!d0) return out;
+  function A(n) { return addDays(d0, n); }
+  var tr = p[0], c1 = p[6] - p[8];
+  out['Pitan start'] = A(tr + p[1]); out['Pitan end'] = A(tr + p[1] + p[2]);
+  out['MD start'] = A(p[3]); out['MD end'] = A(p[3] + p[4]); out['PI check'] = A(p[3] + p[5]);
+  out['Flood start'] = A(p[6] - p[7]); out['Flood end'] = A(c1);
+  for (var k = 1; k <= 6; k++) out['3F4D cycle ' + k] = A(c1 + 7 * (k - 1));
+  out['Heading'] = A(p[6]); out['3F4D end'] = A(c1 + 42); out['Last irrigation'] = A(c1 + 43); out['Harvest'] = A(p[6] + p[9]);
+  return out;
+}
+function calendar() {
+  var pl = planned();
+  return EVENTS.map(function (e) {
+    var ev = e[0], plan = isDate(S.ovr[ev]) ? S.ovr[ev] : (pl[ev] || ''), act = isDate(S.act[ev]) ? S.act[ev] : '';
+    var delay = (plan && act) ? dayDiff(act, plan) : null, st;
+    if (!plan) st = 'st_none'; else if (act) st = delay >= 2 ? 'st_late' : 'st_ok'; else st = todayStr() > addDays(plan, 2) ? 'st_over' : 'st_up';
+    return {ev: ev, bn: e[1], plan: plan, auto: pl[ev] || '', ovr: isDate(S.ovr[ev]) ? S.ovr[ev] : '', act: act, delay: delay, st: st};
+  });
+}
+function tpbList() {
+  var s = S.site, L = [];
+  var d = isDate(s.tpDate) ? s.tpDate : (transDate() || '0000-01-01');
+  if (num(s.fpTP) != null && num(s.fpB) != null) L.push({p: 'FP', d: d, tp: num(s.fpTP), b: num(s.fpB)});
+  if (num(s.mdTP) != null && num(s.mdB) != null) L.push({p: '3F4D+MD', d: d, tp: num(s.mdTP), b: num(s.mdB)});
+  S.rem.forEach(function (r) { if (num(r.tp) != null && num(r.b) != null) L.push({p: r.p, d: r.d, tp: num(r.tp), b: num(r.b)}); });
+  return L;
+}
+function tpbFor(L, plot, date) {
+  var c = L.filter(function (x) { return x.p === plot; }).sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; });
+  if (!c.length) return null;
+  var best = null;
+  c.forEach(function (x) { if (x.d <= date) best = x; });
+  return best || c[0];
+}
+function compute() {
+  var L = tpbList(), cal = calendar(), pitanEnd = '';
+  cal.forEach(function (c) { if (c.ev === 'Pitan end') pitanEnd = c.act || c.plan; });
+  var rows = [], td = transDate();
+  var days = S.days.slice().sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; });
+  days.forEach(function (dy) {
+    TR.forEach(function (tr) {
+      var q = (dy.p || {})[tr] || {}, m = num(q.m);
+      if (m == null) return;
+      var tb = tpbFor(L, tr, dy.d), irr = q.irr === 'Yes';
+      var wl = tb ? r1(m - tb.tp + tb.b) : null;
+      var bw = (irr && tb && num(q.bf) != null) ? r1(num(q.bf) - tb.tp + tb.b) : null;
+      var aw = (irr && tb && num(q.af) != null) ? r1(num(q.af) - tb.tp + tb.b) : null;
+      var irrMm = (irr && bw != null && aw != null) ? r1((aw - Math.max(bw, 0)) * 10) : null;
+      rows.push({date: dy.d, tr: tr, rain: num(dy.rain), temp: num(dy.temp), rh: num(dy.rh), wl: wl, irr: irr, bw: bw, aw: aw, irrMm: irrMm, irrTime: q.t || '',
+        note: dy.note || '', end: wl == null ? null : (irr && aw != null ? aw : wl), tbDate: tb ? tb.d : '', cum: null, dec: null, dat: td ? dayDiff(dy.d, td) : null, qc: ''});
+    });
+  });
+  TR.forEach(function (tr) {
+    var run = 0, by = {};
+    rows.filter(function (r) { return r.tr === tr; }).forEach(function (r) {
+      if (r.irrMm != null) run += r.irrMm; r.cum = r1(run); by[r.date] = r;
+    });
+    rows.filter(function (r) { return r.tr === tr; }).forEach(function (r) {
+      var pv = by[addDays(r.date, -1)];
+      if (pv && pv.end != null && r.wl != null) r.dec = r1((pv.end - r.wl) * 10);
+    });
+  });
+  rows.forEach(function (r) {
+    var f = [];
+    if (r.wl != null && (r.wl < -30 || r.wl > 20)) f.push('WL out of range');
+    if (r.rain != null && (r.rain < 0 || r.rain > 300)) f.push('rain out of range');
+    if (r.temp != null && (r.temp < 0 || r.temp > 45)) f.push('temp out of range');
+    if (r.rh != null && (r.rh < 0 || r.rh > 100)) f.push('RH out of range');
+    if (r.wl == null) f.push('no TP/b');
+    if (r.bw != null && r.aw != null && r.aw < r.bw) f.push('After<Before');
+    if (r.irr && r.irrMm == null) f.push('irrigation readings missing');
+    if (r.dec != null && Math.abs(r.dec) > 50 && !(r.rain > 0)) f.push('WL jump >5 cm');
+    if (r.tr === '3F4D+MD' && pitanEnd && r.tbDate && r.date > addDays(pitanEnd, 2) && r.tbDate < pitanEnd) f.push('re-measure TP/b after Pitan');
+    r.qc = f.join('; ');
+  });
+  return {rows: rows, cal: cal, tpb: L};
+}
+
+/* ====================================================== charts (Plotly) */
+var CFG = {responsive: true, displaylogo: false};
+function bandsFor(cal) {
+  function g(ev) { return cal.filter(function (c) { return c.ev === ev; })[0]; }
+  var out = [];
+  [['MD start', 'MD end', 'MD', '#009E73', 0], ['Pitan start', 'Pitan end', 'Pitan', '#E69F00', 1], ['3F4D cycle 1', '3F4D end', '3F4D', '#CC79A7', 0]].forEach(function (b) {
+    var s = g(b[0]), e = g(b[1]);
+    if (s && e && (s.act || s.plan) && (e.act || e.plan)) out.push({x0: s.act || s.plan, x1: e.act || e.plan, label: b[2] + ((s.act && e.act) ? '' : ' (plan)'), fill: b[3], row: b[4]});
+  });
+  return out;
+}
+function figWL(C) {
+  var data = [];
+  TR.forEach(function (tr) {
+    var y = C.rows.filter(function (r) { return r.tr === tr && r.wl != null; });
+    if (!y.length) return;
+    var hov = y.map(function (r) {
+      return '<b>' + tr + '</b>  ' + r.date + '<br>Water level: ' + fmt(r.wl) + ' cm' + (r.rain != null ? '<br>Rain: ' + fmt(r.rain) + ' mm' : '') +
+        (r.irr ? '<br><b>Irrigation</b>: ' + fmt(r.irrMm) + ' mm' + (r.irrTime ? ' (' + esc(r.irrTime) + ')' : '') : '') + (r.note ? '<br>Note: ' + esc(r.note) : '');
+    });
+    data.push({x: y.map(function (r) { return r.date; }), y: y.map(function (r) { return r.wl; }), type: 'scatter', mode: 'lines+markers', name: tr, legendgroup: tr,
+      text: hov, hoverinfo: 'text', line: {color: COL[tr], width: 2}, marker: {color: COL[tr], size: 4}});
+    var ev = y.map(function (r, i) { return r.irr ? i : -1; }).filter(function (i) { return i >= 0; });
+    if (ev.length) data.push({x: ev.map(function (i) { return y[i].date; }), y: ev.map(function (i) { return y[i].aw != null ? y[i].aw : y[i].wl; }), type: 'scatter', mode: 'markers',
+      name: tr + ' irrigation', legendgroup: tr, showlegend: false, text: ev.map(function (i) { return hov[i]; }), hoverinfo: 'text',
+      marker: {symbol: 'triangle-up', size: 11, color: COL[tr], line: {color: '#ffffff', width: 1}}});
+  });
+  var seen = {}, rx = [], ry = [];
+  C.rows.forEach(function (r) { if (r.rain != null && !seen[r.date]) { seen[r.date] = 1; rx.push(r.date); ry.push(r.rain); } });
+  data.push({x: rx, y: ry, type: 'bar', name: 'Rain', showlegend: false, yaxis: 'y2', marker: {color: '#56B4E9'},
+    text: rx.map(function (d, i) { return d + '<br>Rain: ' + fmt(ry[i]) + ' mm'; }), hoverinfo: 'text', textposition: 'none'});
+  var shapes = [{type: 'line', xref: 'paper', x0: 0, x1: 1, yref: 'y', y0: 0, y1: 0, line: {color: '#888888', width: 1, dash: 'dash'}}];
+  var ann = [{x: 0, xref: 'paper', y: 0, yref: 'y', text: 'soil surface', showarrow: false, xanchor: 'left', yanchor: 'bottom', font: {size: 10, color: '#888888'}}];
+  bandsFor(C.cal).forEach(function (b) {
+    shapes.push({type: 'rect', xref: 'x', x0: b.x0, x1: b.x1, yref: 'paper', y0: 0, y1: 1, fillcolor: b.fill, opacity: 0.18, line: {width: 0}, layer: 'below'});
+    ann.push({x: b.x0, xref: 'x', y: 1 + 0.065 * b.row, yref: 'paper', text: b.label, showarrow: false, xanchor: 'left', yanchor: 'bottom', font: {size: 11}});
+  });
+  return {data: data, layout: {height: 430, margin: {l: 58, r: 16, t: 48, b: 40}, hovermode: 'closest', legend: {orientation: 'h', x: 1, xanchor: 'right', y: 1.02, yanchor: 'bottom'},
+    xaxis: {type: 'date', anchor: 'y2'}, yaxis: {domain: [0.27, 1], title: {text: 'Water level (cm)'}, zeroline: false},
+    yaxis2: {domain: [0, 0.2], title: {text: 'Rain (mm)'}, rangemode: 'tozero', anchor: 'x'}, shapes: shapes, annotations: ann}};
+}
+function figCum(C, s) {
+  var data = [];
+  TR.forEach(function (tr) {
+    var y = C.rows.filter(function (r) { return r.tr === tr && r.cum != null; });
+    if (!y.length) return;
+    data.push({x: y.map(function (r) { return r.date; }), y: y.map(function (r) { return r.cum; }), type: 'scatter', mode: 'lines', name: tr, line: {color: COL[tr], width: 2.5, shape: 'hv'},
+      text: y.map(function (r) { return '<b>' + tr + '</b> ' + r.date + '<br>Cumulative: ' + fmt(r.cum, 0) + ' mm'; }), hoverinfo: 'text'});
+  });
+  var ttl = s.save != null ? 'Cumulative irrigation - saving ' + fmt(s.save, 0) + ' mm (' + fmt(s.pct, 0) + '%)' : 'Cumulative irrigation';
+  return {data: data, layout: {height: 330, margin: {l: 58, r: 16, t: 66, b: 40}, hovermode: 'closest', title: {text: ttl, x: 0, y: 0.97, yanchor: 'top', font: {size: 13}},
+    legend: {orientation: 'h', x: 0, y: 1.02, yanchor: 'bottom'}, xaxis: {type: 'date'}, yaxis: {title: {text: 'Cumulative irrigation (mm)'}, rangemode: 'tozero'}}};
+}
+function figDec(C) {
+  var data = [];
+  TR.forEach(function (tr) {
+    var y = C.rows.filter(function (r) { return r.tr === tr && r.dec != null; });
+    if (!y.length) return;
+    data.push({x: y.map(function (r) { return r.date; }), y: y.map(function (r) { return r.dec; }), type: 'scatter', mode: 'lines+markers', name: tr, line: {color: COL[tr], width: 1.2}, marker: {color: COL[tr], size: 3},
+      text: y.map(function (r) { return '<b>' + tr + '</b> ' + r.date + '<br>Decrease: ' + fmt(r.dec, 1) + ' mm/day'; }), hoverinfo: 'text'});
+  });
+  return {data: data, layout: {height: 330, margin: {l: 58, r: 16, t: 66, b: 40}, hovermode: 'closest', title: {text: 'Daily water-level decrease (mm/day)', x: 0, y: 0.97, yanchor: 'top', font: {size: 13}},
+    legend: {orientation: 'h', x: 0, y: 1.02, yanchor: 'bottom'}, xaxis: {type: 'date'}, yaxis: {title: {text: 'mm / day'}}}};
+}
+var FIGS = {}, observer = null;
+function figTill(S0) {
+  var data = [];
+  TR.forEach(function (tr) {
+    var y = S0.tillers.filter(function (r) { return r.p === tr; }).sort(function (a, b) { return a.d < b.d ? -1 : 1; });
+    if (!y.length) return;
+    data.push({x: y.map(function (r) { return r.d; }), y: y.map(function (r) { return Math.round(tillerMean(r.h) * 10) / 10; }), type: 'scatter', mode: 'lines+markers', name: tr,
+      line: {color: COL[tr], width: 2.5}, marker: {size: 7, color: COL[tr]},
+      text: y.map(function (r) { return '<b>' + tr + '</b> ' + r.d + '<br>Tillers/hill: ' + fmt(tillerMean(r.h), 1) + '<br>Hills: ' + r.h.join(', '); }), hoverinfo: 'text'});
+  });
+  return {data: data, layout: {height: 300, margin: {l: 58, r: 16, t: 50, b: 40}, hovermode: 'closest', title: {text: 'Tiller number (mean of 2nd-4th largest of 5 hills)', x: 0, y: 0.97, yanchor: 'top', font: {size: 13}},
+    legend: {orientation: 'h', x: 0, y: 1.02, yanchor: 'bottom'}, xaxis: {type: 'date'}, yaxis: {title: {text: 'Tillers per hill'}, rangemode: 'tozero'}}};
+}
+function plotName(p) { return p === 'Both' ? t('plot_Both') : p; }
+function recTables(forDash) {
+  var h = '';
+  var F = S.ferts.slice().sort(function (a, b) { return a.d < b.d ? 1 : -1; });
+  h += '<h3>' + esc(t('d_fert')) + '</h3>' + (F.length ? '<div class="tw"><table><tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_amt')) + '</th><th>' + esc(t('c_note')) + '</th></tr>' +
+    F.map(function (r) { return '<tr><td>' + r.d + '</td><td>' + esc(plotName(r.p)) + '</td><td>' + FERTS.filter(function (f) { return r.kg[f] != null; }).map(function (f) { return esc(f) + ' ' + r.kg[f]; }).join(', ') + '</td><td>' + esc(r.n) + '</td></tr>'; }).join('') + '</table></div>' : '<p class="muted">' + esc(t('d_norec')) + '</p>');
+  var P = S.pests.slice().sort(function (a, b) { return a.d < b.d ? 1 : -1; });
+  h += '<h3>' + esc(t('d_pest')) + '</h3>' + (P.length ? '<div class="tw"><table><tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_type')) + '</th><th>' + esc(t('c_chem')) + '</th><th>' + esc(t('c_purp')) + '</th><th>' + esc(t('c_note')) + '</th></tr>' +
+    P.map(function (r) { return '<tr><td>' + r.d + '</td><td>' + esc(plotName(r.p)) + '</td><td>' + esc(t('pt_' + r.t)) + '</td><td>' + esc(r.c) + '</td><td>' + esc(r.u) + '</td><td>' + esc(r.n) + '</td></tr>'; }).join('') + '</table></div>' : '<p class="muted">' + esc(t('d_norec')) + '</p>');
+  return h;
+}
+function draw(el) {
+  var f = FIGS[el.getAttribute('data-fig')]; if (!f) return;
+  if (typeof Plotly === 'undefined') { el.innerHTML = '<p class="warn">Chart library not loaded (plotly.min.js).</p>'; return; }
+  var fig = f(), L = fig.layout, cs = getComputedStyle(document.body);
+  L.paper_bgcolor = 'rgba(0,0,0,0)'; L.plot_bgcolor = 'rgba(0,0,0,0)'; L.font = {color: cs.color, size: 12}; L.autosize = true;
+  Object.keys(L).forEach(function (k) { if (/^(x|y)axis\d*$/.test(k)) { L[k].gridcolor = 'rgba(128,128,128,.22)'; L[k].linecolor = 'rgba(128,128,128,.5)'; } });
+  Plotly.newPlot(el, fig.data, L, CFG);
+}
+function agoTxt(n) { return n == null ? '-' : n <= 0 ? t('ago0') : n === 1 ? t('ago1') : n + ' ' + t('agoN'); }
+function renderDash() {
+  var C = compute(), box = $('dash'), s = S.site;
+  FIGS = {};
+  var hasRec = S.ferts.length || S.pests.length || S.tillers.length;
+  var recHtml = hasRec ? '<div class="card"><h2>' + esc(t('d_rec')) + '</h2>' + (S.tillers.length ? '<div class="plot lazy" data-fig="till"></div>' : '') + '<details open><summary>' + esc(t('d_fert')) + ' / ' + esc(t('d_pest')) + '</summary>' + recTables(true) + '</details></div>' : '';
+  FIGS.till = function () { return figTill(S); };
+  function lazyAll() {
+    if (observer) observer.disconnect();
+    observer = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { draw(e.target); observer.unobserve(e.target); } }); }, {rootMargin: '400px'});
+    Array.prototype.forEach.call(box.querySelectorAll('.lazy'), function (el) { observer.observe(el); });
+  }
+  if (!C.rows.length) { box.innerHTML = '<div class="card"><p>' + esc(t('d_none')) + '</p></div>' + recHtml; lazyAll(); return; }
+  function one(tr) {
+    var y = C.rows.filter(function (r) { return r.tr === tr; });
+    return {total: lastNonNull(y.map(function (r) { return r.cum; })), n: y.filter(function (r) { return r.irr; }).length};
+  }
+  var f = one('FP'), m = one('3F4D+MD'), save = (f.total != null && m.total != null) ? f.total - m.total : null;
+  var sm = {save: save, pct: (save != null && f.total > 0) ? 100 * save / f.total : null};
+  var dates = C.rows.map(function (r) { return r.date; }).sort(), first = dates[0], last = dates[dates.length - 1];
+  var uniq = {}; dates.forEach(function (d) { uniq[d] = 1; });
+  var ago = demo ? 0 : dayDiff(readOnly && snapshotTime ? snapshotTime.slice(0, 10) : todayStr(), last);
+  var qc = C.rows.filter(function (r) { return r.qc && r.date >= addDays(last, -30); }).sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+  var title = (s.name || 'ATI') + (s.place ? ' - ' + s.place : '');
+  box.innerHTML = '<div class="card"><h2>' + esc(title) + '</h2><p class="muted">' +
+    (num(s.lat) != null ? esc(t('d_loc')) + ' ' + fmt(num(s.lat), 3) + ', ' + fmt(num(s.lon), 3) + ' &middot; ' : '') +
+    esc(t('d_data')) + ' ' + first + ' ' + esc(t('d_to')) + ' ' + last + ' (' + Object.keys(uniq).length + ' ' + esc(t('d_days')) + ') &middot; ' + esc(t('d_last')) + ' ' + esc(agoTxt(ago)) +
+    (ago > 3 ? ' <span class="warn">' + esc(t('noentry')) + ' ' + ago + ' ' + esc(t('ndays')) + '</span>' : '') + '</p>' +
+    '<div class="kpis"><div><b>' + fmt(f.total, 0) + '</b><span>' + esc(t('d_fp')) + '</span></div><div><b>' + fmt(m.total, 0) + '</b><span>' + esc(t('d_md')) + '</span></div>' +
+    '<div><b>' + fmt(save, 0) + '&nbsp;mm</b><span>' + esc(t('d_sav')) + ' (' + fmt(sm.pct, 0) + '%)</span></div><div><b>' + f.n + ' / ' + m.n + '</b><span>' + esc(t('d_n')) + '</span></div></div>' +
+    '<div class="plot lazy" data-fig="wl"></div><div class="two"><div class="plot lazy" data-fig="cum"></div><div class="plot lazy" data-fig="dec"></div></div>' +
+    '<details><summary>' + esc(t('d_qc')) + ': ' + qc.length + '</summary>' + (qc.length ?
+      '<table><tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_qc')) + '</th></tr>' + qc.map(function (r) { return '<tr><td>' + r.date + '</td><td>' + esc(r.tr) + '</td><td>' + esc(r.qc) + '</td></tr>'; }).join('') + '</table>'
+      : '<p class="muted">' + esc(t('d_noqc')) + '</p>') + '</details></div>' + recHtml;
+  FIGS.wl = function () { return figWL(C); }; FIGS.cum = function () { return figCum(C, sm); }; FIGS.dec = function () { return figDec(C); };
+  lazyAll();
+}
+
+/* ====================================================== UI: setup / schedule */
+function bindInputs() {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-b]'), function (el) {
+    el.value = getPath(S, el.getAttribute('data-b')) || '';
+    el.disabled = readOnly;
+    el.onchange = function () { setPath(S, el.getAttribute('data-b'), el.value.trim()); saveLocal(); refreshCalc(); };
+  });
+  refreshCalc();
+}
+function refreshCalc() {
+  $('o-trans').value = transDate(); $('o-day0').value = day0();
+  $('title').textContent = S.site.name ? S.site.name : 'ATI Water Monitor';
+  $('sub').textContent = S.site.place || '';
+  renderSched(); if ($('e-save')) refreshValidity();
+}
+function renderSched() {
+  $('schedInfo').innerHTML = '<div><b>' + esc(S.site.sow || '-') + '</b><span>' + esc(t('f_sow')) + '</span></div><div><b>' + esc(transDate() || '-') + '</b><span>' + esc(t('f_trans')) + '</span></div>';
+  var C = calendar(), h = '<tr><th>' + esc(t('c_event')) + '</th><th>' + esc(t('c_plan')) + '</th><th>' + esc(t('c_ovr')) + '</th><th>' + esc(t('c_act')) + '</th><th>' + esc(t('c_stat')) + '</th></tr>';
+  C.forEach(function (c, i) {
+    h += '<tr><td>' + esc(lang === 'bn' ? c.bn : c.ev) + '</td><td>' + (c.plan || '-') + (c.ovr ? ' *' : '') + '</td>' +
+      '<td><input type="date" data-ov="' + i + '" value="' + esc(c.ovr) + '"' + (readOnly ? ' disabled' : '') + '></td>' +
+      '<td><input type="date" data-ac="' + i + '" value="' + esc(c.act) + '"' + (readOnly ? ' disabled' : '') + '></td>' +
+      '<td class="' + (c.st === 'st_late' || c.st === 'st_over' ? 'warn' : c.st === 'st_ok' ? 'okc' : '') + '">' + esc(t(c.st)) + (c.delay != null ? ' (' + (c.delay > 0 ? '+' : '') + c.delay + ' d)' : '') + '</td></tr>';
+  });
+  $('schedTbl').innerHTML = h;
+  Array.prototype.forEach.call($('schedTbl').querySelectorAll('input'), function (el) {
+    el.onchange = function () {
+      var isO = el.hasAttribute('data-ov'), i = +(el.getAttribute(isO ? 'data-ov' : 'data-ac')), ev = EVENTS[i][0], tgt = isO ? S.ovr : S.act;
+      if (el.value) tgt[ev] = el.value; else delete tgt[ev];
+      saveLocal(); renderSched();
+    };
+  });
+  var g = '';
+  SETTINGS.forEach(function (s, i) { g += '<div><label>' + esc(lang === 'bn' ? s[1] : s[0]) + '</label><input inputmode="numeric" data-set="' + i + '" value="' + S.set[i] + '"' + (readOnly ? ' disabled' : '') + '></div>'; });
+  $('setGrid').innerHTML = g;
+  Array.prototype.forEach.call($('setGrid').querySelectorAll('input'), function (el) {
+    el.onchange = function () { var n = num(el.value); S.set[+el.getAttribute('data-set')] = n == null ? SETTINGS[+el.getAttribute('data-set')][2] : n; saveLocal(); renderSched(); };
+  });
+}
+
+/* ====================================================== UI: entry */
+function plotBox(id, tr) {
+  var k = tr === 'FP' ? 'fp' : 'md';
+  $(id).innerHTML = '<b style="color:' + COL[tr] + '">' + tr + '</b>' +
+    '<label class="req">' + esc(t('f_m')) + '</label><input id="e-' + k + '-m" inputmode="decimal">' +
+    '<label>' + esc(t('f_irr')) + '</label><select id="e-' + k + '-i"><option value="No">' + esc(t('no')) + '</option><option value="Yes">' + esc(t('yes')) + '</option></select>' +
+    '<div id="e-' + k + '-x" style="display:none"><label class="req">' + esc(t('f_bef')) + '</label><input id="e-' + k + '-bf" inputmode="decimal">' +
+    '<label class="req">' + esc(t('f_aft')) + '</label><input id="e-' + k + '-af" inputmode="decimal">' +
+    '<label>' + esc(t('f_time')) + '</label><input id="e-' + k + '-t" placeholder="15:00"></div>';
+  $('e-' + k + '-i').onchange = function () { $('e-' + k + '-x').style.display = this.value === 'Yes' ? 'block' : 'none'; };
+}
+function fillEntry(d) {
+  var dy = S.days.filter(function (x) { return x.d === d; })[0] || {p: {}};
+  $('e-date').value = d; $('e-rain').value = dy.rain || ''; $('e-temp').value = dy.temp || ''; $('e-rh').value = dy.rh || ''; $('e-note').value = dy.note || '';
+  [['fp', 'FP'], ['md', '3F4D+MD']].forEach(function (a) {
+    var q = (dy.p || {})[a[1]] || {}, k = a[0];
+    $('e-' + k + '-m').value = q.m || ''; $('e-' + k + '-i').value = q.irr === 'Yes' ? 'Yes' : 'No'; $('e-' + k + '-x').style.display = q.irr === 'Yes' ? 'block' : 'none';
+    $('e-' + k + '-bf').value = q.bf || ''; $('e-' + k + '-af').value = q.af || ''; $('e-' + k + '-t').value = q.t || '';
+  });
+  $('e-status').textContent = S.days.some(function (x) { return x.d === d; }) ? '(' + t('saved') + ')' : '';
+  refreshValidity();
+}
+function missingSetup() {
+  var o = S.site, m = [];
+  if (!String(o.name || '').trim()) m.push(t('f_name'));
+  if (!String(o.place || '').trim()) m.push(t('f_place'));
+  if (!isDate(o.sow)) m.push(t('f_sow'));
+  if (num(o.age) == null) m.push(t('f_age'));
+  if (num(o.fpTP) == null || num(o.fpB) == null || num(o.mdTP) == null || num(o.mdB) == null) m.push('TP / b');
+  return m;
+}
+function entryErrors() {
+  var e = [], ms = missingSetup();
+  if (ms.length) e.push(t('v_setup') + ' (' + ms.join(', ') + ')');
+  if (!isDate($('e-date').value)) e.push(t('f_date'));
+  function chk(id, lo, hi, nm) { var v = $(id).value.trim(); if (v === '') return; var n = num(v); if (n == null || n < lo || n > hi) e.push(nm + ' ' + lo + '-' + hi); }
+  chk('e-rain', 0, 300, t('f_rain')); chk('e-temp', 0, 45, t('f_temp')); chk('e-rh', 0, 100, t('f_rh'));
+  [['fp', 'FP'], ['md', '3F4D+MD']].forEach(function (a) {
+    var k = a[0], nm = a[1];
+    if (num($('e-' + k + '-m').value) == null) e.push(nm + ' ' + t('f_m'));
+    if ($('e-' + k + '-i').value === 'Yes') {
+      if (num($('e-' + k + '-bf').value) == null) e.push(nm + ' ' + t('f_bef'));
+      if (num($('e-' + k + '-af').value) == null) e.push(nm + ' ' + t('f_aft'));
+    }
+  });
+  return e;
+}
+function recValid() {
+  var f = isDate($('rf-d').value) && FERTS.some(function (x, i) { var n = num($('rf-' + i).value); return n != null && n > 0; }) &&
+    FERTS.every(function (x, i) { var v = $('rf-' + i).value.trim(); return v === '' || (num(v) != null && num(v) > 0 && num(v) <= 10000); });
+  var pe = isDate($('rp-d').value) && $('rp-c').value.trim() !== '';
+  var ti = isDate($('rt-d').value) && [1, 2, 3, 4, 5].every(function (i) { return /^\d{1,3}$/.test($('rt-' + i).value.trim()); });
+  var tp = isDate($('t-date').value) && num($('t-tp').value) != null && num($('t-b').value) != null;
+  return {f: f, p: pe, t: ti, r: tp};
+}
+function refreshValidity() {
+  if (!$('e-fp-m') || !$('rf-0') || !$('rp-t').options.length) return;
+  var ee = entryErrors();
+  $('e-save').disabled = readOnly || ee.length > 0;
+  $('e-hint').innerHTML = ee.length ? '<span class="warn">' + esc(t('v_need')) + ' ' + esc(ee.join(' / ')) + '</span>' : '';
+  var v = recValid();
+  $('rf-add').disabled = !v.f; $('rp-add').disabled = !v.p; $('rt-add').disabled = !v.t; $('t-add').disabled = !v.r;
+}
+function markRequired() {
+  var ids = ['e-date', 'rf-d', 'rf-p', 'rp-d', 'rp-p', 'rp-t', 'rp-c', 'rt-d', 'rt-p', 'rt-1', 'rt-2', 'rt-3', 'rt-4', 'rt-5', 't-plot', 't-date', 't-tp', 't-b'];
+  ids.forEach(function (id) { var l = $(id) && $(id).parentNode.querySelector('label'); if (l) l.classList.add('req'); });
+  ['site.name', 'site.place', 'site.sow', 'site.age'].forEach(function (b) { var el = document.querySelector('[data-b="' + b + '"]'); var l = el && el.parentNode.querySelector('label'); if (l) l.classList.add('req'); });
+  Array.prototype.forEach.call(document.querySelectorAll('#p-setup th'), function (th) { if (/^(TP|b) \(cm\)$/.test(th.textContent)) th.classList.add('req'); });
+}
+function saveEntry() {
+  var d = $('e-date').value, ee = entryErrors();
+  if (ee.length) { refreshValidity(); return; }
+  var dy = {d: d, rain: $('e-rain').value.trim(), temp: $('e-temp').value.trim(), rh: $('e-rh').value.trim(), note: $('e-note').value.trim(), p: {}};
+  [['fp', 'FP'], ['md', '3F4D+MD']].forEach(function (a) {
+    var k = a[0], irr = $('e-' + k + '-i').value;
+    dy.p[a[1]] = {m: $('e-' + k + '-m').value.trim(), irr: irr, bf: irr === 'Yes' ? $('e-' + k + '-bf').value.trim() : '', af: irr === 'Yes' ? $('e-' + k + '-af').value.trim() : '', t: irr === 'Yes' ? $('e-' + k + '-t').value.trim() : ''};
+  });
+  var had = S.days.some(function (x) { return x.d === d; });
+  S.days = S.days.filter(function (x) { return x.d !== d; }); S.days.push(dy); saveLocal();
+  $('e-status').textContent = t('saved') + (had ? ' (' + t('b_update') + ')' : ''); toast(t('saved')); renderLists();
+}
+function renderLists() {
+  renderRecLists();
+  var C = compute(), byKey = {};
+  C.rows.forEach(function (r) { byKey[r.date + '|' + r.tr] = r; });
+  var days = S.days.slice().sort(function (a, b) { return a.d < b.d ? 1 : -1; });
+  var h = '<tr><th>' + esc(t('c_date')) + '</th><th>FP ' + esc(t('c_wl')) + '</th><th>FP ' + esc(t('c_irr')) + '</th><th>3F4D+MD ' + esc(t('c_wl')) + '</th><th>3F4D+MD ' + esc(t('c_irr')) + '</th><th>' + esc(t('c_qc')) + '</th><th></th></tr>';
+  days.forEach(function (dy) {
+    var a = byKey[dy.d + '|FP'] || {}, b = byKey[dy.d + '|3F4D+MD'] || {}, q = [a.qc, b.qc].filter(Boolean).join('; ');
+    h += '<tr><td>' + dy.d + '</td><td class="n">' + fmt(a.wl) + '</td><td class="n">' + (a.irr ? fmt(a.irrMm, 1) : '') + '</td><td class="n">' + fmt(b.wl) + '</td><td class="n">' + (b.irr ? fmt(b.irrMm, 1) : '') + '</td><td class="warn">' + esc(q) + '</td>' +
+      '<td><button type="button" data-ed="' + dy.d + '">✎</button> <button type="button" class="del editonly" data-rm="' + dy.d + '">✕</button></td></tr>';
+  });
+  $('entTbl').innerHTML = h;
+  Array.prototype.forEach.call($('entTbl').querySelectorAll('button'), function (el) {
+    el.onclick = function () {
+      if (el.hasAttribute('data-ed')) { fillEntry(el.getAttribute('data-ed')); window.scrollTo(0, 0); }
+      else { var d = el.getAttribute('data-rm'); S.days = S.days.filter(function (x) { return x.d !== d; }); saveLocal(); renderLists(); toast(t('deleted')); }
+    };
+  });
+  var th = '<tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>TP</th><th>b</th><th></th></tr>';
+  C.tpb.slice().sort(function (a, b) { return a.d < b.d ? 1 : -1; }).forEach(function (x) {
+    var ri = S.rem.findIndex(function (r) { return r.d === x.d && r.p === x.p && num(r.tp) === x.tp && num(r.b) === x.b; });
+    th += '<tr><td>' + x.d + '</td><td>' + esc(x.p) + '</td><td class="n">' + x.tp + '</td><td class="n">' + x.b + '</td><td>' + (ri >= 0 ? '<button type="button" class="editonly" data-redit="r' + ri + '">✎</button> <button type="button" class="del editonly" data-rt="' + ri + '">✕</button>' : '<span class="muted">initial</span>') + '</td></tr>';
+  });
+  $('tpbTbl').innerHTML = th;
+  Array.prototype.forEach.call($('tpbTbl').querySelectorAll('[data-rt]'), function (el) {
+    el.onclick = function () { S.rem.splice(+el.getAttribute('data-rt'), 1); setEditing(null); saveLocal(); renderLists(); };
+  });
+  Array.prototype.forEach.call($('tpbTbl').querySelectorAll('[data-redit]'), function (el) { el.onclick = function () { editRec(el.getAttribute('data-redit')); }; });
+}
+
+
+/* ====================================================== field records (fertilizer / pesticide / tillers) */
+function buildRecForms() {
+  $('rf-g').innerHTML = FERTS.map(function (f, i) { return '<div><label>' + esc(f) + ' (kg)</label><input id="rf-' + i + '" inputmode="decimal"></div>'; }).join('');
+  var cur = $('rp-t').value;
+  $('rp-t').innerHTML = PESTT.map(function (x) { return '<option value="' + x + '">' + esc(t('pt_' + x)) + '</option>'; }).join(''); if (cur) $('rp-t').value = cur;
+  Array.prototype.forEach.call(document.querySelectorAll('#rf-p option[value=Both], #rp-p option[value=Both]'), function (o) { o.textContent = t('plot_Both'); });
+  ['rf-d', 'rp-d', 'rt-d'].forEach(function (id) { if (!$(id).value) $(id).value = todayStr(); });
+}
+function setEditing(k, i) {
+  editing = k ? {k: k, i: i} : null;
+  [['f', 'rf-add'], ['p', 'rp-add'], ['t', 'rt-add'], ['r', 't-add']].forEach(function (x) {
+    var on = editing && editing.k === x[0], b = $(x[1]);
+    b.textContent = t(on ? 'b_update' : 'b_add');
+    b.nextElementSibling.style.display = on ? '' : 'none';
+  });
+}
+function clearRecForms() {
+  FERTS.forEach(function (f, i) { $('rf-' + i).value = ''; }); ['rf-n', 'rp-c', 'rp-u', 'rp-n', 't-tp', 't-b'].forEach(function (id) { $(id).value = ''; });
+  [1, 2, 3, 4, 5].forEach(function (i) { $('rt-' + i).value = ''; });
+}
+function put(arr, k, rec) { if (editing && editing.k === k && arr[editing.i]) arr[editing.i] = rec; else arr.push(rec); }
+function addFert() {
+  var d = $('rf-d').value, kg = {};
+  FERTS.forEach(function (f, i) { var n = num($('rf-' + i).value); if (n != null && n > 0) kg[f] = n; });
+  if (!recValid().f) { refreshValidity(); return; }
+  put(S.ferts, 'f', {d: d, p: $('rf-p').value, kg: kg, n: $('rf-n').value.trim()}); saveLocal();
+  setEditing(null); clearRecForms(); renderLists(); refreshValidity(); toast(t('saved'));
+}
+function addPest() {
+  if (!recValid().p) { refreshValidity(); return; }
+  put(S.pests, 'p', {d: $('rp-d').value, p: $('rp-p').value, t: $('rp-t').value, c: $('rp-c').value.trim(), u: $('rp-u').value.trim(), n: $('rp-n').value.trim()}); saveLocal();
+  setEditing(null); clearRecForms(); renderLists(); refreshValidity(); toast(t('saved'));
+}
+function addTill() {
+  if (!recValid().t) { refreshValidity(); return; }
+  var d = $('rt-d').value, pl = $('rt-p').value, h = [1, 2, 3, 4, 5].map(function (i) { return Number($('rt-' + i).value.trim()); });
+  var rec = {d: d, p: pl, h: h};
+  if (editing && editing.k === 't') put(S.tillers, 't', rec);
+  else { S.tillers = S.tillers.filter(function (r) { return !(r.d === d && r.p === pl); }); S.tillers.push(rec); }
+  saveLocal(); setEditing(null); clearRecForms(); renderLists(); refreshValidity(); toast(t('saved'));
+}
+function addRem() {
+  if (!recValid().r) { refreshValidity(); return; }
+  put(S.rem, 'r', {p: $('t-plot').value, d: $('t-date').value, tp: num($('t-tp').value), b: num($('t-b').value)}); saveLocal();
+  setEditing(null); clearRecForms(); renderLists(); refreshValidity(); toast(t('saved'));
+}
+function editRec(key) {
+  var k = key.charAt(0), i = +key.slice(1), r, box;
+  if (k === 'f') { r = S.ferts[i]; if (!r) return; $('rf-d').value = r.d; $('rf-p').value = r.p; FERTS.forEach(function (f, j) { $('rf-' + j).value = r.kg[f] != null ? r.kg[f] : ''; }); $('rf-n').value = r.n || ''; box = $('rf-d'); }
+  if (k === 'p') { r = S.pests[i]; if (!r) return; $('rp-d').value = r.d; $('rp-p').value = r.p; $('rp-t').value = r.t; $('rp-c').value = r.c; $('rp-u').value = r.u; $('rp-n').value = r.n; box = $('rp-d'); }
+  if (k === 't') { r = S.tillers[i]; if (!r) return; $('rt-d').value = r.d; $('rt-p').value = r.p; r.h.forEach(function (v, j) { $('rt-' + (j + 1)).value = v; }); box = $('rt-d'); }
+  if (k === 'r') { r = S.rem[i]; if (!r) return; $('t-plot').value = r.p; $('t-date').value = r.d; $('t-tp').value = r.tp; $('t-b').value = r.b; box = $('t-date'); }
+  setEditing(k, i); refreshValidity();
+  var dt = box.closest('details'); if (dt) dt.open = true;
+  box.scrollIntoView({block: 'center'});
+}
+function renderRecLists() {
+  var F = S.ferts.map(function (r, i) { return {r: r, i: i}; }).sort(function (a, b) { return a.r.d < b.r.d ? 1 : -1; });
+  $('fertTbl').innerHTML = '<tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_amt')) + '</th><th></th></tr>' +
+    F.map(function (x) { return '<tr><td>' + x.r.d + '</td><td>' + esc(plotName(x.r.p)) + '</td><td>' + FERTS.filter(function (f) { return x.r.kg[f] != null; }).map(function (f) { return esc(f) + ' ' + x.r.kg[f]; }).join(', ') + '</td><td><button type="button" class="editonly" data-redit="f' + x.i + '">✎</button> <button type="button" class="del editonly" data-rec="f' + x.i + '">✕</button></td></tr>'; }).join('');
+  var P = S.pests.map(function (r, i) { return {r: r, i: i}; }).sort(function (a, b) { return a.r.d < b.r.d ? 1 : -1; });
+  $('pestTbl').innerHTML = '<tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_type')) + '</th><th>' + esc(t('c_chem')) + '</th><th>' + esc(t('c_purp')) + '</th><th></th></tr>' +
+    P.map(function (x) { return '<tr><td>' + x.r.d + '</td><td>' + esc(plotName(x.r.p)) + '</td><td>' + esc(t('pt_' + x.r.t)) + '</td><td>' + esc(x.r.c) + '</td><td>' + esc(x.r.u) + '</td><td><button type="button" class="editonly" data-redit="p' + x.i + '">✎</button> <button type="button" class="del editonly" data-rec="p' + x.i + '">✕</button></td></tr>'; }).join('');
+  var T = S.tillers.map(function (r, i) { return {r: r, i: i}; }).sort(function (a, b) { return a.r.d < b.r.d ? 1 : -1; });
+  $('tillTbl').innerHTML = '<tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_hills')) + '</th><th>' + esc(t('c_tiller')) + '</th><th></th></tr>' +
+    T.map(function (x) { return '<tr><td>' + x.r.d + '</td><td>' + esc(x.r.p) + '</td><td>' + x.r.h.join(', ') + '</td><td class="n">' + fmt(tillerMean(x.r.h), 1) + '</td><td><button type="button" class="editonly" data-redit="t' + x.i + '">✎</button> <button type="button" class="del editonly" data-rec="t' + x.i + '">✕</button></td></tr>'; }).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('[data-rec]'), function (el) {
+    el.onclick = function () {
+      var k = el.getAttribute('data-rec'), i = +k.slice(1), a = k.charAt(0) === 'f' ? S.ferts : k.charAt(0) === 'p' ? S.pests : S.tillers;
+      a.splice(i, 1); setEditing(null); saveLocal(); renderLists(); toast(t('deleted'));
+    };
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-redit]'), function (el) { el.onclick = function () { editRec(el.getAttribute('data-redit')); }; });
+}
+function exportRecCsv() {
+  var q = function (x) { x = x == null ? '' : String(x); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; };
+  var L = [['record', 'date', 'plot', 'item_or_type', 'amount_kg', 'chemical', 'purpose', 'hill1', 'hill2', 'hill3', 'hill4', 'hill5', 'tillers_per_hill', 'note'].join(',')];
+  S.ferts.forEach(function (r) { FERTS.forEach(function (f) { if (r.kg[f] != null) L.push(['fertilizer', r.d, r.p, f, r.kg[f], '', '', '', '', '', '', '', '', r.n].map(q).join(',')); }); });
+  S.pests.forEach(function (r) { L.push(['pesticide', r.d, r.p, r.t, '', r.c, r.u, '', '', '', '', '', '', r.n].map(q).join(',')); });
+  S.tillers.forEach(function (r) { L.push(['tiller', r.d, r.p, '', '', '', ''].concat(r.h, [Math.round(tillerMean(r.h) * 100) / 100, '']).map(q).join(',')); });
+  download('ati_field_records.csv', '﻿' + L.join('\n'), 'text/csv');
+}
+
+
+/* ====================================================== shared Google Sheet + compare */
+function buildPub() {
+  var C = compute(), o = S.site, td = transDate();
+  var rows = C.rows.slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : (a.tr < b.tr ? -1 : 1); })
+    .map(function (r) { return [r.date, r.dat, r.tr, r.wl, r.irr ? 'Yes' : 'No', r.irrMm, r.cum, r.dec, r.qc]; });
+  function tot(tr) { return lastNonNull(C.rows.filter(function (r) { return r.tr === tr; }).map(function (r) { return r.cum; })); }
+  var fp = tot('FP'), md = tot('3F4D+MD'), save = (fp != null && md != null) ? fp - md : null;
+  var dates = C.rows.map(function (r) { return r.date; }).sort(), uniq = {}; dates.forEach(function (d) { uniq[d] = 1; });
+  return {place: o.place, lat: o.lat, lon: o.lon, variety: o.variety, sow: o.sow, age: o.age, trans: td, rows: rows,
+    tillers: S.tillers.map(function (r) { return {d: r.d, p: r.p, h: r.h, dat: td ? dayDiff(r.d, td) : null}; }), ferts: S.ferts, pests: S.pests,
+    summary: {fp: fp, md: md, save: save, pct: (save != null && fp > 0) ? Math.round(1000 * save / fp) / 10 : null, last: dates.length ? dates[dates.length - 1] : '', days: Object.keys(uniq).length}};
+}
+function yInfo(msg, cls) { $('y-info').innerHTML = '<span class="' + (cls || '') + '">' + esc(msg) + '</span>'; }
+var COLS = ['ATI', 'Upload', 'Type', 'Date', 'DAT', 'Plot', 'Water level (cm)', 'Irrigated', 'Irrigation (mm)', 'Cumulative irrigation (mm)', 'Daily decrease (mm)', 'Tillers per hill', 'Item', 'Amount (kg)', 'Note'];
+function sheetRows() {
+  var P = buildPub(), name = S.site.name.trim(), up = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 12), R = [];
+  function clean(x) { return x == null ? '' : String(x).replace(/[\t\r\n]+/g, ' '); }
+  function add(type, f) { var r = new Array(15).fill(''); r[0] = name; r[1] = up; r[2] = type; Object.keys(f).forEach(function (k) { r[k] = clean(f[k]); }); R.push(r); }
+  add('Info', {3: S.site.sow, 12: S.site.place, 14: 'age=' + S.site.age});
+  P.rows.forEach(function (r) { add('WL', {3: r[0], 4: r[1], 5: r[2], 6: r[3], 7: r[4], 8: r[5], 9: r[6], 10: r[7], 14: r[8]}); });
+  S.tillers.forEach(function (r) { add('Tiller', {3: r.d, 4: P.trans ? dayDiff(r.d, P.trans) : '', 5: r.p, 11: Math.round(tillerMean(r.h) * 10) / 10, 14: 'hills ' + r.h.join('/')}); });
+  S.ferts.forEach(function (r) { Object.keys(r.kg).forEach(function (k) { add('Fertilizer', {3: r.d, 4: P.trans ? dayDiff(r.d, P.trans) : '', 5: r.p, 12: k, 13: r.kg[k], 14: r.n}); }); });
+  S.pests.forEach(function (r) { add('Pesticide', {3: r.d, 4: P.trans ? dayDiff(r.d, P.trans) : '', 5: r.p, 12: r.t, 14: [r.c, r.u, r.n].filter(Boolean).join('; ')}); });
+  return R;
+}
+function sheetReady() {
+  if (demo) { yInfo(t('y_demo'), 'warn'); return false; }
+  if (missingSetup().length || !S.days.length) { yInfo(t('y_none'), 'warn'); return false; }
+  return true;
+}
+async function syncCopy() {
+  if (!sheetReady()) return;
+  var R = sheetRows(), tsv = R.map(function (r) { return r.join('\t'); }).join('\n');
+  try { await navigator.clipboard.writeText(tsv); yInfo(t('y_copied') + ' ' + R.length, 'okc'); }
+  catch (e) { var ta = document.createElement('textarea'); ta.value = tsv; document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand('copy'); } catch (x) {} ta.remove(); yInfo(ok ? t('y_copied') + ' ' + R.length : t('y_nocopy'), ok ? 'okc' : 'warn'); }
+}
+function syncDownload() {
+  if (!sheetReady()) return;
+  var q = function (x) { x = String(x); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; };
+  download('ati_sheet_rows_' + todayStr() + '.csv', '﻿' + sheetRows().map(function (r) { return r.map(q).join(','); }).join('\n'), 'text/csv');
+}
+function syncOpen() {
+  var u = S.sync.sheet.trim();
+  if (!u) { yInfo(t('y_nosheet'), 'warn'); return; }
+  if (!/^https:\/\/docs\.google\.com\/spreadsheets\//.test(u)) { yInfo(t('y_badlink'), 'warn'); return; }
+  window.open(u, '_blank', 'noopener');
+}
+function parseCsv(txt) {
+  var rows = [], row = [], cur = '', q = false;
+  for (var i = 0; i < txt.length; i++) {
+    var c = txt.charAt(i);
+    if (q) { if (c === '"') { if (txt.charAt(i + 1) === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(cur); cur = ''; }
+    else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+    else if (c !== '\r') cur += c;
+  }
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  return rows;
+}
+function normDate(v) {
+  v = String(v || '').trim(); var m;
+  if ((m = v.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/))) return m[1] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[3]).slice(-2);
+  if ((m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/))) return m[3] + '-' + ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2);
+  return '';
+}
+function pubsFromRows(rows) {
+  var body = rows.filter(function (r) { return r.length >= 6 && String(r[0]).trim() && /^(Info|WL|Tiller|Fertilizer|Pesticide)$/.test(String(r[2]).trim()); });
+  var latest = {};
+  body.forEach(function (r) { var a = String(r[0]).trim(), u = Number(String(r[1]).replace(/[^\d]/g, '')) || 0; if (latest[a] == null || u > latest[a]) latest[a] = u; });
+  var by = {};
+  body.forEach(function (r) {
+    var a = String(r[0]).trim(); if ((Number(String(r[1]).replace(/[^\d]/g, '')) || 0) !== latest[a]) return;
+    (by[a] = by[a] || {ati: a, rows: [], tillers: [], ferts: [], pests: [], upload: latest[a], place: '', sow: '', updated: String(latest[a])});
+    var o = by[a], ty = String(r[2]).trim(), d = normDate(r[3]), n = function (i) { var v = String(r[i] == null ? '' : r[i]).replace(/,/g, '').trim(); return v === '' || isNaN(Number(v)) ? null : Number(v); };
+    if (ty === 'Info') { o.sow = d; o.place = String(r[12] || ''); }
+    else if (ty === 'WL' && d) o.rows.push([d, n(4), String(r[5]).trim(), n(6), String(r[7]).trim(), n(8), n(9), n(10), String(r[14] || '')]);
+    else if (ty === 'Tiller' && d && n(11) != null) o.tillers.push({d: d, p: String(r[5]).trim(), dat: n(4), m: n(11), h: []});
+  });
+  return Object.keys(by).map(function (k) {
+    var o = by[k];
+    function tot(tr) { return lastNonNull(o.rows.filter(function (r) { return r[2] === tr; }).sort(function (a, b) { return a[0] < b[0] ? -1 : 1; }).map(function (r) { return r[6]; })); }
+    var fp = tot('FP'), md = tot('3F4D+MD'), dates = {}; o.rows.forEach(function (r) { dates[r[0]] = 1; });
+    var ds = Object.keys(dates).sort();
+    o.summary = {fp: fp, md: md, save: (fp != null && md != null) ? fp - md : null, pct: (fp != null && md != null && fp > 0) ? Math.round(1000 * (fp - md) / fp) / 10 : null, last: ds.length ? ds[ds.length - 1] : '', days: ds.length};
+    return o;
+  });
+}
+
+var CMP = {atis: [], sel: {}, src: '', mode: 'overlay'};
+var PAL = ['#009E73', '#E69F00', '#CC79A7', '#56B4E9', '#8c564b', '#7f7f7f', '#bcbd22', '#17becf'];
+function demoOthers() {
+  var base = buildPub(), spec = [['Demo ATI-02 (Bogura)', 1.25, 1.15, 0.9, 2], ['Demo ATI-03 (Rangpur)', 0.85, 0.7, 1.1, -3], ['Demo ATI-04 (Cumilla)', 1.05, 0.95, 0.8, 1]];
+  return spec.map(function (sp, k) {
+    var p = JSON.parse(JSON.stringify(base)); p.ati = sp[0]; p.place = 'demo'; p.updated = '2026-04-25T00:00:00Z';
+    p.rows.forEach(function (r) { var f = r[2] === 'FP' ? sp[1] : sp[2]; if (r[3] != null) r[3] = Math.round((r[3] + sp[4] * 0.1 * Math.sin(k + r[1])) * 10) / 10; if (r[5] != null) r[5] = Math.round(r[5] * f * 10) / 10; if (r[6] != null) r[6] = Math.round(r[6] * f * 10) / 10; });
+    p.tillers.forEach(function (t0) { t0.h = t0.h.map(function (v) { return Math.max(1, Math.round(v * sp[3] * (t0.p === 'FP' ? 1 : 1.1))); }); });
+    var fp = lastNonNull(p.rows.filter(function (r) { return r[2] === 'FP'; }).map(function (r) { return r[6]; })), md = lastNonNull(p.rows.filter(function (r) { return r[2] === '3F4D+MD'; }).map(function (r) { return r[6]; }));
+    p.summary.fp = fp; p.summary.md = md; p.summary.save = fp - md; p.summary.pct = Math.round(1000 * (fp - md) / fp) / 10;
+    return p;
+  });
+}
+async function cmpLoad() {
+  var u = S.sync.csv.trim();
+  if (!u) { $('c-info').innerHTML = '<span class="warn">' + esc(t('y_nocsv')) + '</span>'; return; }
+  if (!/^https:\/\/docs\.google\.com\/spreadsheets\//.test(u)) { $('c-info').innerHTML = '<span class="warn">' + esc(t('y_badlink')) + '</span>'; return; }
+  $('c-info').textContent = '...';
+  try {
+    var r = await fetch(u, {cache: 'no-store'}); if (!r.ok) throw new Error('http ' + r.status);
+    var atis = pubsFromRows(parseCsv(await r.text()));
+    if (!atis.length) { $('c-info').innerHTML = '<span class="warn">' + esc(t('y_empty')) + '</span>'; return; }
+    CMP.atis = atis; CMP.src = 'sheet'; CMP.sel = {}; renderCompare();
+  } catch (e) { $('c-info').innerHTML = '<span class="warn">' + esc(t('y_csvfail')) + '</span>'; }
+}
+function cmpSet() {
+  var own = buildPub(); own.ati = S.site.name.trim() || 'My ATI'; own.own = true;
+  var others = CMP.atis.filter(function (a) { return a.ati !== own.ati; });
+  others.forEach(function (a) { if (CMP.sel[a.ati] == null) CMP.sel[a.ati] = true; });
+  return {own: own, others: others, hasOwn: own.rows.length > 0, shown: (own.rows.length ? [own] : []).concat(others.filter(function (a) { return CMP.sel[a.ati]; }))};
+}
+function cmpLine(a, i) { return a.own ? null : PAL[i % PAL.length]; }
+function figCmpSeries(L, plot, vi, kind) {
+  var data = [], k = 0;
+  L.shown.forEach(function (a) {
+    var y = a.rows.filter(function (r) { return r[2] === plot && r[vi] != null && r[1] != null; }).sort(function (u, v) { return u[1] - v[1]; });
+    var col = a.own ? COL[plot] : PAL[(k++) % PAL.length];
+    if (!y.length) return;
+    data.push({x: y.map(function (r) { return r[1]; }), y: y.map(function (r) { return r[vi]; }), type: 'scatter', mode: kind === 'cum' ? 'lines' : 'lines+markers', name: a.ati + (a.own ? ' ' + t('c_you') : ''),
+      line: {color: col, width: a.own ? 4 : 1.8, shape: kind === 'cum' ? 'hv' : 'linear'}, marker: {size: a.own ? 5 : 3}, opacity: a.own ? 1 : 0.85,
+      text: y.map(function (r) { return '<b>' + a.ati + '</b><br>DAT ' + r[1] + ' (' + r[0] + ')<br>' + fmt(r[vi], kind === 'cum' ? 0 : 1) + (kind === 'cum' ? ' mm' : ' cm'); }), hoverinfo: 'text'});
+  });
+  return data;
+}
+function cmpLayout(title, ytitle) {
+  return {height: 400, margin: {l: 58, r: 16, t: 44, b: 130}, hovermode: 'closest', title: {text: title, x: 0, y: 0.97, yanchor: 'top', font: {size: 13}},
+    legend: {orientation: 'h', x: 0, y: -0.3, yanchor: 'top'}, xaxis: {title: {text: 'Days after transplanting (DAT)'}}, yaxis: {title: {text: ytitle}}};
+}
+function figCmpTill(L, plot) {
+  var data = [], k = 0;
+  L.shown.forEach(function (a) {
+    var col = a.own ? COL[plot] : PAL[(k++) % PAL.length];
+    var y = (a.tillers || []).filter(function (r) { return r.p === plot && r.dat != null; }).sort(function (u, v) { return u.dat - v.dat; });
+    if (!y.length) return;
+    data.push({x: y.map(function (r) { return r.dat; }), y: y.map(function (r) { return Math.round((r.m != null ? r.m : tillerMean(r.h)) * 10) / 10; }), type: 'scatter', mode: 'lines+markers', name: a.ati + (a.own ? ' ' + t('c_you') : ''),
+      line: {color: col, width: a.own ? 4 : 1.8}, marker: {size: a.own ? 8 : 5},
+      text: y.map(function (r) { return '<b>' + a.ati + '</b><br>DAT ' + r.dat + ' (' + r.d + ')<br>Tillers/hill: ' + fmt(r.m != null ? r.m : tillerMean(r.h), 1); }), hoverinfo: 'text'});
+  });
+  var lay = cmpLayout('Tiller number - ' + plot, 'Tillers per hill'); lay.yaxis.rangemode = 'tozero';
+  return {data: data, layout: lay};
+}
+function figCmpBar(L) {
+  var names = L.shown.map(function (a) { return a.ati + (a.own ? ' ' + t('c_you') : ''); });
+  var fp = L.shown.map(function (a) { return a.summary ? a.summary.fp : null; }), md = L.shown.map(function (a) { return a.summary ? a.summary.md : null; });
+  var lay = cmpLayout('Total irrigation and saving', 'Irrigation (mm)'); lay.barmode = 'group'; lay.xaxis = {automargin: true}; lay.legend = {orientation: 'h', x: 0, y: 1.02, yanchor: 'bottom'}; lay.margin.b = 60; lay.yaxis.rangemode = 'tozero';
+  return {data: [
+    {x: names, y: fp, type: 'bar', name: 'FP', marker: {color: COL.FP}, hovertemplate: '%{x}<br>FP %{y:.0f} mm<extra></extra>'},
+    {x: names, y: md, type: 'bar', name: '3F4D+MD', marker: {color: COL['3F4D+MD']}, text: L.shown.map(function (a) { return a.summary && a.summary.pct != null ? '-' + fmt(a.summary.pct, 0) + '%' : ''; }), textposition: 'outside', hovertemplate: '%{x}<br>3F4D+MD %{y:.0f} mm<extra></extra>'}], layout: lay};
+}
+function figEach(a, vi, kind) {
+  var data = [];
+  TR.forEach(function (tr) {
+    var y = a.rows.filter(function (r) { return r[2] === tr && r[vi] != null && r[1] != null; }).sort(function (u, v) { return u[1] - v[1]; });
+    if (!y.length) return;
+    data.push({x: y.map(function (r) { return r[1]; }), y: y.map(function (r) { return r[vi]; }), type: 'scatter', mode: kind === 'cum' ? 'lines' : 'lines+markers', name: tr,
+      line: {color: COL[tr], width: 2.4, shape: kind === 'cum' ? 'hv' : 'linear'}, marker: {size: 3},
+      text: y.map(function (r) { return '<b>' + tr + '</b><br>DAT ' + r[1] + ' (' + r[0] + ')<br>' + fmt(r[vi], kind === 'cum' ? 0 : 1) + (kind === 'cum' ? ' mm' : ' cm'); }), hoverinfo: 'text'});
+  });
+  var lay = cmpLayout(kind === 'cum' ? 'Cumulative irrigation' : 'Water level', kind === 'cum' ? 'mm' : 'cm');
+  lay.height = 320; lay.margin = {l: 50, r: 12, t: 40, b: 100}; lay.legend = {orientation: 'h', x: 0, y: -0.28, yanchor: 'top'};
+  return {data: data, layout: lay};
+}
+function renderCompare() {
+  var L = cmpSet(), out = $('c-out'), list = $('c-list');
+  if (demo && !CMP.atis.length) { CMP.atis = demoOthers(); CMP.src = 'demo'; L = cmpSet(); }
+  $('c-info').textContent = CMP.src ? (t('c_loaded') + ': ' + (CMP.src === 'demo' ? 'DEMO ' : '') + CMP.atis.length) : '';
+  list.innerHTML = L.others.length ? L.others.map(function (a, i) { return '<label><input type="checkbox" data-c="' + esc(a.ati) + '"' + (CMP.sel[a.ati] ? ' checked' : '') + '>' + esc(a.ati) + '</label>'; }).join('') + (L.hasOwn ? '<label><b>' + esc(S.site.name || 'My ATI') + ' ' + esc(t('c_you')) + '</b></label>' : '') : '<span class="muted">' + esc(t('c_none')) + '</span>';
+  Array.prototype.forEach.call(list.querySelectorAll('input[data-c]'), function (el) { el.onchange = function () { CMP.sel[el.getAttribute('data-c')] = el.checked; renderCompare(); }; });
+  if (!L.shown.length) { out.innerHTML = '<div class="card"><p>' + esc(t('cmp_nodata')) + '</p></div>'; return; }
+  var th = '<tr><th>' + esc(t('c_ati')) + '</th><th>' + esc(t('c_last')) + '</th><th>' + esc(t('c_days')) + '</th><th>' + esc(t('c_fp')) + '</th><th>' + esc(t('c_md')) + '</th><th>' + esc(t('c_save')) + '</th></tr>';
+  th += L.shown.map(function (a) { var m = a.summary || {}; return '<tr' + (a.own ? ' style="font-weight:700"' : '') + '><td>' + esc(a.ati) + (a.own ? ' ' + esc(t('c_you')) : '') + '</td><td>' + esc(m.last || '') + '</td><td class="n">' + (m.days || '') + '</td><td class="n">' + fmt(m.fp, 0) + '</td><td class="n">' + fmt(m.md, 0) + '</td><td class="n">' + fmt(m.pct, 0) + '</td></tr>'; }).join('');
+  var head = '<div class="card"><div class="tw"><table>' + th + '</table></div></div>';
+  FIGS = {};
+  if (CMP.mode === 'each') {
+    out.innerHTML = head + L.shown.map(function (a, i) {
+      var m = a.summary || {};
+      return '<div class="card"><h2>' + esc(a.ati) + (a.own ? ' ' + esc(t('c_you')) : '') + '</h2><p class="muted">' + esc(a.place || '') + (m.last ? ' &middot; ' + esc(t('c_last')) + ' ' + esc(m.last) : '') + '</p>' +
+        '<div class="kpis"><div><b>' + fmt(m.fp, 0) + '</b><span>FP (mm)</span></div><div><b>' + fmt(m.md, 0) + '</b><span>3F4D+MD (mm)</span></div><div><b>' + fmt(m.pct, 0) + '%</b><span>' + esc(t('c_save')) + '</span></div></div>' +
+        '<div class="two"><div class="plot lazy" data-fig="ew' + i + '"></div><div class="plot lazy" data-fig="ec' + i + '"></div></div></div>';
+    }).join('');
+    L.shown.forEach(function (a, i) {
+      FIGS['ew' + i] = function () { return figEach(a, 3, 'wl'); };
+      FIGS['ec' + i] = function () { return figEach(a, 6, 'cum'); };
+    });
+    lazyIn(out); return;
+  }
+  out.innerHTML = head +
+    '<div class="card"><div class="plot lazy" data-fig="cb"></div></div>' +
+    '<div class="card"><div class="two"><div class="plot lazy" data-fig="cc1"></div><div class="plot lazy" data-fig="cc2"></div></div></div>' +
+    '<div class="card"><div class="two"><div class="plot lazy" data-fig="cw1"></div><div class="plot lazy" data-fig="cw2"></div></div></div>' +
+    '<div class="card"><div class="two"><div class="plot lazy" data-fig="ct1"></div><div class="plot lazy" data-fig="ct2"></div></div></div>';
+  FIGS.cb = function () { return figCmpBar(L); };
+  [['1', 'FP'], ['2', '3F4D+MD']].forEach(function (x) {
+    FIGS['cc' + x[0]] = function () { return {data: figCmpSeries(L, x[1], 6, 'cum'), layout: cmpLayout('Cumulative irrigation - ' + x[1], 'Cumulative irrigation (mm)')}; };
+    FIGS['cw' + x[0]] = function () { return {data: figCmpSeries(L, x[1], 3, 'wl'), layout: cmpLayout('Water level - ' + x[1], 'Water level (cm)')}; };
+    FIGS['ct' + x[0]] = function () { return figCmpTill(L, x[1]); };
+  });
+  lazyIn(out);
+}
+function lazyIn(box) {
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { draw(e.target); observer.unobserve(e.target); } }); }, {rootMargin: '400px'});
+  Array.prototype.forEach.call(box.querySelectorAll('.lazy'), function (el) { observer.observe(el); });
+}
+
+/* ====================================================== share / backup */
+function b64u(bytes) { var s = ''; for (var i = 0; i < bytes.length; i += 8192) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192)); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function unb64u(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+async function pipe(bytes, stream) { var r = new Response(new Blob([bytes]).stream().pipeThrough(stream)); return new Uint8Array(await r.arrayBuffer()); }
+async function encodeState() {
+  var o = JSON.parse(JSON.stringify(S)); o.shared = new Date().toISOString(); delete o.sync;
+  var raw = new TextEncoder().encode(JSON.stringify(o));
+  if (typeof CompressionStream !== 'undefined') return 'z' + b64u(await pipe(raw, new CompressionStream('deflate-raw')));
+  return 'u' + b64u(raw);
+}
+async function decodeState(s) {
+  var k = s.charAt(0), bytes = unb64u(s.slice(1));
+  if (k === 'z') bytes = await pipe(bytes, new DecompressionStream('deflate-raw'));
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+async function makeLink() {
+  if (!S.days.length && !S.ferts.length && !S.pests.length && !S.tillers.length) { $('s-info').textContent = t('link_none'); return; }
+  var enc = await encodeState(), url = location.href.split('#')[0] + '#v=' + enc;
+  $('s-link').value = url;
+  $('s-info').innerHTML = esc(t('link_len')) + ': ' + url.length + (url.length > 7000 ? ' <span class="warn">' + esc(t('link_long')) + '</span>' : '');
+}
+function download(name, text, type) {
+  var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], {type: type})); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function exportCsv() {
+  var C = compute(), h = ['date', 'plot', 'rain_mm', 'temp_c', 'rh_pct', 'wl_cm', 'irrigated', 'before_wl_cm', 'after_wl_cm', 'irrigation_min_sec', 'irrigation_mm', 'cum_irrigation_mm', 'wl_decrease_mm', 'dat', 'qc_flags', 'note'];
+  var lines = [h.join(',')];
+  C.rows.forEach(function (r) {
+    var v = [r.date, r.tr, r.rain, r.temp, r.rh, r.wl, r.irr ? 'Yes' : 'No', r.bw, r.aw, r.irrTime, r.irrMm, r.cum, r.dec, r.dat, r.qc, r.note];
+    lines.push(v.map(function (x) { x = x == null ? '' : String(x); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; }).join(','));
+  });
+  download('ati_water_monitor.csv', '﻿' + lines.join('\n'), 'text/csv');
+}
+
+/* ====================================================== navigation / language / boot */
+var TABS = ['setup', 'sched', 'entry', 'dash', 'compare', 'share', 'help'];
+function show(tab) {
+  TABS.forEach(function (x) { $('p-' + x).className = 'pane' + (x === tab ? ' on' : ''); });
+  Array.prototype.forEach.call($('nav').querySelectorAll('button'), function (b) { b.className = b.getAttribute('data-tab') === tab ? 'on' : ''; });
+  if (tab === 'dash') renderDash();
+  if (tab === 'entry') renderLists();
+  if (tab === 'compare') renderCompare();
+  try { sessionStorage.setItem('ati_tab', tab); } catch (e) {}
+}
+function buildNav() {
+  var tabs = readOnly ? ['dash', 'sched'] : TABS;
+  var IC = {
+    setup: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+    sched: '<rect x="3.500" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.500 10h17"/>',
+    entry: '<path d="M12 5v14M5 12h14"/>',
+    dash: '<path d="M5 20V11M12 20V5M19 20v-7"/>',
+    compare: '<path d="M4 17l5-6 4 3 7-8"/><path d="M4 20h16"/>',
+    share: '<circle cx="6" cy="12" r="2.500"/><circle cx="18" cy="6" r="2.500"/><circle cx="18" cy="18" r="2.500"/><path d="M8.300 10.800l7.400-3.600M8.300 13.200l7.400 3.600"/>',
+    help: '<circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h0"/>'};
+  $('nav').innerHTML = tabs.map(function (x) { return '<button type="button" data-tab="' + x + '"><svg viewBox="0 0 24 24">' + (IC[x] || '') + '</svg><span>' + esc(t('tab_' + x)) + '</span></button>'; }).join('');
+  Array.prototype.forEach.call($('nav').querySelectorAll('button'), function (b) { b.onclick = function () { show(b.getAttribute('data-tab')); }; });
+}
+function applyLang() {
+  document.documentElement.lang = lang === 'bn' ? 'bn' : 'en';
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (el) { el.textContent = t(el.getAttribute('data-t')); });
+  $('langBtn').textContent = lang === 'bn' ? 'English' : 'বাংলা';
+  $('aboutTxt').textContent = t('about');
+  plotBox('e-fp', 'FP'); plotBox('e-md', '3F4D+MD'); buildRecForms(); markRequired(); setEditing(editing ? editing.k : null, editing ? editing.i : 0);
+  buildNav(); renderSched();
+  var cur = ''; try { cur = sessionStorage.getItem('ati_tab') || ''; } catch (e) {}
+  show(readOnly ? 'dash' : (TABS.indexOf(cur) >= 0 ? cur : (S.days.length ? 'dash' : 'setup')));
+  fillEntry($('e-date').value && isDate($('e-date').value) ? $('e-date').value : todayStr());
+  if (readOnly) setBanner();
+  if (demo) setDemoBanner();
+  refreshValidity();
+}
+function setDemoBanner() {
+  var b = $('banner'); b.style.display = 'block'; b.className = 'banner demo-b';
+  b.innerHTML = esc(t('demo_banner')) + ' <button type="button" id="b-exit">' + esc(t('demo_exit')) + '</button>';
+  $('b-exit').onclick = function () { location.hash = ''; location.reload(); };
+}
+function setBanner() {
+  var b = $('banner'); b.style.display = 'block';
+  b.innerHTML = esc(t('view_banner')) + (snapshotTime ? ' (' + esc(snapshotTime.slice(0, 16).replace('T', ' ')) + ' UTC)' : '') + ' <button type="button" id="b-edit">' + esc(t('view_edit')) + '</button>';
+  $('b-edit').onclick = function () {
+    var local = loadLocal();
+    if (local && local.days && local.days.length && !confirm('This browser already has data. Replace it with this snapshot?')) return;
+    readOnly = false; saveLocal(); location.hash = ''; location.reload();
+  };
+}
+function initHandlers() {
+  $('langBtn').onclick = function () { lang = lang === 'bn' ? 'en' : 'bn'; try { localStorage.setItem(LKEY, lang); } catch (e) {} applyLang(); bindInputs(); };
+  $('e-save').onclick = saveEntry; $('e-new').onclick = function () { fillEntry(todayStr()); };
+  $('e-date').onchange = function () { fillEntry($('e-date').value); };
+  $('t-add').onclick = addRem;
+  Array.prototype.forEach.call(document.querySelectorAll('.rcancel'), function (b) { b.onclick = function () { setEditing(null); clearRecForms(); refreshValidity(); }; });
+  document.addEventListener('input', refreshValidity); document.addEventListener('change', refreshValidity);
+  $('demoBtn').onclick = function () { location.hash = '#demo'; location.reload(); };
+  $('y-copy').onclick = syncCopy; $('y-dl').onclick = syncDownload; $('y-open').onclick = syncOpen; $('c-mode').onchange = function () { CMP.mode = this.value; renderCompare(); }; $('c-load').onclick = cmpLoad;
+  $('s-make').onclick = makeLink;
+  $('s-copy').onclick = async function () {
+    if (!$('s-link').value) await makeLink();
+    var v = $('s-link').value; if (!v) return;
+    try { await navigator.clipboard.writeText(v); toast(t('copied')); } catch (e) { $('s-link').select(); toast(t('copyfail')); }
+  };
+  $('s-share').onclick = async function () {
+    if (!$('s-link').value) await makeLink();
+    var v = $('s-link').value; if (!v) return;
+    if (navigator.share) { try { await navigator.share({title: S.site.name || 'ATI Water Monitor', url: v}); } catch (e) {} } else { $('s-copy').click(); }
+  };
+  $('x-exp').onclick = function () { download('ati_water_monitor_' + todayStr() + '.json', JSON.stringify(stripSync(S), null, 1), 'application/json'); };
+  $('x-csv').onclick = exportCsv; $('x-csv2').onclick = exportRecCsv;
+  $('rf-add').onclick = addFert; $('rp-add').onclick = addPest; $('rt-add').onclick = addTill;
+  $('x-imp').onclick = function () { $('x-file').click(); };
+  $('x-file').onchange = function () {
+    var f = this.files[0]; if (!f) return; var rd = new FileReader();
+    rd.onload = function () { try { S = normalize(JSON.parse(rd.result)); saveLocal(); bindInputs(); renderLists(); fillEntry(todayStr()); toast(t('imp_ok')); } catch (e) { toast(t('imp_bad')); } };
+    rd.readAsText(f); this.value = '';
+  };
+  $('x-reset').onclick = function () { if (confirm(t('reset_q'))) { S = defaults(); saveLocal(); bindInputs(); renderLists(); fillEntry(todayStr()); show('setup'); } };
+}
+async function boot() {
+  try { lang = localStorage.getItem(LKEY) || ((navigator.language || '').slice(0, 2) === 'bn' ? 'bn' : 'en'); } catch (e) { lang = 'en'; }
+  var h = location.hash;
+  if (h === '#demo') { S = normalize(JSON.parse(JSON.stringify(DEMO))); demo = true; }
+  else if (/^#v=/.test(h)) {
+    try { var o = await decodeState(h.slice(3)); S = normalize(o); snapshotTime = o.shared || ''; readOnly = true; document.body.classList.add('ro'); }
+    catch (e) { S = normalize(loadLocal()); toast(t('imp_bad')); }
+  } else { S = normalize(loadLocal()); }
+  initHandlers(); bindInputs(); applyLang(); renderLists();
+  if (!$('e-date').value) fillEntry(todayStr());
+  if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(function () {});
+}
+boot();
+</script>
+</body>
+</html>

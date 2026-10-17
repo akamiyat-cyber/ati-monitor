@@ -1,0 +1,11 @@
+{
+  "name": "ATI Water Monitor",
+  "short_name": "ATI Water",
+  "description": "Water-level monitoring for FP vs 3F4D+MD plots (offline)",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef3f0",
+  "theme_color": "#00755a",
+  "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
+}
