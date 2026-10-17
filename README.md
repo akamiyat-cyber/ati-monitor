@@ -40,15 +40,15 @@ Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. N
 ## 3F4Dのマニュアル
 - Help タブと Share タブの「Downloads」に、リンクがあります。英語: https://doi.org/10.5281/zenodo.22932287 、ベンガル語: https://doi.org/10.5281/zenodo.23075395
 
-## Googleシートへの自動保存・比較・必須項目・デモ
-- Googleシートへの保存は必須です。保存(Save entry など)のたびに、先生のGoogleフォームを通して、共有シートへ自動で送られます。ダッシュボードと Compare には、シートにあるデータが出ます。端末には、送信が済むまでの控えが残ります。
-- スクリプトは使いません。先生が、Googleフォーム(質問4つ: ATI / Updated / Summary / Data)と、その回答シートの「ウェブに公開」CSVリンクを作ります(手順は `manual/` のマニュアル)。
-- アプリの Share タブ ▸ Google Sheet connection に、フォームの「事前入力リンク」と CSVリンクを入れ、「Create class setup link」で作ったリンクを学生に配ります。学生が開くと、自動でつながります。
+## Googleシートへの自動書き込み・比較・必須項目・デモ
+- Googleシートへの保存は必須です。保存(Save entry など)のたびに、共有シートのスクリプト(Google Apps Script)を通して、そのATIのデータが自動で書き込まれます。ダッシュボードと Compare には、シートにあるデータが出ます。端末には、書き込みが済むまでの控えが残ります。
+- 先生の準備(1回だけ): Setup の「Excel template」(`ATI_Monitor_Shared_TEMPLATE.xlsx`)をGoogleドライブに上げて「Googleスプレッドシートとして保存」→ 拡張機能 ▸ Apps Script に `ATI_Monitor_Sheet.gs` を貼る(アプリの Share ▸ Google Sheet connection の「Copy script」)→ デプロイ ▸ ウェブアプリ(実行: 自分、アクセス: 全員)→ 出たURLをアプリに貼る。
+- Share タブで「Create class setup link」を押すと、URL入りのリンクができます。それを学生に配ると、学生は開くだけでつながります。
 - 新しい端末では、Share ▸ Restore from the sheet で、ATI名を入れて、シートから戻せます。
-- マニュアル(PDF)は、アプリの Share タブの「Downloads」からダウンロードできます(GitHubには、このフォルダごと上げてください: `manual/` を含む)。
+- マニュアル(PDF)は、アプリの Share タブの「Downloads」からダウンロードできます(GitHubには、このフォルダごと上げてください: `manual/`、`ATI_Monitor_Shared_TEMPLATE.xlsx`、`ATI_Monitor_Sheet.gs` を含む)。
 - * の項目が空だと、またはシートにつながっていないと、「Save entry」「Add」は押せません。✎ で入力を直せます。
 - Setup の「Try with demo data」(アドレスの末尾 `#demo`)で、例のデータを試せます。何も保存・送信されません。
-- 未確認: 本物のGoogleフォームへの送信と、公開CSVの読み込み(模擬データでは確認済み)。最初のATIで試験してから配布してください。
+- 未確認: 本物のGoogleシートでの承認・デプロイ・書き込み・読み込み(模擬では確認済み)。最初のATIで試験してから配布してください。
 
 ## 施肥・農薬・分げつ数
 - Entry タブの「Field records」に入力します。
@@ -58,7 +58,7 @@ Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. N
 - Dashboard に、分げつ数のグラフと、施肥・農薬の記録表が出ます。共有リンクとJSONに含まれます。CSVは「Export records CSV」で別ファイルに出ます。
 
 ## 限界 / Limits
-- 保存のたびに、そのATIの全データが1行(約2〜3 KB)としてシートに入ります。使われるのは、各ATIの最新の1行です。古い行は、ときどき消してかまいません。
+- 保存のたびに、そのATIの全データがシートに書き込まれ、そのATIの行が置き換わります(行は増え続けません)。
+- URLを知っている人は、誰でもシートに書き込めます。URLとクラス設定リンクは、学生にだけ伝えてください。
 - 同じATIを2台の端末で使うと、あとに保存した版が最新になります。入力の前に Refresh を押してください。
-- 公開CSVは、更新の反映に数分かかります。その間、画面には「Sent. Waiting for the sheet…」と出ます。
 - 閲覧専用リンクは、データが増えると長くなります(93日分で約2.5KB)。7,000文字を超えると警告が出ます。

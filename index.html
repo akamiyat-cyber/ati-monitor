@@ -111,7 +111,7 @@ a{color:var(--accent)} a button{pointer-events:none}
 <!-- ================= SETUP ================= -->
 <section class="pane" id="p-setup">
   <div class="card editonly" id="cfgWarn" style="display:none;border-color:var(--warn)">
-    <p class="warn" data-t="w_cfg">Google Sheet is not connected yet. Open the class link from your teacher, or enter the links in Share > Google Sheet connection. You cannot save entries until this is done.</p>
+    <p class="warn" data-t="w_cfg">Google Sheet is not connected yet. Open the class link from your teacher, or enter the web app URL in Share > Google Sheet connection. You cannot save entries until this is done.</p>
     <button type="button" class="pri" id="cfgGo" data-t="b_cfggo">Open Share tab</button>
   </div>
   <div class="card editonly" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
@@ -119,7 +119,7 @@ a{color:var(--accent)} a button{pointer-events:none}
   </div>
   <div class="card editonly">
     <h2 data-t="h_xl">Excel template</h2>
-    <p class="muted" data-t="n_xl">Template of the shared sheet (tab "Data" and a guide). Use it for a spare sheet, or to keep your own records. The app itself sends data through the Google Form.</p>
+    <p class="muted" data-t="n_xl">Template of the shared sheet (tab "Data" and a guide). The teacher uploads it to Google Drive and makes the class Google Sheet from it (steps: Share tab > Google Sheet connection).</p>
     <div class="row"><a href="ATI_Monitor_Shared_TEMPLATE.xlsx" download><button type="button" class="pri" data-t="b_dlx">Excel template (shared sheet)</button></a></div>
   </div>
   <p class="muted"><b class="req"></b> <span data-t="n_req">= required</span></p>
@@ -274,7 +274,7 @@ a{color:var(--accent)} a button{pointer-events:none}
     <h3>1. First time</h3>
     <ol><li><b>Setup</b> tab: enter ATI name, place, sowing date, seedling age, and TP / b of both plots (items marked <b style="color:#c62828">*</b> are required).</li>
     <li><b>Schedule</b> tab: planned dates appear automatically. Enter the real date in "Actual" when each event happens.</li>
-    <li>Open the <b>class link</b> from your teacher once (it connects the app to the class Google Sheet). Or type the Google Form link and the compare link in <b>Share</b> &gt; Google Sheet connection.</li></ol>
+    <li>Open the <b>class link</b> from your teacher once (it connects the app to the class Google Sheet). Or type the web app URL in <b>Share</b> &gt; Google Sheet connection.</li></ol>
     <h3>2. Every day</h3>
     <p>How to read m, TP and b:</p><a href="water_level.png" target="_blank" rel="noopener"><img src="water_level.png" alt="Water level measurement: m, TP and b" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px;margin-top:6px"></a><div class="muted">Tap the figure to enlarge. m = reading at the water surface, TP = reading at the top of the pipe, b = height of the pipe top above the ground. Water level = m - TP + b.</div>
     <ol><li><b>Entry</b> tab: choose the date, enter the tape reading (m) of FP and 3F4D+MD. If you irrigated, answer Yes and enter the readings before and after irrigation.</li>
@@ -308,15 +308,15 @@ a{color:var(--accent)} a button{pointer-events:none}
   </div>
   <div class="card editonly" id="sync-card">
     <h2 data-t="h_sync2">Google Sheet connection</h2>
-    <p class="muted" data-t="n_sync2">Every time you save, the app sends your data to the class Google Sheet through a Google Form made by your teacher. The dashboard shows the data kept in the sheet. The device only keeps a copy until the sheet has it.</p>
+    <p class="muted" data-t="n_sync2">Every time you save, the app writes your data into the class Google Sheet (made by your teacher from the Excel template). The dashboard shows the data kept in the sheet. The device only keeps a copy until the sheet has it.</p>
     <div class="srcstat"></div>
-    <div class="grid" style="margin-top:8px">
-      <div><label data-t="f_form">Google Form link (pre-filled link from your teacher)</label><input data-b="sync.form" placeholder="https://docs.google.com/forms/d/e/.../viewform?usp=pp_url&entry.123=ATI..."></div>
-      <div><label data-t="f_csv">Compare link (published CSV link from your teacher)</label><input data-b="sync.csv" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?output=csv"></div>
-    </div>
+    <div><label data-t="f_url">Web app URL (from your teacher)</label><input data-b="sync.url" placeholder="https://script.google.com/macros/s/.../exec"></div>
     <div class="muted" id="y-cfg" style="margin-top:6px"></div>
+    <h3 data-t="h_tch">For the teacher (once)</h3>
+    <ol class="muted" style="margin:6px 0 8px 18px;padding:0"><li data-t="t_s1">Upload the Excel template (Setup tab) to Google Drive and open it with "Save as Google Sheets".</li><li data-t="t_s2">In the sheet: Extensions > Apps Script. Delete the sample code, paste the script (button below) and save.</li><li data-t="t_s3">Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Authorize, then copy the web app URL.</li><li data-t="t_s4">Paste the URL above, press "Test connection", then "Create class setup link" and send that link to the students.</li></ol>
+    <div class="row"><button id="y-script" type="button" data-t="b_script">Copy script</button><a href="ATI_Monitor_Sheet.gs" download><button type="button" data-t="b_gs">Download script (.gs)</button></a><button id="y-test" type="button" data-t="b_test">Test connection</button></div>
     <h3 data-t="h_cls">Class setup link (for the teacher)</h3>
-    <p class="muted" data-t="n_cls">After you have entered both links above, create one link and give it to the students. Opening it fills in both links on their phone.</p>
+    <p class="muted" data-t="n_cls">After you have entered the web app URL above, create one link and give it to the students. Opening it fills in the URL on their phone.</p>
     <div class="row"><button class="pri" id="y-mk" type="button" data-t="b_mk">Create class setup link</button><button id="y-lcopy" type="button" data-t="b_copy">Copy</button></div>
     <textarea id="y-link" readonly style="margin-top:8px" class="mono"></textarea>
     <h3 data-t="h_rst">Restore from the sheet</h3>
@@ -429,7 +429,14 @@ var I18N = {
     ss_cfg: 'Google Sheet not connected.', ss_empty: 'Nothing to send yet.', ss_unsent: 'Not yet sent to the Google Sheet.', ss_wait: 'Sent. Waiting for the sheet to show it (can take a few minutes).', ss_ok: 'Saved in Google Sheet', ss_late: 'Sent, but the sheet does not show it yet. Check the form link, or press Send now.', ss_demo: 'Demo: nothing is sent.',
     ss_offline: 'No internet. It will be sent later.', ss_toolarge: 'Data too large to send.', ss_nocompress: 'This browser cannot send data. Please update it.', ss_fetchfail: 'Could not read the sheet. Check the compare link and the internet.',
     cf_form_none: 'Form link: not entered', cf_form_bad: 'Form link: not a Google Form pre-filled link', cf_form_fields: 'Form link: the 4 fields ATI / UPDATED / SUMMARY / DATA were not all found', cf_form_ok: 'Form link: OK', cf_csv_none: 'Compare link: not entered', cf_csv_bad: 'Compare link: not a Google Sheets link', cf_csv_ok: 'Compare link: OK', cfg_ok: 'Class setup saved.',
-    h_xl: 'Excel template', n_xl: 'Template of the shared sheet (tab "Data" and a guide). Use it for a spare sheet, or to keep your own records. The app itself sends data through the Google Form.', b_dlx: 'Excel template (shared sheet)'
+    h_xl: 'Excel template', n_xl: 'Template of the shared sheet (tab "Data" and a guide). Use it for a spare sheet, or to keep your own records. The app itself sends data through the Google Form.', b_dlx: 'Excel template (shared sheet)',
+    n_sync2: 'Every time you save, the app writes your data into the class Google Sheet (made by your teacher from the Excel template). The dashboard shows the data kept in the sheet. The device only keeps a copy until the sheet has it.',
+    f_url: 'Web app URL (from your teacher)', h_tch: 'For the teacher (once)', n_cls: 'After you have entered the web app URL above, create one link and give it to the students. Opening it fills in the URL on their phone.',
+    t_s1: 'Upload the Excel template (Setup tab) to Google Drive and open it with "Save as Google Sheets".', t_s2: 'In the sheet: Extensions > Apps Script. Delete the sample code, paste the script (button below) and save.', t_s3: 'Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Authorize, then copy the web app URL.', t_s4: 'Paste the URL above, press "Test connection", then "Create class setup link" and send that link to the students.',
+    b_script: 'Copy script', b_gs: 'Download script (.gs)', b_test: 'Test connection', scr_ok: 'Script copied. Paste it into Apps Script.', scr_bad: 'Could not copy the script. Use "Download script (.gs)" instead.', test_ok: 'Connected. The sheet script answers.', test_bad: 'No answer from this URL. Check the URL and the deployment settings (Anyone).',
+    cf_url_none: 'Web app URL: not entered', cf_url_bad: 'Web app URL: not a Google Apps Script web app URL (it ends with /exec)', cf_url_ok: 'Web app URL: OK', cls_ok: 'Class setup link created. Copy it and send it to the students.', y_cfgbad: 'Enter the web app URL first.',
+    w_cfg: 'Google Sheet is not connected yet. Open the class link from your teacher, or enter the web app URL in Share > Google Sheet connection. You cannot save entries until this is done.', n_xl: 'Template of the shared sheet (tab "Data" and a guide). The teacher uploads it to Google Drive and makes the class Google Sheet from it (steps: Share tab > Google Sheet connection).',
+    ss_unsent: 'Not yet saved in the Google Sheet.', ss_ok: 'Saved in Google Sheet', ss_rejected: 'The sheet script refused the data. Ask your teacher.', ss_offline: 'No internet or no answer. It will be sent later.'
   },
   bn: {
     h_rec: 'মাঠের রেকর্ড', n_rec: 'সার, বালাইনাশক ও কুশির সংখ্যা লিখুন। এগুলো শেয়ার লিংক ও এক্সপোর্টে থাকবে।', h_fert: 'সার', h_pest: 'বালাইনাশক', h_till: 'কুশির সংখ্যা',
@@ -478,7 +485,9 @@ var I18N = {
     h_cls: 'ক্লাস সেটআপ লিংক (শিক্ষকের জন্য)', b_mk: 'ক্লাস সেটআপ লিংক তৈরি', h_rst: 'শিট থেকে ফিরিয়ে আনুন', b_restore: 'শিট থেকে ফিরিয়ে আনুন', restore_q: 'এই ডিভাইসের তথ্য গুগল শিটের তথ্য দিয়ে বদলাবেন?',
     b_send: 'এখনই পাঠান', b_refresh: 'রিফ্রেশ', b_load: 'শিট থেকে রিফ্রেশ',
     ss_cfg: 'গুগল শিট সংযুক্ত নয়।', ss_empty: 'এখনও পাঠানোর কিছু নেই।', ss_unsent: 'এখনও গুগল শিটে পাঠানো হয়নি।', ss_wait: 'পাঠানো হয়েছে। শিটে দেখাতে কয়েক মিনিট লাগতে পারে।', ss_ok: 'গুগল শিটে সংরক্ষিত', ss_late: 'পাঠানো হয়েছে কিন্তু শিটে এখনও দেখা যাচ্ছে না। ফর্ম লিংক দেখুন বা আবার পাঠান।', ss_demo: 'ডেমো: কিছু পাঠানো হয় না।', ss_offline: 'ইন্টারনেট নেই। পরে পাঠানো হবে।',
-    h_xl: 'এক্সেল টেমপ্লেট', n_xl: 'শেয়ার্ড শিটের টেমপ্লেট ("Data" ট্যাব ও নির্দেশিকা)। অ্যাপ নিজে গুগল ফর্মের মাধ্যমে তথ্য পাঠায়।'
+    h_xl: 'এক্সেল টেমপ্লেট', n_xl: 'শেয়ার্ড শিটের টেমপ্লেট ("Data" ট্যাব ও নির্দেশিকা)। অ্যাপ নিজে গুগল ফর্মের মাধ্যমে তথ্য পাঠায়।',
+    f_url: 'ওয়েব অ্যাপ URL (শিক্ষকের কাছ থেকে)', n_sync2: 'প্রতিবার সংরক্ষণ করলে অ্যাপ ক্লাসের গুগল শিটে তথ্য লিখে দেয়। ড্যাশবোর্ডে শিটে থাকা তথ্য দেখানো হয়।', w_cfg: 'গুগল শিট এখনও সংযুক্ত নয়। শিক্ষকের ক্লাস লিংকটি খুলুন, অথবা শেয়ার > গুগল শিট সংযোগে ওয়েব অ্যাপ URL দিন। এটি না করলে এন্ট্রি সংরক্ষণ করা যাবে না।',
+    ss_unsent: 'এখনও গুগল শিটে সংরক্ষিত হয়নি।', ss_ok: 'গুগল শিটে সংরক্ষিত', ss_offline: 'ইন্টারনেট নেই বা সাড়া নেই। পরে পাঠানো হবে।'
   }
 };
 
@@ -506,7 +515,7 @@ function setPath(o, p, v) { var ks = p.split('.'), last = ks.pop(); var x = ks.r
 function defaults() {
   return {v: 1,
     site: {name: '', place: '', lat: '', lon: '', variety: '', sow: '', age: '', fpId: 'FP-1', mdId: 'MD-1', fpArea: '', mdArea: '', fpTP: '', fpB: '', mdTP: '', mdB: '', tpDate: ''},
-    set: SETTINGS.map(function (s) { return s[2]; }), ovr: {}, act: {}, rem: [], days: [], ferts: [], pests: [], tillers: [], sync: {form: '', csv: '', rev: '', sent: '', sentAt: '', seen: ''}};
+    set: SETTINGS.map(function (s) { return s[2]; }), ovr: {}, act: {}, rem: [], days: [], ferts: [], pests: [], tillers: [], sync: {url: '', rev: '', sent: '', sentAt: '', seen: ''}};
 }
 var S = defaults(), readOnly = false, snapshotTime = '', demo = false, editing = null;
 var mem = null, cfgJustSet = false;
@@ -866,7 +875,7 @@ function refreshValidity() {
 function markRequired() {
   var ids = ['e-date', 'rf-d', 'rf-p', 'rp-d', 'rp-p', 'rp-t', 'rp-c', 'rt-d', 'rt-p', 'rt-1', 'rt-2', 'rt-3', 'rt-4', 'rt-5', 't-plot', 't-date', 't-tp', 't-b'];
   ids.forEach(function (id) { var l = $(id) && $(id).parentNode.querySelector('label'); if (l) l.classList.add('req'); });
-  ['site.name', 'site.place', 'site.sow', 'site.age', 'sync.form', 'sync.csv'].forEach(function (b) { var el = document.querySelector('[data-b="' + b + '"]'); var l = el && el.parentNode.querySelector('label'); if (l) l.classList.add('req'); });
+  ['site.name', 'site.place', 'site.sow', 'site.age', 'sync.url'].forEach(function (b) { var el = document.querySelector('[data-b="' + b + '"]'); var l = el && el.parentNode.querySelector('label'); if (l) l.classList.add('req'); });
   Array.prototype.forEach.call(document.querySelectorAll('#p-setup th'), function (th) { if (/^(TP|b) \(cm\)$/.test(th.textContent)) th.classList.add('req'); });
 }
 function saveEntry() {
@@ -1011,43 +1020,29 @@ function buildPub() {
 var SYNCST = {err: '', fetchErr: ''}, pushT = null;
 function stamp() { return new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14); }
 function fmtStamp(r) { r = String(r || ''); return r.length >= 12 ? r.slice(0, 4) + '-' + r.slice(4, 6) + '-' + r.slice(6, 8) + ' ' + r.slice(8, 10) + ':' + r.slice(10, 12) : ''; }
-function formCfg() {
-  var u = String(S.sync.form || '').trim(), m = u.match(/^https:\/\/docs\.google\.com\/forms\/(?:u\/\d+\/)?d\/e\/([\w-]+)\//);
-  if (!m) return null;
-  var ent = {}, ok = 0;
-  (u.split('?')[1] || '').split('&').forEach(function (p) {
-    var kv = p.split('=');
-    if (/^entry\.\d+$/.test(kv[0])) { var v = ''; try { v = decodeURIComponent((kv[1] || '').replace(/\+/g, ' ')); } catch (e) {} v = v.trim().toUpperCase(); if (/^(ATI|UPDATED|SUMMARY|DATA)$/.test(v) && !ent[v]) { ent[v] = kv[0]; ok++; } }
-  });
-  if (ok < 4) return {bad: true, found: ok};
-  return {url: 'https://docs.google.com/forms/d/e/' + m[1] + '/formResponse', ent: ent};
-}
-function csvOk() { return /^https:\/\/docs\.google\.com\/spreadsheets\//.test(String(S.sync.csv || '').trim()); }
-function sheetConfigured() { var c = formCfg(); return !!(c && !c.bad && csvOk()); }
+function urlOk() { return /^https:\/\/script\.google\.com\/(a\/macros\/[\w.-]+\/|macros\/)s\/[\w-]+\/exec\/?$/.test(String(S.sync.url || '').trim()); }
+function sheetConfigured() { return urlOk(); }
 function syncState() {
   if (demo) return 'demo';
-  if (!sheetConfigured()) return 'cfg';
+  if (!urlOk()) return 'cfg';
   var y = S.sync;
   if (!y.rev || !S.days.length) return 'empty';
   if (y.seen && Number(y.seen) >= Number(y.rev)) return 'ok';
-  if (y.sent !== y.rev) return 'unsent';
-  return (Date.now() - (Number(y.sentAt) || 0)) > 20 * 60000 ? 'late' : 'wait';
+  return 'unsent';
 }
 function renderStat() {
-  var st = syncState(), cls = st === 'ok' ? 'okc' : (st === 'unsent' || st === 'late' || st === 'cfg' ? 'warn' : 'muted');
+  var st = syncState(), cls = st === 'ok' ? 'okc' : (st === 'unsent' || st === 'cfg' ? 'warn' : 'muted');
   var txt = t('ss_' + st) + (st === 'ok' ? ' (' + fmtStamp(S.sync.seen) + ' UTC)' : '');
   if (SYNCST.err) txt += ' - ' + t('ss_' + SYNCST.err);
   var h = '<span class="' + cls + '">' + esc(txt) + '</span>';
-  if (st === 'unsent' || st === 'late') h += '<button type="button" class="srcsend">' + esc(t('b_send')) + '</button>';
+  if (st === 'unsent') h += '<button type="button" class="srcsend">' + esc(t('b_send')) + '</button>';
   if (st !== 'cfg' && st !== 'demo') h += '<button type="button" class="srcref">' + esc(t('b_refresh')) + '</button>';
   Array.prototype.forEach.call(document.querySelectorAll('.srcstat'), function (el) { el.innerHTML = readOnly ? '' : h; });
   var w = $('cfgWarn'); if (w) w.style.display = (!demo && !readOnly && !sheetConfigured()) ? '' : 'none';
   var yc = $('y-cfg');
   if (yc) {
-    var c = formCfg(), a = [];
-    if (!String(S.sync.form || '').trim()) a.push(['muted', t('cf_form_none')]); else if (!c) a.push(['warn', t('cf_form_bad')]); else if (c.bad) a.push(['warn', t('cf_form_fields') + ' (' + c.found + '/4)']); else a.push(['okc', t('cf_form_ok')]);
-    if (!String(S.sync.csv || '').trim()) a.push(['muted', t('cf_csv_none')]); else if (!csvOk()) a.push(['warn', t('cf_csv_bad')]); else a.push(['okc', t('cf_csv_ok')]);
-    yc.innerHTML = a.map(function (x) { return '<span class="' + x[0] + '">' + esc(x[1]) + '</span>'; }).join(' &middot; ');
+    var u = String(S.sync.url || '').trim();
+    yc.innerHTML = !u ? '<span class="muted">' + esc(t('cf_url_none')) + '</span>' : (urlOk() ? '<span class="okc">' + esc(t('cf_url_ok')) + '</span>' : '<span class="warn">' + esc(t('cf_url_bad')) + '</span>');
   }
 }
 function schedulePush() { clearTimeout(pushT); pushT = setTimeout(function () { pushSheet(); }, 3000); }
@@ -1056,46 +1051,47 @@ async function encodeSnap() {
   if (typeof CompressionStream !== 'undefined') return 'v1.z' + b64u(await pipe(raw, new CompressionStream('deflate-raw')));
   return 'v1.u' + b64u(raw);
 }
+/* readable rows for the tab "Data" of the sheet (the app itself reads the compressed copy) */
+function sheetRows(rev) {
+  var P = buildPub(), name = S.site.name.trim(), up = String(rev).slice(0, 12), R = [];
+  function clean(x) { return x == null ? '' : String(x).replace(/[\t\r\n]+/g, ' '); }
+  function add(type, f) { var r = new Array(15).fill(''); r[0] = name; r[1] = up; r[2] = type; Object.keys(f).forEach(function (k) { r[k] = clean(f[k]); }); R.push(r); }
+  add('Info', {3: S.site.sow, 12: S.site.place, 14: 'age=' + S.site.age});
+  P.rows.forEach(function (r) { add('WL', {3: r[0], 4: r[1], 5: r[2], 6: r[3], 7: r[4], 8: r[5], 9: r[6], 10: r[7], 14: r[8]}); });
+  S.tillers.forEach(function (r) { add('Tiller', {3: r.d, 4: P.trans ? dayDiff(r.d, P.trans) : '', 5: r.p, 11: Math.round(tillerMean(r.h) * 10) / 10, 14: 'hills ' + r.h.join('/')}); });
+  S.ferts.forEach(function (r) { Object.keys(r.kg).forEach(function (k) { add('Fertilizer', {3: r.d, 4: P.trans ? dayDiff(r.d, P.trans) : '', 5: r.p, 12: k, 13: r.kg[k], 14: r.n}); }); });
+  S.pests.forEach(function (r) { add('Pesticide', {3: r.d, 4: P.trans ? dayDiff(r.d, P.trans) : '', 5: r.p, 12: r.t, 14: [r.c, r.u, r.n].filter(Boolean).join('; ')}); });
+  return R;
+}
 async function pushSheet(manual) {
   if (demo || readOnly) return;
-  var c = formCfg();
-  if (!c || c.bad || !csvOk() || missingSetup().length || !S.days.length) { renderStat(); return; }
+  if (!urlOk() || missingSetup().length || !S.days.length) { renderStat(); return; }
   if (!S.sync.rev) S.sync.rev = stamp();
   var rev = S.sync.rev, snap;
   try { snap = await encodeSnap(); } catch (e) { SYNCST.err = 'nocompress'; renderStat(); return; }
   if (snap.length > 45000) { SYNCST.err = 'toolarge'; renderStat(); return; }
   var sm = buildPub().summary;
-  var summ = 'FP ' + fmt(sm.fp, 0) + ' / 3F4D+MD ' + fmt(sm.md, 0) + ' mm' + (sm.pct != null ? ' (-' + fmt(sm.pct, 0) + '%)' : '') + ', ' + (sm.days || 0) + ' days, last ' + (sm.last || '-');
-  var b = new URLSearchParams();
-  b.set(c.ent.ATI, S.site.name.trim()); b.set(c.ent.UPDATED, 'U' + rev); b.set(c.ent.SUMMARY, summ); b.set(c.ent.DATA, snap);
+  var body = JSON.stringify({action: 'push', ati: S.site.name.trim(), rev: rev, snap: snap,
+    summary: {place: S.site.place, sow: S.site.sow, last: sm.last, days: sm.days, fp: sm.fp, md: sm.md, save: sm.save, pct: sm.pct}, rows: sheetRows(rev)});
   try {
-    await fetch(c.url, {method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: b.toString()});
-    S.sync.sent = rev; S.sync.sentAt = String(Date.now()); saveLocal(true); SYNCST.err = '';
-    setTimeout(function () { sheetPull(); }, 90000); setTimeout(function () { sheetPull(); }, 330000);
+    var r = await fetch(S.sync.url.trim(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: body});
+    var j = await r.json();
+    if (j && j.ok) { S.sync.sent = rev; if (Number(rev) > (Number(S.sync.seen) || 0)) S.sync.seen = rev; S.sync.sentAt = String(Date.now()); saveLocal(true); SYNCST.err = ''; }
+    else SYNCST.err = 'rejected';
   } catch (e) { SYNCST.err = 'offline'; }
   renderStat();
 }
 async function sheetFetch() {
-  var u = S.sync.csv.trim(), r = await fetch(u + (u.indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now(), {cache: 'no-store'});
+  var u = S.sync.url.trim(), r = await fetch(u + '?action=list&_=' + Date.now(), {cache: 'no-store'});
   if (!r.ok) throw new Error('http ' + r.status);
-  var rows = parseCsv(await r.text()), hi = -1, ia, iu, id;
-  for (var i = 0; i < Math.min(rows.length, 5); i++) {
-    var h = rows[i].map(function (x) { return String(x).trim().toLowerCase(); });
-    if (h.indexOf('ati') >= 0 && h.indexOf('updated') >= 0 && h.indexOf('data') >= 0) { hi = i; ia = h.indexOf('ati'); iu = h.indexOf('updated'); id = h.indexOf('data'); break; }
-  }
-  if (hi < 0) throw new Error('format');
-  var latest = {};
-  rows.slice(hi + 1).forEach(function (r) {
-    var a = String(r[ia] || '').trim(), u2 = Number(String(r[iu] || '').replace(/[^\d]/g, '')) || 0, d = String(r[id] || '').trim();
-    if (!a || !/^v1\./.test(d)) return;
-    var k = a.toLowerCase(); if (!latest[k] || u2 >= latest[k].rev) latest[k] = {ati: a, rev: u2, data: d};
-  });
-  return Object.keys(latest).map(function (k) { return latest[k]; });
+  var j = await r.json();
+  if (!j || !j.ok || !Array.isArray(j.atis)) throw new Error('format');
+  return j.atis.filter(function (e) { return e && e.ati && /^v1\./.test(String(e.data || '')); }).map(function (e) { return {ati: String(e.ati).trim(), rev: Number(e.rev) || 0, data: String(e.data)}; });
 }
 function withState(o, fn) { var keep = S; S = normalize(o); try { return fn(); } finally { S = keep; } }
 async function sheetPull(opts) {
   opts = opts || {};
-  if (demo || !csvOk()) return 'none';
+  if (demo || !urlOk()) return 'none';
   var list, res = 'none';
   try { list = await sheetFetch(); SYNCST.fetchErr = ''; }
   catch (e) { SYNCST.fetchErr = 'fail'; renderStat(); return 'fail'; }
@@ -1112,7 +1108,7 @@ async function sheetPull(opts) {
       else {
         try {
           var st = await decodeState(own.data.slice(3)), kp = S.sync;
-          S = normalize(st); S.sync.form = kp.form; S.sync.csv = kp.csv; S.sync.rev = S.sync.sent = S.sync.seen = String(own.rev); S.sync.sentAt = '';
+          S = normalize(st); S.sync.url = kp.url; S.sync.rev = S.sync.sent = S.sync.seen = String(own.rev); S.sync.sentAt = '';
           saveLocal(true); res = 'adopted'; refreshAll();
         } catch (e) { res = 'fail'; }
       }
@@ -1131,36 +1127,30 @@ async function restoreFromSheet() {
   var nm = $('y-name').value.trim(), yi = $('y-info');
   function say(k, cls) { yi.innerHTML = '<span class="' + cls + '">' + esc(t(k)) + '</span>'; }
   if (!nm) { say('rst_name', 'warn'); return; }
-  if (!csvOk()) { say('y_nocsv', 'warn'); return; }
+  if (!urlOk()) { say('ss_cfg', 'warn'); return; }
   yi.textContent = '...';
   var r = await sheetPull({name: nm, force: true});
   if (r === 'adopted') say('rst_ok', 'okc'); else if (r === 'notfound') say('rst_none', 'warn'); else if (r === 'cancel') yi.textContent = ''; else say('ss_fetchfail', 'warn');
 }
+async function testConn() {
+  var yi = $('y-info');
+  if (!urlOk()) { yi.innerHTML = '<span class="warn">' + esc(t('cf_url_bad')) + '</span>'; return; }
+  yi.textContent = '...';
+  try { var r = await fetch(S.sync.url.trim() + '?action=ping&_=' + Date.now(), {cache: 'no-store'}), j = await r.json(); yi.innerHTML = (j && j.ok && j.app === 'ati-monitor') ? '<span class="okc">' + esc(t('test_ok')) + '</span>' : '<span class="warn">' + esc(t('test_bad')) + '</span>'; }
+  catch (e) { yi.innerHTML = '<span class="warn">' + esc(t('test_bad')) + '</span>'; }
+}
+async function copyScript() {
+  var yi = $('y-info');
+  try { var r = await fetch('ATI_Monitor_Sheet.gs'); if (!r.ok) throw new Error('x'); var tx = await r.text(); await navigator.clipboard.writeText(tx); yi.innerHTML = '<span class="okc">' + esc(t('scr_ok')) + '</span>'; }
+  catch (e) { yi.innerHTML = '<span class="warn">' + esc(t('scr_bad')) + '</span>'; }
+}
 function classLink() {
-  var c = formCfg(), yi = $('y-info');
-  if (!c || c.bad || !csvOk()) { yi.innerHTML = '<span class="warn">' + esc(t('y_cfgbad')) + '</span>'; return; }
-  var url = location.href.split('#')[0] + '#c=' + b64u(new TextEncoder().encode(JSON.stringify({f: S.sync.form.trim(), c: S.sync.csv.trim()})));
+  var yi = $('y-info');
+  if (!urlOk()) { yi.innerHTML = '<span class="warn">' + esc(t('y_cfgbad')) + '</span>'; return; }
+  var url = location.href.split('#')[0] + '#c=' + b64u(new TextEncoder().encode(JSON.stringify({u: S.sync.url.trim()})));
   $('y-link').value = url; yi.innerHTML = '<span class="okc">' + esc(t('cls_ok')) + '</span>';
 }
-function parseCsv(txt) {
-  var rows = [], row = [], cur = '', q = false;
-  for (var i = 0; i < txt.length; i++) {
-    var c = txt.charAt(i);
-    if (q) { if (c === '"') { if (txt.charAt(i + 1) === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
-    else if (c === '"') q = true;
-    else if (c === ',') { row.push(cur); cur = ''; }
-    else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
-    else if (c !== '\r') cur += c;
-  }
-  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
-  return rows;
-}
-function normDate(v) {
-  v = String(v || '').trim(); var m;
-  if ((m = v.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/))) return m[1] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[3]).slice(-2);
-  if ((m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/))) return m[3] + '-' + ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2);
-  return '';
-}
+
 var CMP = {atis: [], sel: {}, src: '', mode: 'overlay'};
 var PAL = ['#009E73', '#E69F00', '#CC79A7', '#56B4E9', '#8c564b', '#7f7f7f', '#bcbd22', '#17becf'];
 function demoOthers() {
@@ -1175,7 +1165,7 @@ function demoOthers() {
   });
 }
 async function cmpLoad() {
-  if (!csvOk()) { $('c-info').innerHTML = '<span class="warn">' + esc(t('y_nocsv')) + '</span>'; return; }
+  if (!urlOk()) { $('c-info').innerHTML = '<span class="warn">' + esc(t('ss_cfg')) + '</span>'; return; }
   $('c-info').textContent = '...';
   await sheetPull();
   renderCompare();
@@ -1377,7 +1367,7 @@ function initHandlers() {
   $('cfgGo').onclick = function () { show('share'); };
   document.addEventListener('click', function (ev) { var c = ev.target.className || ''; if (/srcsend/.test(c)) pushSheet(true); else if (/srcref/.test(c)) sheetPull(); });
   $('y-mk').onclick = classLink; $('y-lcopy').onclick = async function () { var v = $('y-link').value; if (!v) return; try { await navigator.clipboard.writeText(v); toast(t('copied')); } catch (e) { $('y-link').select(); toast(t('copyfail')); } };
-  $('y-restore').onclick = restoreFromSheet;
+  $('y-restore').onclick = restoreFromSheet; $('y-test').onclick = testConn; $('y-script').onclick = copyScript;
   window.addEventListener('online', function () { sheetPull().then(function () { if (syncState() === 'unsent') pushSheet(); }); });
   setInterval(function () { if (!document.hidden && !demo && !readOnly) sheetPull(); }, 300000);
   $('c-mode').onchange = function () { CMP.mode = this.value; renderCompare(); }; $('c-load').onclick = cmpLoad;
@@ -1398,10 +1388,10 @@ function initHandlers() {
   $('x-imp').onclick = function () { $('x-file').click(); };
   $('x-file').onchange = function () {
     var f = this.files[0]; if (!f) return; var rd = new FileReader();
-    rd.onload = function () { try { var kp = S.sync; S = normalize(JSON.parse(rd.result)); S.sync.form = kp.form; S.sync.csv = kp.csv; saveLocal(); bindInputs(); renderLists(); fillEntry(todayStr()); toast(t('imp_ok')); } catch (e) { toast(t('imp_bad')); } };
+    rd.onload = function () { try { var kp = S.sync; S = normalize(JSON.parse(rd.result)); S.sync.url = kp.url; saveLocal(); bindInputs(); renderLists(); fillEntry(todayStr()); toast(t('imp_ok')); } catch (e) { toast(t('imp_bad')); } };
     rd.readAsText(f); this.value = '';
   };
-  $('x-reset').onclick = function () { if (confirm(t('reset_q'))) { var kp = S.sync; S = defaults(); S.sync.form = kp.form; S.sync.csv = kp.csv; saveLocal(true); bindInputs(); renderLists(); fillEntry(todayStr()); show('setup'); } };
+  $('x-reset').onclick = function () { if (confirm(t('reset_q'))) { var kp = S.sync; S = defaults(); S.sync.url = kp.url; saveLocal(true); bindInputs(); renderLists(); fillEntry(todayStr()); show('setup'); } };
 }
 async function boot() {
   try { lang = localStorage.getItem(LKEY) || ((navigator.language || '').slice(0, 2) === 'bn' ? 'bn' : 'en'); } catch (e) { lang = 'en'; }
@@ -1412,7 +1402,7 @@ async function boot() {
     catch (e) { S = normalize(loadLocal()); toast(t('imp_bad')); }
   } else if (/^#c=/.test(h)) {
     S = normalize(loadLocal()); cfgJustSet = false;
-    try { var cj = JSON.parse(new TextDecoder().decode(unb64u(h.slice(3)))); if (/^https:\/\/docs\.google\.com\//.test(cj.f || '') && /^https:\/\/docs\.google\.com\//.test(cj.c || '')) { S.sync.form = cj.f; S.sync.csv = cj.c; saveLocal(true); cfgJustSet = true; } } catch (e) {}
+    try { var cj = JSON.parse(new TextDecoder().decode(unb64u(h.slice(3)))); if (/^https:\/\/script\.google\.com\//.test(cj.u || '')) { S.sync.url = cj.u; if (urlOk()) { saveLocal(true); cfgJustSet = true; } else S.sync.url = ''; } } catch (e) {}
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { location.hash = ''; }
   } else { S = normalize(loadLocal()); }
   initHandlers(); bindInputs(); applyLang(); renderLists();
