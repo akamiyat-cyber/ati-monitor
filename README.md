@@ -13,7 +13,7 @@ Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. N
 
 ## GitHub Pages への置き方 / Deploy
 1. GitHub で新しいリポジトリを作る(例: `ati-water-monitor`、Public)。
-2. このフォルダの中身(`index.html`, `plotly.min.js`, `sw.js`, `manifest.webmanifest`, `icon.svg`)をリポジトリの直下にアップロードする(「Add file ▸ Upload files」)。
+2. このフォルダの中身(`index.html`, `plotly.min.js`, `sw.js`, `manifest.webmanifest`, `icon.svg`, `water_level.png`, `manual/`)をリポジトリの直下にアップロードする(「Add file ▸ Upload files」)。
 3. リポジトリの Settings ▸ Pages で、Source を「Deploy from a branch」、Branch を `main` / `(root)` にして Save。
 4. 数分後、`https://<ユーザー名>.github.io/ati-water-monitor/` で開ける。スマホで開いて「ホーム画面に追加」するとアプリとして使える。初回に開いたあとは、ネットがなくても動く。
 
@@ -27,7 +27,7 @@ Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. N
 5. **Share**: 「Create link」で閲覧専用リンクを作り、WhatsApp などで送る。入力を足したら新しいリンクを作り直す。
 
 ## データの扱い / Data
-- データは、使っているブラウザの中(localStorage)にだけ保存されます。ブラウザのデータを消すと失われるので、Share ▸ Export file で定期的にバックアップしてください。
+- 正本は、先生のGoogleシートです。ブラウザ(localStorage)には、送信が済むまでの控えが残ります。Share ▸ Export file で、バックアップもできます。
 - 閲覧専用リンクを開いた人の端末にも、データは保存されません(「Open an editable copy」を押した場合を除く)。
 - 農家名は扱いません。ATI名と緯度経度は、共有リンクを開いた人に見えます。
 
@@ -40,12 +40,15 @@ Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. N
 ## 3F4Dのマニュアル
 - Help タブと Share タブの「Downloads」に、リンクがあります。英語: https://doi.org/10.5281/zenodo.22932287 、ベンガル語: https://doi.org/10.5281/zenodo.23075395
 
-## 共有Googleシート・比較・必須項目・デモ
-- 雛形Excelとマニュアル(PDF)は、アプリの Share タブの「Downloads」からダウンロードできます(GitHubには、このフォルダごと上げてください: `ATI_Monitor_Shared_TEMPLATE.xlsx` と `manual/` を含む)。
-- スクリプトは不要です。雛形 `ATI_Monitor_Shared_TEMPLATE.xlsx` をGoogleドライブに上げ、「Googleスプレッドシートとして保存」します。共有リンク(編集者)と、シート「Data」の「ウェブに公開」CSVリンクを、学生に渡します(手順は manual フォルダ)。
-- Share タブの「Copy my data」で数値をコピーし、シートの「Data」タブの最終行の下に貼り付けます。Compare タブで、CSVリンクから読み込み、他のATIと比べます。
-- * の項目が空だと「Save entry」「Add」は押せません。✎ で入力を直せます。
-- Setup の「Try with demo data」(アドレスの末尾 `#demo`)で、例のデータを試せます。何も保存されません。
+## Googleシートへの自動保存・比較・必須項目・デモ
+- Googleシートへの保存は必須です。保存(Save entry など)のたびに、先生のGoogleフォームを通して、共有シートへ自動で送られます。ダッシュボードと Compare には、シートにあるデータが出ます。端末には、送信が済むまでの控えが残ります。
+- スクリプトは使いません。先生が、Googleフォーム(質問4つ: ATI / Updated / Summary / Data)と、その回答シートの「ウェブに公開」CSVリンクを作ります(手順は `manual/` のマニュアル)。
+- アプリの Share タブ ▸ Google Sheet connection に、フォームの「事前入力リンク」と CSVリンクを入れ、「Create class setup link」で作ったリンクを学生に配ります。学生が開くと、自動でつながります。
+- 新しい端末では、Share ▸ Restore from the sheet で、ATI名を入れて、シートから戻せます。
+- マニュアル(PDF)は、アプリの Share タブの「Downloads」からダウンロードできます(GitHubには、このフォルダごと上げてください: `manual/` を含む)。
+- * の項目が空だと、またはシートにつながっていないと、「Save entry」「Add」は押せません。✎ で入力を直せます。
+- Setup の「Try with demo data」(アドレスの末尾 `#demo`)で、例のデータを試せます。何も保存・送信されません。
+- 未確認: 本物のGoogleフォームへの送信と、公開CSVの読み込み(模擬データでは確認済み)。最初のATIで試験してから配布してください。
 
 ## 施肥・農薬・分げつ数
 - Entry タブの「Field records」に入力します。
@@ -55,5 +58,7 @@ Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. N
 - Dashboard に、分げつ数のグラフと、施肥・農薬の記録表が出ます。共有リンクとJSONに含まれます。CSVは「Export records CSV」で別ファイルに出ます。
 
 ## 限界 / Limits
-- 複数人が入力した内容を自動で統合する機能はありません(閲覧のみの共有)。入力は、1つの端末で行うか、JSONファイルで受け渡してください。
-- 共有リンクは、データが増えると長くなります(93日分で約2.5KB)。7,000文字を超えると警告が出ます。
+- 保存のたびに、そのATIの全データが1行(約2〜3 KB)としてシートに入ります。使われるのは、各ATIの最新の1行です。古い行は、ときどき消してかまいません。
+- 同じATIを2台の端末で使うと、あとに保存した版が最新になります。入力の前に Refresh を押してください。
+- 公開CSVは、更新の反映に数分かかります。その間、画面には「Sent. Waiting for the sheet…」と出ます。
+- 閲覧専用リンクは、データが増えると長くなります(93日分で約2.5KB)。7,000文字を超えると警告が出ます。
