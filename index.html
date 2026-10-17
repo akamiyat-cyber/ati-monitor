@@ -25,7 +25,7 @@ h3{font-size:15px}
 .muted{color:var(--mut);font-size:13.5px}
 nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;overflow-x:auto;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(10,40,30,.08);padding:6px 6px calc(6px + env(safe-area-inset-bottom));scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
-nav button{flex:1 0 62px;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;border-radius:14px;padding:6px 4px;font-size:11px;font-weight:600;color:var(--mut)}
+nav button{flex:1 1 0;min-width:56px;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;border-radius:14px;padding:6px 4px;font-size:11px;font-weight:600;color:var(--mut)}
 nav button svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 nav button span{max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 nav button:hover{background:var(--soft);color:var(--accent)}
@@ -86,10 +86,48 @@ code,.mono{font-family:Consolas,Menlo,monospace;font-size:12.5px}
 .help img,#p-setup img,#p-entry img{border-radius:12px}
 #entTbl td,#entTbl th,#tpbTbl td,#tpbTbl th{white-space:nowrap}
 a{color:var(--accent)} a button{pointer-events:none}
+.back{border:0;background:none;padding:6px 2px;min-height:36px;color:var(--accent);margin:12px 0 -4px;font-size:15px}
+.back:hover{color:var(--accent2)}
+.seg{display:flex;gap:4px;background:var(--card);border-radius:999px;padding:5px;margin:14px 0;box-shadow:var(--shadow);position:sticky;top:6px;z-index:5}
+.seg button{flex:1;border:0;background:none;min-height:42px;padding:6px 6px;font-size:14px;border-radius:999px;color:var(--mut)}
+.seg button.on{background:var(--accent);color:var(--onacc)}
+.g2{grid-template-columns:1fr 1fr!important}
+.menu{padding:6px 14px}
+.mi{display:flex;gap:14px;align-items:center;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;padding:14px 4px;min-height:70px;color:var(--fg)}
+.mi:last-child{border-bottom:0}
+.mi svg{width:26px;height:26px;flex:none;stroke:var(--accent);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.mi div{flex:1;min-width:0}.mi b{display:block;font-size:16px}.mi span{display:block;color:var(--mut);font-size:13px;font-weight:500}
+.mi i{font-style:normal;font-size:24px;color:var(--mut)}
+.stepper{display:grid;grid-template-columns:58px 1fr 58px;gap:8px}
+.stepper button{min-height:58px;padding:0;font-size:26px;font-weight:700;border-radius:16px}
+input.big{font-size:24px;font-weight:700;text-align:center;min-height:58px;font-variant-numeric:tabular-nums}
+.live{margin-top:8px;font-size:14.5px;font-weight:700;padding:9px 12px;border-radius:12px;background:var(--soft);color:var(--ok)}
+.live.above{background:#e3f0fb;color:#0b5394}.live.below{background:#fbefe3;color:#8a4b0f}.live.at{background:var(--soft);color:var(--ok)}.live.none{background:#fdecec;color:#b42318}
+.today-btn{width:100%;min-height:68px;font-size:19px;margin-top:10px;border-radius:20px}
+.chip{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:var(--in);color:var(--mut);white-space:nowrap;border:1.5px solid var(--line)}
+.chip.ok{background:var(--soft);color:var(--ok);border-color:transparent}.chip.warn{background:#fdecdc;color:var(--warn);border-color:transparent}
+.ev{padding:12px 0;border-bottom:1px solid var(--line)}.ev:last-child{border-bottom:0}
+.ev .h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.evd{border-top:0;margin-top:4px;padding-top:0}.evd input{padding:9px 6px;font-size:15px}.evd summary{font-size:13.5px;padding:4px 0}
+.steps ol{list-style:none;margin:0;padding:0}.steps li{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.steps li:last-child{border-bottom:0}
+.steps .dot{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--in);border:1.5px solid var(--line);flex:none}
+.steps li.done .dot{background:var(--accent);color:var(--onacc);border-color:var(--accent)}.steps li.done .tx{color:var(--mut);text-decoration:line-through}
+.steps .tx{flex:1}
+.lvls{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lvl{border-radius:16px;padding:12px 14px;background:var(--in);border:1.5px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.lvl .pl{font-weight:800;font-size:13px}.lvl b{font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}.lvl b small{font-size:14px;font-weight:600}
+.lvl.above{border-color:#9cc3e6}.lvl.below{border-color:#e8bf94}
+.lvl span{font-size:13px;font-weight:600}
+.now{margin:4px 0 8px}
+.nxt div{display:grid;grid-template-columns:1fr auto;gap:0 10px;padding:9px 0;border-bottom:1px solid var(--line)}.nxt div:last-child{border-bottom:0}
+.nxt span.muted{grid-column:1/3;font-size:12.5px}
+@media (prefers-color-scheme:dark){.live.above{background:#12304a;color:#9ccbf5}.live.below{background:#3a2814;color:#f2c18e}.live.none{background:#3d1a1a;color:#ffb4ab}.chip.warn{background:#3a2814}}
+.pane>.srcstat{margin:24px 4px 0}
 @media(min-width:761px){
   body{padding-bottom:24px}
   nav{position:sticky;top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);box-shadow:0 6px 20px rgba(10,40,30,.06);padding:8px max(16px,calc((100% - 1100px)/2));gap:6px;justify-content:flex-start}
   nav button{flex:0 0 auto;flex-direction:row;gap:8px;font-size:14px;padding:8px 16px;border-radius:999px}
+  .seg{top:70px}
   nav button span{max-width:none}
   #msg{bottom:24px}
   header{border-radius:0 0 32px 32px}
@@ -108,22 +146,26 @@ a{color:var(--accent)} a button{pointer-events:none}
 <nav id="nav"></nav>
 <main id="main">
 
+<!-- ================= TODAY ================= -->
+<section class="pane" id="p-today">
+  <div class="srcstat"></div>
+  <div id="today"></div>
+</section>
+
+<!-- ================= MORE ================= -->
+<section class="pane" id="p-more">
+  <div class="card menu" id="moreList"></div>
+</section>
+
 <!-- ================= SETUP ================= -->
 <section class="pane" id="p-setup">
+  <button type="button" class="back editonly" data-go="more">‹ <span data-t="tab_more">More</span></button>
   <div class="card editonly" id="cfgWarn" style="display:none;border-color:var(--warn)">
-    <p class="warn" data-t="w_cfg">Google Sheet is not connected yet. Open the class link from your teacher, or enter the web app URL in Share > Google Sheet connection. You cannot save entries until this is done.</p>
+    <p class="warn" data-t="w_cfg">Google Sheet is not connected yet.</p>
     <button type="button" class="pri" id="cfgGo" data-t="b_cfggo">Open Share tab</button>
   </div>
-  <div class="card editonly" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-    <button type="button" id="demoBtn" data-t="b_demo">Try with demo data</button><span class="muted" data-t="n_demo">Opens the app with example data (nothing is saved). You can try every tab, including Compare.</span>
-  </div>
-  <div class="card editonly">
-    <h2 data-t="h_xl">Excel template</h2>
-    <p class="muted" data-t="n_xl">Template of the shared sheet (tab "Data" and a guide). The teacher uploads it to Google Drive and makes the class Google Sheet from it (steps: Share tab > Google Sheet connection).</p>
-    <div class="row"><a href="ATI_Monitor_Shared_TEMPLATE.xlsx" download><button type="button" class="pri" data-t="b_dlx">Excel template (shared sheet)</button></a></div>
-  </div>
   <p class="muted"><b class="req"></b> <span data-t="n_req">= required</span></p>
-  <div class="card">
+    <div class="card">
     <h2 data-t="h_site">ATI and field</h2>
     <div class="grid">
       <div><label data-t="f_name">ATI name</label><input data-b="site.name" placeholder="e.g. Chougachha ATI"></div>
@@ -133,7 +175,7 @@ a{color:var(--accent)} a button{pointer-events:none}
       <div><label data-t="f_var">Variety</label><input data-b="site.variety"></div>
     </div>
   </div>
-  <div class="card">
+    <div class="card">
     <h2 data-t="h_dates">Sowing and seedling age</h2>
     <div class="grid">
       <div><label data-t="f_sow">Sowing date</label><input type="date" data-b="site.sow"></div>
@@ -145,12 +187,23 @@ a{color:var(--accent)} a button{pointer-events:none}
   </div>
   <div class="card">
     <h2 data-t="h_plots">Plots and water-pipe settings (TP and b)</h2>
-    <div class="tw"><table>
-      <tr><th></th><th data-t="f_pid">Plot ID</th><th data-t="f_area">Area (decimal)</th><th>TP (cm)</th><th>b (cm)</th></tr>
-      <tr><td><b>FP</b></td><td><input data-b="site.fpId"></td><td><input inputmode="decimal" data-b="site.fpArea"></td><td><input inputmode="decimal" data-b="site.fpTP"></td><td><input inputmode="decimal" data-b="site.fpB"></td></tr>
-      <tr><td><b>3F4D+MD</b></td><td><input data-b="site.mdId"></td><td><input inputmode="decimal" data-b="site.mdArea"></td><td><input inputmode="decimal" data-b="site.mdTP"></td><td><input inputmode="decimal" data-b="site.mdB"></td></tr>
-    </table></div>
-    <div class="grid" style="margin-top:8px"><div><label data-t="f_tpdate">Date TP and b were measured</label><input type="date" data-b="site.tpDate"></div></div>
+    <div class="two">
+      <div class="plotbox"><b style="color:#D55E00">FP</b>
+        <div class="grid g2" style="margin-top:6px">
+          <div><label data-t="f_pid">Plot ID</label><input data-b="site.fpId"></div>
+          <div><label data-t="f_area">Area (decimal)</label><input inputmode="decimal" data-b="site.fpArea"></div>
+          <div><label>TP (cm)</label><input inputmode="decimal" data-b="site.fpTP"></div>
+          <div><label>b (cm)</label><input inputmode="decimal" data-b="site.fpB"></div>
+        </div></div>
+      <div class="plotbox"><b style="color:#0072B2">3F4D+MD</b>
+        <div class="grid g2" style="margin-top:6px">
+          <div><label data-t="f_pid">Plot ID</label><input data-b="site.mdId"></div>
+          <div><label data-t="f_area">Area (decimal)</label><input inputmode="decimal" data-b="site.mdArea"></div>
+          <div><label>TP (cm)</label><input inputmode="decimal" data-b="site.mdTP"></div>
+          <div><label>b (cm)</label><input inputmode="decimal" data-b="site.mdB"></div>
+        </div></div>
+    </div>
+        <div class="grid" style="margin-top:8px"><div><label data-t="f_tpdate">Date TP and b were measured</label><input type="date" data-b="site.tpDate"></div></div>
     <p class="muted" data-t="n_tp">Water level (cm) = m − TP + b, where m = tape reading at the water surface, TP = tape reading at the top of the pipe, b = height of the pipe top above the ground. Negative = water below the soil surface.</p>
     <a href="water_level.png" target="_blank" rel="noopener"><img src="water_level.png" alt="Water level measurement: m, TP and b" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px;margin-top:6px"></a><div class="muted" data-t="n_fig">Tap the figure to enlarge. m = reading at the water surface, TP = reading at the top of the pipe, b = height of the pipe top above the ground. Water level = m - TP + b.</div>
   </div>
@@ -158,11 +211,12 @@ a{color:var(--accent)} a button{pointer-events:none}
 
 <!-- ================= SCHEDULE ================= -->
 <section class="pane" id="p-sched">
+  <button type="button" class="back editonly" data-go="more">‹ <span data-t="tab_more">More</span></button>
   <div class="card">
     <h2 data-t="h_sched">3F4D+MD schedule</h2>
-    <p class="muted" data-t="n_sched">Planned dates are calculated from the sowing date and seedling age with the same rules as the 3F4D+MD scheduling app (Professional mode). Type a date in "Override" to correct a planned date. Enter the date an event really happened in "Actual".</p>
+    <p class="muted" data-t="n_sched2">Planned dates are calculated from the sowing date and seedling age (same rules as the 3F4D+MD scheduling app, Professional mode). When an event happens, open it and enter the actual date.</p>
     <div class="kpis" id="schedInfo"></div>
-    <div class="tw"><table id="schedTbl"></table></div>
+    <div id="schedList"></div>
     <details><summary data-t="h_set">Settings (days) – change only if you changed them in the scheduling app</summary>
       <div class="grid" id="setGrid" style="margin-top:8px"></div>
     </details>
@@ -171,7 +225,9 @@ a{color:var(--accent)} a button{pointer-events:none}
 
 <!-- ================= ENTRY ================= -->
 <section class="pane" id="p-entry">
-  <div class="card">
+  <div class="seg editonly" id="eseg"><button type="button" data-seg="wl" data-t="sg_wl">Water level</button><button type="button" data-seg="rec" data-t="sg_rec">Field records</button><button type="button" data-seg="tpb" data-t="sg_tpb">TP / b</button></div>
+  <div data-sg="wl">
+      <div class="card">
     <h2 data-t="h_entry">Daily water level</h2>
     <div class="grid">
       <div><label data-t="f_date">Date of measurement</label><input type="date" id="e-date"></div>
@@ -184,23 +240,18 @@ a{color:var(--accent)} a button{pointer-events:none}
       <div class="plotbox" id="e-fp"></div>
       <div class="plotbox" id="e-md"></div>
     </div>
+    <div style="margin-top:10px" class="editonly"><label data-t="f_photo">Photo (stays on this phone, not sent to the sheet)</label><div class="row"><button type="button" id="e-ph-btn" data-t="b_photo">Add photo</button><input type="file" id="e-ph" accept="image/*" style="display:none"><button type="button" class="del" id="e-ph-del" style="display:none" data-t="b_phdel">Remove photo</button></div><img id="e-ph-img" alt="" style="display:none;max-width:100%;max-height:360px;margin-top:8px;border-radius:12px"></div>
     <div style="margin-top:10px"><label data-t="f_note">Note</label><textarea id="e-note"></textarea></div>
     <div class="row" style="margin-top:10px"><button class="pri" id="e-save" type="button" data-t="b_save">Save entry</button><button id="e-new" type="button" data-t="b_clear">Clear form</button><span class="muted" id="e-status"></span></div><div id="e-hint" style="margin-top:6px;font-size:13px"></div>
     <div class="srcstat"></div>
   </div>
-  <div class="card">
-    <h2 data-t="h_tpb">Re-measure TP and b</h2>
-    <p class="muted" data-t="n_tpb">After Pitan and mid-season drainage the soil shrinks and b changes. Measure TP and b again and record them here. Water levels from that date use the new values.</p>
-    <div class="grid">
-      <div><label data-t="f_plot">Plot</label><select id="t-plot"><option>FP</option><option>3F4D+MD</option></select></div>
-      <div><label data-t="f_date">Date</label><input type="date" id="t-date"></div>
-      <div><label>TP (cm)</label><input id="t-tp" inputmode="decimal"></div>
-      <div><label>b (cm)</label><input id="t-b" inputmode="decimal"></div>
-    </div>
-    <div class="row" style="margin-top:8px"><button id="t-add" type="button" data-t="b_add">Add</button><button type="button" class="rcancel" style="display:none" data-t="b_cancel">Cancel</button></div>
-    <div class="tw" style="margin-top:8px"><table id="tpbTbl"></table></div>
+      <div class="card">
+    <h2 data-t="h_list">Entries</h2>
+    <div class="tw" style="max-height:420px;overflow-y:auto"><table id="entTbl"></table></div>
   </div>
-  <div class="card">
+  </div>
+  <div data-sg="rec">
+      <div class="card">
     <h2 data-t="h_rec">Field records</h2>
     <p class="muted" data-t="n_rec">Record fertilizer, pesticide and tiller counts. They are included in the share link and the exports.</p>
     <details open><summary data-t="h_fert">Fertilizer</summary>
@@ -240,9 +291,20 @@ a{color:var(--accent)} a button{pointer-events:none}
       <div class="tw" style="margin-top:8px"><table id="tillTbl"></table></div>
     </details>
   </div>
-  <div class="card">
-    <h2 data-t="h_list">Entries</h2>
-    <div class="tw" style="max-height:420px;overflow-y:auto"><table id="entTbl"></table></div>
+  </div>
+  <div data-sg="tpb">
+      <div class="card">
+    <h2 data-t="h_tpb">Re-measure TP and b</h2>
+    <p class="muted" data-t="n_tpb">After Pitan and mid-season drainage the soil shrinks and b changes. Measure TP and b again and record them here. Water levels from that date use the new values.</p>
+    <div class="grid">
+      <div><label data-t="f_plot">Plot</label><select id="t-plot"><option>FP</option><option>3F4D+MD</option></select></div>
+      <div><label data-t="f_date">Date</label><input type="date" id="t-date"></div>
+      <div><label>TP (cm)</label><input id="t-tp" inputmode="decimal"></div>
+      <div><label>b (cm)</label><input id="t-b" inputmode="decimal"></div>
+    </div>
+    <div class="row" style="margin-top:8px"><button id="t-add" type="button" data-t="b_add">Add</button><button type="button" class="rcancel" style="display:none" data-t="b_cancel">Cancel</button></div>
+    <div class="tw" style="margin-top:8px"><table id="tpbTbl"></table></div>
+  </div>
   </div>
 </section>
 
@@ -266,59 +328,52 @@ a{color:var(--accent)} a button{pointer-events:none}
 
 <!-- ================= HELP ================= -->
 <section class="pane" id="p-help">
+  <button type="button" class="back editonly" data-go="more">‹ <span data-t="tab_more">More</span></button>
   <div class="card help">
     <h2>Help</h2>
     <h3>3F4D manual</h3>
     <p>How to practise 3F4D+MD (needs internet):</p>
     <div class="row"><a href="https://doi.org/10.5281/zenodo.22932287" target="_blank" rel="noopener"><button type="button" data-t="b_3f_en">3F4D manual (English)</button></a><a href="https://doi.org/10.5281/zenodo.23075395" target="_blank" rel="noopener"><button type="button" data-t="b_3f_bn">3F4D manual (Bengali)</button></a></div>
+    <h3>The 5 buttons at the bottom</h3>
+    <ul><li><b>Today</b>: what to do today, the latest water level and the next events of the schedule.</li>
+    <li><b>Entry</b>: Water level (every day), Field records (fertilizer, pesticide, tillers) and TP / b (re-measurement).</li>
+    <li><b>Graphs</b>: water level, irrigation and saving of your ATI.</li>
+    <li><b>Compare</b>: your ATI against the other ATIs in the class sheet.</li>
+    <li><b>More</b>: Setup, Schedule, Google Sheet &amp; sharing, Help, For the teacher, demo.</li></ul>
     <h3>1. First time</h3>
-    <ol><li><b>Setup</b> tab: enter ATI name, place, sowing date, seedling age, and TP / b of both plots (items marked <b style="color:#c62828">*</b> are required).</li>
-    <li><b>Schedule</b> tab: planned dates appear automatically. Enter the real date in "Actual" when each event happens.</li>
-    <li>Open the <b>class link</b> from your teacher once (it connects the app to the class Google Sheet). Or type the web app URL in <b>Share</b> &gt; Google Sheet connection.</li></ol>
+    <ol><li>Open the <b>class link</b> from your teacher once. It connects the app to the class Google Sheet.</li>
+    <li><b>More &gt; Setup</b>: enter ATI name, place, sowing date, seedling age, and TP / b of both plots (items marked <b style="color:#c62828">*</b> are required).</li>
+    <li>The <b>Today</b> screen shows these steps with a tick when each is done.</li></ol>
     <h3>2. Every day</h3>
     <p>How to read m, TP and b:</p><a href="water_level.png" target="_blank" rel="noopener"><img src="water_level.png" alt="Water level measurement: m, TP and b" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px;margin-top:6px"></a><div class="muted">Tap the figure to enlarge. m = reading at the water surface, TP = reading at the top of the pipe, b = height of the pipe top above the ground. Water level = m - TP + b.</div>
-    <ol><li><b>Entry</b> tab: choose the date, enter the tape reading (m) of FP and 3F4D+MD. If you irrigated, answer Yes and enter the readings before and after irrigation.</li>
-    <li>"Save entry" is enabled only when all required items (*) are filled and the values are in range.</li>
-    <li>The data are sent to the class Google Sheet automatically when you save. The line above the dashboard shows whether the sheet has them yet (this can take a few minutes). If it says "Not yet sent", press "Send now".</li></ol>
+    <ol><li><b>Today &gt; Enter today's water level</b> (or Entry &gt; Water level). Enter the tape reading m of FP and 3F4D+MD. The water level appears at once under the box. The − and + buttons change m by 0.1.</li>
+    <li>If you irrigated, answer Yes and enter the readings before and after irrigation. The irrigation (mm) appears at once.</li>
+    <li>"Save entry" works only when all required items (*) are filled and the values are in range. Saved data go to the class Google Sheet automatically.</li>
+    <li>You can add a photo of the pipe. Photos stay on this phone; they are not sent to the sheet.</li></ol>
     <h3>3. Correct a mistake</h3>
-    <ul><li>Water-level entry: in the Entries table press ✎, change the values and press Save entry again (same date = overwrite). ✕ deletes the day.</li>
+    <ul><li>Water level: in the Entries list press ✎, change the values and press Save entry again (same date = overwrite). ✕ deletes the day.</li>
     <li>Fertilizer, pesticide, tillers, TP/b: press ✎ in the list, change, press Update. ✕ deletes.</li>
-    <li>After any correction the new version is sent automatically. The newest version of your ATI in the sheet is the one shown.</li></ul>
-    <h3>4. Fertilizer, pesticide, tillers</h3>
-    <p>Entry tab &gt; Field records. Tillers: count 5 hills; the value used is the mean of the 2nd, 3rd and 4th largest.</p>
+    <li>After any correction the new version is sent automatically.</li></ul>
+    <h3>4. Schedule</h3>
+    <p>More &gt; Schedule. Planned dates appear by themselves. When an event happens, open it and enter the actual date. The Today screen shows the next events.</p>
     <h3>5. Compare</h3>
-    <p>Compare tab &gt; "Refresh from sheet" (it also loads by itself when the app opens). Select the ATIs to show. Charts: cumulative irrigation and water level (FP and 3F4D+MD), total irrigation and saving, tiller number. To see how Compare looks without internet, use the demo (Setup &gt; Try with demo data).</p>
-    <h3>6. Demo and backup</h3>
-    <p>Setup &gt; "Try with demo data" opens example data; nothing is saved. Share &gt; Export file (JSON) makes a backup of your data. The class Google Sheet is the master copy; this browser keeps a copy until the sheet has it. To get your data back on a new phone: Share &gt; Restore from the sheet.</p>
+    <p>Compare loads all ATIs of the class sheet when the app opens ("Refresh from sheet" reads again). Tick the ATIs to show.</p>
+    <h3>6. Demo, new phone, backup</h3>
+    <p>More &gt; Try with demo data: example data, nothing is saved. On a new phone: open the class link, then More &gt; Google Sheet &amp; sharing &gt; Restore from the sheet. The class Google Sheet is the master copy.</p>
     <h3>7. Install on a phone</h3>
-    <p>Open the app address in Chrome once with internet, then choose "Add to Home screen". After that it also opens without internet; you can enter data in the field, and it is sent to the sheet when you are online again.</p>
+    <p>Open the app address in Chrome once with internet, then choose "Add to Home screen". After that it also opens without internet; data are sent to the sheet when you are online again.</p>
   </div>
 </section>
 
 <!-- ================= SHARE ================= -->
 <section class="pane" id="p-share">
-  <div class="card" id="dl-card">
-    <h2 data-t="h_dl">Downloads</h2>
-    <p class="muted" data-t="n_dl">For the administrator and teachers: the manuals (they include the steps to make the Google Form and the sheet).</p>
-    <div class="row">
-      <a href="manual/ATI_Monitor_App_Manual_EN.pdf" target="_blank" rel="noopener"><button type="button" data-t="b_dlm_en">Manual (English, PDF)</button></a>
-      <a href="manual/ATI_Monitor_App_Manual_JP.pdf" target="_blank" rel="noopener"><button type="button" data-t="b_dlm_jp">Manual (Japanese, PDF)</button></a>
-    </div>
-    <div class="row" style="margin-top:8px"><a href="https://doi.org/10.5281/zenodo.22932287" target="_blank" rel="noopener"><button type="button" data-t="b_3f_en">3F4D manual (English)</button></a><a href="https://doi.org/10.5281/zenodo.23075395" target="_blank" rel="noopener"><button type="button" data-t="b_3f_bn">3F4D manual (Bengali)</button></a></div>
-  </div>
+  <button type="button" class="back editonly" data-go="more">‹ <span data-t="tab_more">More</span></button>
   <div class="card editonly" id="sync-card">
     <h2 data-t="h_sync2">Google Sheet connection</h2>
     <p class="muted" data-t="n_sync2">Every time you save, the app writes your data into the class Google Sheet (made by your teacher from the Excel template). The dashboard shows the data kept in the sheet. The device only keeps a copy until the sheet has it.</p>
     <div class="srcstat"></div>
     <div><label data-t="f_url">Web app URL (from your teacher)</label><input data-b="sync.url" placeholder="https://script.google.com/macros/s/.../exec"></div>
-    <div class="muted" id="y-cfg" style="margin-top:6px"></div>
-    <h3 data-t="h_tch">For the teacher (once)</h3>
-    <ol class="muted" style="margin:6px 0 8px 18px;padding:0"><li data-t="t_s1">Upload the Excel template (Setup tab) to Google Drive and open it with "Save as Google Sheets".</li><li data-t="t_s2">In the sheet: Extensions > Apps Script. Delete the sample code, paste the script (button below) and save.</li><li data-t="t_s3">Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Authorize, then copy the web app URL.</li><li data-t="t_s4">Paste the URL above, press "Test connection", then "Create class setup link" and send that link to the students.</li></ol>
-    <div class="row"><button id="y-script" type="button" data-t="b_script">Copy script</button><a href="ATI_Monitor_Sheet.gs" download><button type="button" data-t="b_gs">Download script (.gs)</button></a><button id="y-test" type="button" data-t="b_test">Test connection</button></div>
-    <h3 data-t="h_cls">Class setup link (for the teacher)</h3>
-    <p class="muted" data-t="n_cls">After you have entered the web app URL above, create one link and give it to the students. Opening it fills in the URL on their phone.</p>
-    <div class="row"><button class="pri" id="y-mk" type="button" data-t="b_mk">Create class setup link</button><button id="y-lcopy" type="button" data-t="b_copy">Copy</button></div>
-    <textarea id="y-link" readonly style="margin-top:8px" class="mono"></textarea>
+    <div class="muted ycfg" style="margin-top:6px"></div>
     <h3 data-t="h_rst">Restore from the sheet</h3>
     <p class="muted" data-t="n_rst">On a new phone, or after the data were lost: type your ATI name exactly as in the sheet and press Restore.</p>
     <div class="row"><input id="y-name" style="flex:1 1 200px" placeholder="ATI name"><button id="y-restore" type="button" data-t="b_restore">Restore from sheet</button></div>
@@ -339,6 +394,37 @@ a{color:var(--accent)} a button{pointer-events:none}
   <div class="card">
     <h2 data-t="h_about">About</h2>
     <p class="muted" id="aboutTxt">ATI Water Monitor works offline after the first visit. Schedule rules follow the 3F4D+MD scheduling app (Professional mode).</p>
+  </div>
+</section>
+<!-- ================= TEACHER ================= -->
+<section class="pane" id="p-teacher">
+  <button type="button" class="back editonly" data-go="more">‹ <span data-t="tab_more">More</span></button>
+  <div class="card editonly">
+    <h2 data-t="h_xl">Excel template</h2>
+    <p class="muted" data-t="n_xl">Template of the shared sheet (tab "Data" and a guide). The teacher uploads it to Google Drive and makes the class Google Sheet from it (steps: Share tab > Google Sheet connection).</p>
+    <div class="row"><a href="ATI_Monitor_Shared_TEMPLATE.xlsx" download><button type="button" class="pri" data-t="b_dlx">Excel template (shared sheet)</button></a></div>
+  </div>
+  <div class="card editonly">
+    <h2 data-t="h_tch">For the teacher (once)</h2>
+    <ol class="muted" style="margin:6px 0 8px 18px;padding:0"><li data-t="t_s1">Download the Excel template (above), upload it to Google Drive and open it with "Save as Google Sheets".</li><li data-t="t_s2">In the sheet: Extensions > Apps Script. Delete the sample code, paste the script (button below) and save.</li><li data-t="t_s3">Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Authorize, then copy the web app URL.</li><li data-t="t_s4">Paste the URL above, press "Test connection", then "Create class setup link" and send that link to the students.</li></ol>
+    <div class="row"><button id="y-script" type="button" data-t="b_script">Copy script</button><a href="ATI_Monitor_Sheet.gs" download><button type="button" data-t="b_gs">Download script (.gs)</button></a></div>
+    <div style="margin-top:10px"><label data-t="f_url2">Web app URL (from the deployment)</label><input data-b="sync.url" placeholder="https://script.google.com/macros/s/.../exec"></div>
+    <div class="muted ycfg" style="margin-top:6px"></div>
+    <div class="row" style="margin-top:8px"><button id="y-test" type="button" data-t="b_test">Test connection</button></div>
+    <h3 data-t="h_cls">Class setup link (for the teacher)</h3>
+    <p class="muted" data-t="n_cls">After you have entered the web app URL above, create one link and give it to the students. Opening it fills in the URL on their phone.</p>
+    <div class="row"><button class="pri" id="y-mk" type="button" data-t="b_mk">Create class setup link</button><button id="y-lcopy" type="button" data-t="b_copy">Copy</button></div>
+    <textarea id="y-link" readonly style="margin-top:8px" class="mono"></textarea>
+    <div class="muted" id="y-tinfo" style="margin-top:6px"></div>
+  </div>
+  <div class="card" id="dl-card">
+    <h2 data-t="h_dl">Downloads</h2>
+    <p class="muted" data-t="n_dl">For the administrator and teachers: the manuals (they include the steps to make the shared Google Sheet).</p>
+    <div class="row">
+      <a href="manual/ATI_Monitor_App_Manual_EN.pdf" target="_blank" rel="noopener"><button type="button" data-t="b_dlm_en">Manual (English, PDF)</button></a>
+      <a href="manual/ATI_Monitor_App_Manual_JP.pdf" target="_blank" rel="noopener"><button type="button" data-t="b_dlm_jp">Manual (Japanese, PDF)</button></a>
+    </div>
+    <div class="row" style="margin-top:8px"><a href="https://doi.org/10.5281/zenodo.22932287" target="_blank" rel="noopener"><button type="button" data-t="b_3f_en">3F4D manual (English)</button></a><a href="https://doi.org/10.5281/zenodo.23075395" target="_blank" rel="noopener"><button type="button" data-t="b_3f_bn">3F4D manual (Bengali)</button></a></div>
   </div>
 </section>
 </main>
@@ -390,7 +476,7 @@ var I18N = {
     y_s1: 'Press "Copy my data".', y_s2: 'Open the shared sheet (button below), go to the tab "Data" and click the first empty cell of column A (below the last row).', y_s3: 'Paste (Ctrl+V, or long-press and Paste on a phone).',
     b_copy2: 'Copy my data', b_dl2: 'Download as CSV', b_open2: 'Open shared sheet', f_sheet: 'Shared sheet link (edit link from your teacher)', f_csv: 'Compare link (published CSV link from your teacher)',
     y_copied: 'Copied. Now paste it into the shared sheet. Rows:', y_nocopy: 'Could not copy. Use "Download as CSV" instead.', y_none: 'Complete Setup and save at least one entry first.', y_nosheet: 'Enter the shared sheet link first.', y_badlink: 'This is not a Google Sheets link.', y_nocsv: 'Enter the compare link (published CSV) first.', y_csvfail: 'Could not read the sheet. Check the compare link and the internet connection.', y_empty: 'The sheet has no ATI data yet.',
-    h_dl: 'Downloads', n_dl: 'For the administrator and teachers: the manuals (they include the steps to make the Google Form and the sheet).', b_dlx: 'Excel template (shared sheet)', b_dlm_en: 'Manual (English, PDF)', b_dlm_jp: 'Manual (Japanese, PDF)',
+    h_dl: 'Downloads', n_dl: 'For the administrator and teachers: the manuals (they include the steps to make the shared Google Sheet).', b_dlx: 'Excel template (shared sheet)', b_dlm_en: 'Manual (English, PDF)', b_dlm_jp: 'Manual (Japanese, PDF)',
     c_mode: 'View', c_overlay: 'Overlay (compare)', c_each: 'Each ATI (one panel per ATI)',
     b_3f_en: '3F4D manual (English)', b_3f_bn: '3F4D manual (Bengali)',
     tab_setup: 'Setup', tab_sched: 'Schedule', tab_entry: 'Entry', tab_dash: 'Dashboard', tab_share: 'Share',
@@ -432,11 +518,23 @@ var I18N = {
     h_xl: 'Excel template', n_xl: 'Template of the shared sheet (tab "Data" and a guide). Use it for a spare sheet, or to keep your own records. The app itself sends data through the Google Form.', b_dlx: 'Excel template (shared sheet)',
     n_sync2: 'Every time you save, the app writes your data into the class Google Sheet (made by your teacher from the Excel template). The dashboard shows the data kept in the sheet. The device only keeps a copy until the sheet has it.',
     f_url: 'Web app URL (from your teacher)', h_tch: 'For the teacher (once)', n_cls: 'After you have entered the web app URL above, create one link and give it to the students. Opening it fills in the URL on their phone.',
-    t_s1: 'Upload the Excel template (Setup tab) to Google Drive and open it with "Save as Google Sheets".', t_s2: 'In the sheet: Extensions > Apps Script. Delete the sample code, paste the script (button below) and save.', t_s3: 'Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Authorize, then copy the web app URL.', t_s4: 'Paste the URL above, press "Test connection", then "Create class setup link" and send that link to the students.',
+    t_s1: 'Download the Excel template (above), upload it to Google Drive and open it with "Save as Google Sheets".', t_s2: 'In the sheet: Extensions > Apps Script. Delete the sample code, paste the script (button below) and save.', t_s3: 'Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Authorize, then copy the web app URL.', t_s4: 'Paste the URL above, press "Test connection", then "Create class setup link" and send that link to the students.',
     b_script: 'Copy script', b_gs: 'Download script (.gs)', b_test: 'Test connection', scr_ok: 'Script copied. Paste it into Apps Script.', scr_bad: 'Could not copy the script. Use "Download script (.gs)" instead.', test_ok: 'Connected. The sheet script answers.', test_bad: 'No answer from this URL. Check the URL and the deployment settings (Anyone).',
     cf_url_none: 'Web app URL: not entered', cf_url_bad: 'Web app URL: not a Google Apps Script web app URL (it ends with /exec)', cf_url_ok: 'Web app URL: OK', cls_ok: 'Class setup link created. Copy it and send it to the students.', y_cfgbad: 'Enter the web app URL first.',
     w_cfg: 'Google Sheet is not connected yet. Open the class link from your teacher, or enter the web app URL in Share > Google Sheet connection. You cannot save entries until this is done.', n_xl: 'Template of the shared sheet (tab "Data" and a guide). The teacher uploads it to Google Drive and makes the class Google Sheet from it (steps: Share tab > Google Sheet connection).',
-    ss_unsent: 'Not yet saved in the Google Sheet.', ss_ok: 'Saved in Google Sheet', ss_rejected: 'The sheet script refused the data. Ask your teacher.', ss_offline: 'No internet or no answer. It will be sent later.'
+    ss_unsent: 'Not yet saved in the Google Sheet.', ss_ok: 'Saved in Google Sheet', ss_rejected: 'The sheet script refused the data. Ask your teacher.', ss_offline: 'No internet or no answer. It will be sent later.',
+    tab_today: 'Today', tab_more: 'More', tab_dash: 'Graphs', tab_teacher: 'For the teacher', tab_share2: 'Google Sheet & sharing',
+    m_setup: 'ATI name, place, sowing date, TP and b', m_sched: '3F4D+MD dates: planned and actual', m_share: 'Connection, restore, view-only link, backup', m_help: 'How to use the app, 3F4D manuals', m_teacher: 'Excel template, script, class link, manuals', m_demo: 'Example data. Nothing is saved.',
+    sg_wl: 'Water level', sg_rec: 'Field records', sg_tpb: 'TP / b', n_sched2: 'Planned dates are calculated from the sowing date and seedling age (same rules as the 3F4D+MD scheduling app, Professional mode). When an event happens, open it and enter the actual date.',
+    sc_edit: 'Enter actual date / change plan', rd_0: 'today', rd_1: 'tomorrow', rd_in: 'in {n} days', rd_ago: '{n} days ago',
+    t_start: 'Getting started', ts_1: 'Connect to the class Google Sheet (open the class link from your teacher)', ts_2: 'Fill in Setup (ATI, sowing date, TP and b)', ts_3: 'Enter the first water level', b_go: 'Open',
+    t_dat: 'Day {n} after transplanting', t_done: "Today's water level is saved", t_todo: "Today's water level", t_enter: "Enter today's water level", t_edit: 'Edit', t_gap: 'Last entry: {d}. No entry for {n} days.',
+    t_levels: 'Latest water level', t_afterirr: 'after irrigation', t_graphs: 'Open graphs', t_next: 'Schedule', t_now: 'Now', t_until: 'until', t_none_next: 'No more events planned.', t_full: 'Full schedule', t_over: 'Actual date not entered',
+    lv_wl: 'Water level', lv_above: 'water above the soil surface', lv_below: 'water below the soil surface', lv_at: 'at the soil surface', lv_notpb: 'Enter TP and b (More > Setup) to see the water level', lv_irr: 'Irrigation', lv_bad: 'The reading after irrigation is lower than before',
+    f_photo: 'Photo (stays on this phone, not sent to the sheet)', b_photo: 'Add photo', b_phdel: 'Remove photo', ph_demo: 'Photos are not saved in the demo.', ph_fail: 'Could not save the photo.',
+    w_cfg: 'Google Sheet is not connected yet. Open the class link from your teacher, or enter the web app URL in More > Google Sheet & sharing. You cannot save entries until this is done.', b_cfggo: 'Open Google Sheet & sharing',
+    n_xl: 'Template of the shared sheet (tab "Data" and a guide). Upload it to Google Drive and make the class Google Sheet from it (steps below).',
+    f_url2: 'Web app URL (from the deployment)'
   },
   bn: {
     h_rec: 'মাঠের রেকর্ড', n_rec: 'সার, বালাইনাশক ও কুশির সংখ্যা লিখুন। এগুলো শেয়ার লিংক ও এক্সপোর্টে থাকবে।', h_fert: 'সার', h_pest: 'বালাইনাশক', h_till: 'কুশির সংখ্যা',
@@ -487,7 +585,15 @@ var I18N = {
     ss_cfg: 'গুগল শিট সংযুক্ত নয়।', ss_empty: 'এখনও পাঠানোর কিছু নেই।', ss_unsent: 'এখনও গুগল শিটে পাঠানো হয়নি।', ss_wait: 'পাঠানো হয়েছে। শিটে দেখাতে কয়েক মিনিট লাগতে পারে।', ss_ok: 'গুগল শিটে সংরক্ষিত', ss_late: 'পাঠানো হয়েছে কিন্তু শিটে এখনও দেখা যাচ্ছে না। ফর্ম লিংক দেখুন বা আবার পাঠান।', ss_demo: 'ডেমো: কিছু পাঠানো হয় না।', ss_offline: 'ইন্টারনেট নেই। পরে পাঠানো হবে।',
     h_xl: 'এক্সেল টেমপ্লেট', n_xl: 'শেয়ার্ড শিটের টেমপ্লেট ("Data" ট্যাব ও নির্দেশিকা)। অ্যাপ নিজে গুগল ফর্মের মাধ্যমে তথ্য পাঠায়।',
     f_url: 'ওয়েব অ্যাপ URL (শিক্ষকের কাছ থেকে)', n_sync2: 'প্রতিবার সংরক্ষণ করলে অ্যাপ ক্লাসের গুগল শিটে তথ্য লিখে দেয়। ড্যাশবোর্ডে শিটে থাকা তথ্য দেখানো হয়।', w_cfg: 'গুগল শিট এখনও সংযুক্ত নয়। শিক্ষকের ক্লাস লিংকটি খুলুন, অথবা শেয়ার > গুগল শিট সংযোগে ওয়েব অ্যাপ URL দিন। এটি না করলে এন্ট্রি সংরক্ষণ করা যাবে না।',
-    ss_unsent: 'এখনও গুগল শিটে সংরক্ষিত হয়নি।', ss_ok: 'গুগল শিটে সংরক্ষিত', ss_offline: 'ইন্টারনেট নেই বা সাড়া নেই। পরে পাঠানো হবে।'
+    ss_unsent: 'এখনও গুগল শিটে সংরক্ষিত হয়নি।', ss_ok: 'গুগল শিটে সংরক্ষিত', ss_offline: 'ইন্টারনেট নেই বা সাড়া নেই। পরে পাঠানো হবে।',
+    tab_today: 'আজ', tab_more: 'আরও', tab_dash: 'গ্রাফ', tab_teacher: 'শিক্ষকের জন্য', tab_share2: 'গুগল শিট ও শেয়ার',
+    m_setup: 'এটিআই নাম, স্থান, বপনের তারিখ, TP ও b', m_sched: '৩এফ৪ডি+এমডি তারিখ: পরিকল্পিত ও প্রকৃত', m_share: 'সংযোগ, ফিরিয়ে আনা, শেয়ার লিংক, ব্যাকআপ', m_help: 'অ্যাপ ব্যবহারের নিয়ম, ৩এফ৪ডি ম্যানুয়াল', m_teacher: 'এক্সেল টেমপ্লেট, স্ক্রিপ্ট, ক্লাস লিংক', m_demo: 'উদাহরণ তথ্য। কিছু সংরক্ষণ হয় না।',
+    sg_wl: 'পানির স্তর', sg_rec: 'মাঠের রেকর্ড', sg_tpb: 'TP / b', sc_edit: 'প্রকৃত তারিখ দিন / পরিকল্পনা বদলান', rd_0: 'আজ', rd_1: 'আগামীকাল', rd_in: '{n} দিন পর', rd_ago: '{n} দিন আগে',
+    t_start: 'শুরু করুন', ts_1: 'ক্লাসের গুগল শিটে সংযোগ দিন (শিক্ষকের ক্লাস লিংক খুলুন)', ts_2: 'সেটআপ পূরণ করুন (এটিআই, বপনের তারিখ, TP ও b)', ts_3: 'প্রথম পানির স্তর দিন', b_go: 'খুলুন',
+    t_dat: 'রোপণের পর {n}তম দিন', t_done: 'আজকের পানির স্তর সংরক্ষিত', t_todo: 'আজকের পানির স্তর', t_enter: 'আজকের পানির স্তর দিন', t_edit: 'সম্পাদনা', t_gap: 'শেষ এন্ট্রি: {d}। {n} দিন কোনো এন্ট্রি নেই।',
+    t_levels: 'সর্বশেষ পানির স্তর', t_afterirr: 'সেচের পর', t_graphs: 'গ্রাফ খুলুন', t_next: 'সময়সূচি', t_now: 'এখন', t_until: 'পর্যন্ত', t_none_next: 'আর কোনো কাজ পরিকল্পিত নেই।', t_full: 'পূর্ণ সময়সূচি', t_over: 'প্রকৃত তারিখ দেওয়া হয়নি',
+    lv_wl: 'পানির স্তর', lv_above: 'মাটির উপরে পানি', lv_below: 'মাটির নিচে পানি', lv_at: 'মাটির সমতলে', lv_notpb: 'পানির স্তর দেখতে TP ও b দিন (আরও > সেটআপ)', lv_irr: 'সেচ', lv_bad: 'সেচের পরের মাপ আগের চেয়ে কম',
+    f_photo: 'ছবি (এই ফোনেই থাকে, শিটে যায় না)', b_photo: 'ছবি যোগ করুন', b_phdel: 'ছবি মুছুন', w_cfg: 'গুগল শিট এখনও সংযুক্ত নয়। শিক্ষকের ক্লাস লিংকটি খুলুন। এটি না করলে এন্ট্রি সংরক্ষণ করা যাবে না।', b_cfggo: 'গুগল শিট ও শেয়ার খুলুন'
   }
 };
 
@@ -716,10 +822,10 @@ function recTables(forDash) {
   var h = '';
   var F = S.ferts.slice().sort(function (a, b) { return a.d < b.d ? 1 : -1; });
   h += '<h3>' + esc(t('d_fert')) + '</h3>' + (F.length ? '<div class="tw"><table><tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_amt')) + '</th><th>' + esc(t('c_note')) + '</th></tr>' +
-    F.map(function (r) { return '<tr><td>' + r.d + '</td><td>' + esc(plotName(r.p)) + '</td><td>' + FERTS.filter(function (f) { return r.kg[f] != null; }).map(function (f) { return esc(f) + ' ' + r.kg[f]; }).join(', ') + '</td><td>' + esc(r.n) + '</td></tr>'; }).join('') + '</table></div>' : '<p class="muted">' + esc(t('d_norec')) + '</p>');
+    F.map(function (r) { return '<tr><td>' + esc(fmtD(r.d)) + '</td><td>' + esc(plotName(r.p)) + '</td><td>' + FERTS.filter(function (f) { return r.kg[f] != null; }).map(function (f) { return esc(f) + ' ' + r.kg[f]; }).join(', ') + '</td><td>' + esc(r.n) + '</td></tr>'; }).join('') + '</table></div>' : '<p class="muted">' + esc(t('d_norec')) + '</p>');
   var P = S.pests.slice().sort(function (a, b) { return a.d < b.d ? 1 : -1; });
   h += '<h3>' + esc(t('d_pest')) + '</h3>' + (P.length ? '<div class="tw"><table><tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_type')) + '</th><th>' + esc(t('c_chem')) + '</th><th>' + esc(t('c_purp')) + '</th><th>' + esc(t('c_note')) + '</th></tr>' +
-    P.map(function (r) { return '<tr><td>' + r.d + '</td><td>' + esc(plotName(r.p)) + '</td><td>' + esc(t('pt_' + r.t)) + '</td><td>' + esc(r.c) + '</td><td>' + esc(r.u) + '</td><td>' + esc(r.n) + '</td></tr>'; }).join('') + '</table></div>' : '<p class="muted">' + esc(t('d_norec')) + '</p>');
+    P.map(function (r) { return '<tr><td>' + esc(fmtD(r.d)) + '</td><td>' + esc(plotName(r.p)) + '</td><td>' + esc(t('pt_' + r.t)) + '</td><td>' + esc(r.c) + '</td><td>' + esc(r.u) + '</td><td>' + esc(r.n) + '</td></tr>'; }).join('') + '</table></div>' : '<p class="muted">' + esc(t('d_norec')) + '</p>');
   return h;
 }
 function draw(el) {
@@ -756,13 +862,13 @@ function renderDash() {
   var title = (s.name || 'ATI') + (s.place ? ' - ' + s.place : '');
   box.innerHTML = '<div class="card"><h2>' + esc(title) + '</h2><p class="muted">' +
     (num(s.lat) != null ? esc(t('d_loc')) + ' ' + fmt(num(s.lat), 3) + ', ' + fmt(num(s.lon), 3) + ' &middot; ' : '') +
-    esc(t('d_data')) + ' ' + first + ' ' + esc(t('d_to')) + ' ' + last + ' (' + Object.keys(uniq).length + ' ' + esc(t('d_days')) + ') &middot; ' + esc(t('d_last')) + ' ' + esc(agoTxt(ago)) +
+    esc(t('d_data')) + ' ' + esc(fmtD(first)) + ' ' + esc(t('d_to')) + ' ' + esc(fmtD(last)) + ' (' + Object.keys(uniq).length + ' ' + esc(t('d_days')) + ') &middot; ' + esc(t('d_last')) + ' ' + esc(agoTxt(ago)) +
     (ago > 3 ? ' <span class="warn">' + esc(t('noentry')) + ' ' + ago + ' ' + esc(t('ndays')) + '</span>' : '') + '</p>' +
     '<div class="kpis"><div><b>' + fmt(f.total, 0) + '</b><span>' + esc(t('d_fp')) + '</span></div><div><b>' + fmt(m.total, 0) + '</b><span>' + esc(t('d_md')) + '</span></div>' +
     '<div><b>' + fmt(save, 0) + '&nbsp;mm</b><span>' + esc(t('d_sav')) + ' (' + fmt(sm.pct, 0) + '%)</span></div><div><b>' + f.n + ' / ' + m.n + '</b><span>' + esc(t('d_n')) + '</span></div></div>' +
     '<div class="plot lazy" data-fig="wl"></div><div class="two"><div class="plot lazy" data-fig="cum"></div><div class="plot lazy" data-fig="dec"></div></div>' +
     '<details><summary>' + esc(t('d_qc')) + ': ' + qc.length + '</summary>' + (qc.length ?
-      '<table><tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_qc')) + '</th></tr>' + qc.map(function (r) { return '<tr><td>' + r.date + '</td><td>' + esc(r.tr) + '</td><td>' + esc(r.qc) + '</td></tr>'; }).join('') + '</table>'
+      '<table><tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_qc')) + '</th></tr>' + qc.map(function (r) { return '<tr><td>' + esc(fmtD(r.date)) + '</td><td>' + esc(r.tr) + '</td><td>' + esc(r.qc) + '</td></tr>'; }).join('') + '</table>'
       : '<p class="muted">' + esc(t('d_noqc')) + '</p>') + '</details></div>' + recHtml;
   FIGS.wl = function () { return figWL(C); }; FIGS.cum = function () { return figCum(C, sm); }; FIGS.dec = function () { return figDec(C); };
   lazyAll();
@@ -773,31 +879,31 @@ function bindInputs() {
   Array.prototype.forEach.call(document.querySelectorAll('[data-b]'), function (el) {
     el.value = getPath(S, el.getAttribute('data-b')) || '';
     el.disabled = readOnly;
-    el.onchange = function () { var pth = el.getAttribute('data-b'); setPath(S, pth, el.value.trim()); saveLocal(/^sync\./.test(pth)); refreshCalc(); renderStat(); };
+    el.onchange = function () { var pth = el.getAttribute('data-b'); setPath(S, pth, el.value.trim()); Array.prototype.forEach.call(document.querySelectorAll('[data-b="' + pth + '"]'), function (o) { if (o !== el) o.value = el.value.trim(); }); saveLocal(/^sync\./.test(pth)); refreshCalc(); renderStat(); };
   });
   refreshCalc();
 }
 function refreshCalc() {
-  $('o-trans').value = transDate(); $('o-day0').value = day0();
+  $('o-trans').value = transDate() ? fmtD(transDate()) : ''; $('o-day0').value = day0() ? fmtD(day0()) : '';
   $('title').textContent = S.site.name ? S.site.name : 'ATI Water Monitor';
   $('sub').textContent = S.site.place || '';
   renderSched(); if ($('e-save')) refreshValidity();
 }
 function renderSched() {
-  $('schedInfo').innerHTML = '<div><b>' + esc(S.site.sow || '-') + '</b><span>' + esc(t('f_sow')) + '</span></div><div><b>' + esc(transDate() || '-') + '</b><span>' + esc(t('f_trans')) + '</span></div>';
-  var C = calendar(), h = '<tr><th>' + esc(t('c_event')) + '</th><th>' + esc(t('c_plan')) + '</th><th>' + esc(t('c_ovr')) + '</th><th>' + esc(t('c_act')) + '</th><th>' + esc(t('c_stat')) + '</th></tr>';
+  $('schedInfo').innerHTML = '<div><b>' + esc(fmtD(S.site.sow)) + '</b><span>' + esc(t('f_sow')) + '</span></div><div><b>' + esc(fmtD(transDate())) + '</b><span>' + esc(t('f_trans')) + '</span></div>';
+  var C = calendar(), h = '', dis = readOnly ? ' disabled' : '';
   C.forEach(function (c, i) {
-    h += '<tr><td>' + esc(lang === 'bn' ? c.bn : c.ev) + '</td><td>' + (c.plan || '-') + (c.ovr ? ' *' : '') + '</td>' +
-      '<td><input type="date" data-ov="' + i + '" value="' + esc(c.ovr) + '"' + (readOnly ? ' disabled' : '') + '></td>' +
-      '<td><input type="date" data-ac="' + i + '" value="' + esc(c.act) + '"' + (readOnly ? ' disabled' : '') + '></td>' +
-      '<td class="' + (c.st === 'st_late' || c.st === 'st_over' ? 'warn' : c.st === 'st_ok' ? 'okc' : '') + '">' + esc(t(c.st)) + (c.delay != null ? ' (' + (c.delay > 0 ? '+' : '') + c.delay + ' d)' : '') + '</td></tr>';
+    var cls = (c.st === 'st_late' || c.st === 'st_over') ? 'warn' : c.st === 'st_ok' ? 'ok' : '';
+    var sub = esc(t('c_plan')) + ': ' + esc(c.plan ? fmtD(c.plan) : '-') + (c.ovr ? ' *' : '') + (c.plan && !c.act ? ' &middot; ' + esc(relDays(c.plan)) : '') + (c.act ? ' &middot; ' + esc(t('c_act')) + ': <b>' + esc(fmtD(c.act)) + '</b>' : '');
+    h += '<div class="ev"><div class="h"><div><b>' + esc(lang === 'bn' ? c.bn : c.ev) + '</b><div class="muted">' + sub + '</div></div><span class="chip ' + cls + '">' + esc(t(c.st)) + (c.delay != null ? ' (' + (c.delay > 0 ? '+' : '') + c.delay + ' d)' : '') + '</span></div>' +
+      '<details class="evd editonly"><summary>' + esc(t('sc_edit')) + '</summary><div class="grid g2"><div><label>' + esc(t('c_act')) + '</label><input type="date" data-ac="' + i + '" value="' + esc(c.act) + '"' + dis + '></div><div><label>' + esc(t('c_ovr')) + '</label><input type="date" data-ov="' + i + '" value="' + esc(c.ovr) + '"' + dis + '></div></div></details></div>';
   });
-  $('schedTbl').innerHTML = h;
-  Array.prototype.forEach.call($('schedTbl').querySelectorAll('input'), function (el) {
+  $('schedList').innerHTML = h;
+  Array.prototype.forEach.call($('schedList').querySelectorAll('input'), function (el) {
     el.onchange = function () {
       var isO = el.hasAttribute('data-ov'), i = +(el.getAttribute(isO ? 'data-ov' : 'data-ac')), ev = EVENTS[i][0], tgt = isO ? S.ovr : S.act;
       if (el.value) tgt[ev] = el.value; else delete tgt[ev];
-      saveLocal(); renderSched();
+      saveLocal(); renderSched(); toast(t('saved'));
     };
   });
   var g = '';
@@ -807,16 +913,17 @@ function renderSched() {
     el.onchange = function () { var n = num(el.value); S.set[+el.getAttribute('data-set')] = n == null ? SETTINGS[+el.getAttribute('data-set')][2] : n; saveLocal(); renderSched(); };
   });
 }
-
 /* ====================================================== UI: entry */
 function plotBox(id, tr) {
   var k = tr === 'FP' ? 'fp' : 'md';
   $(id).innerHTML = '<b style="color:' + COL[tr] + '">' + tr + '</b>' +
-    '<label class="req">' + esc(t('f_m')) + '</label><input id="e-' + k + '-m" inputmode="decimal">' +
+    '<label class="req">' + esc(t('f_m')) + '</label><div class="stepper"><button type="button" class="stp" data-k="' + k + '" data-s="-0.1" aria-label="-0.1">−</button><input id="e-' + k + '-m" class="big" inputmode="decimal"><button type="button" class="stp" data-k="' + k + '" data-s="0.1" aria-label="+0.1">+</button></div>' +
+    '<div class="live" id="e-' + k + '-lv" style="display:none"></div>' +
     '<label>' + esc(t('f_irr')) + '</label><select id="e-' + k + '-i"><option value="No">' + esc(t('no')) + '</option><option value="Yes">' + esc(t('yes')) + '</option></select>' +
     '<div id="e-' + k + '-x" style="display:none"><label class="req">' + esc(t('f_bef')) + '</label><input id="e-' + k + '-bf" inputmode="decimal">' +
     '<label class="req">' + esc(t('f_aft')) + '</label><input id="e-' + k + '-af" inputmode="decimal">' +
-    '<label>' + esc(t('f_time')) + '</label><input id="e-' + k + '-t" placeholder="15:00"></div>';
+    '<label>' + esc(t('f_time')) + '</label><input id="e-' + k + '-t" placeholder="15:00"></div>' +
+    '<div class="live" id="e-' + k + '-lx" style="display:none"></div>';
   $('e-' + k + '-i').onchange = function () { $('e-' + k + '-x').style.display = this.value === 'Yes' ? 'block' : 'none'; };
 }
 function fillEntry(d) {
@@ -828,7 +935,7 @@ function fillEntry(d) {
     $('e-' + k + '-bf').value = q.bf || ''; $('e-' + k + '-af').value = q.af || ''; $('e-' + k + '-t').value = q.t || '';
   });
   $('e-status').textContent = S.days.some(function (x) { return x.d === d; }) ? '(' + t('saved') + ')' : '';
-  refreshValidity();
+  refreshValidity(); phShow(d);
 }
 function missingSetup() {
   var o = S.site, m = [];
@@ -871,11 +978,12 @@ function refreshValidity() {
   $('e-hint').innerHTML = ee.length ? '<span class="warn">' + esc(t('v_need')) + ' ' + esc(ee.join(' / ')) + '</span>' : '';
   var v = recValid();
   $('rf-add').disabled = !v.f; $('rp-add').disabled = !v.p; $('rt-add').disabled = !v.t; $('t-add').disabled = !v.r;
+  liveCalc();
 }
 function markRequired() {
   var ids = ['e-date', 'rf-d', 'rf-p', 'rp-d', 'rp-p', 'rp-t', 'rp-c', 'rt-d', 'rt-p', 'rt-1', 'rt-2', 'rt-3', 'rt-4', 'rt-5', 't-plot', 't-date', 't-tp', 't-b'];
   ids.forEach(function (id) { var l = $(id) && $(id).parentNode.querySelector('label'); if (l) l.classList.add('req'); });
-  ['site.name', 'site.place', 'site.sow', 'site.age', 'sync.url'].forEach(function (b) { var el = document.querySelector('[data-b="' + b + '"]'); var l = el && el.parentNode.querySelector('label'); if (l) l.classList.add('req'); });
+  ['site.name', 'site.place', 'site.sow', 'site.age', 'site.fpTP', 'site.fpB', 'site.mdTP', 'site.mdB', 'sync.url'].forEach(function (b) { var el = document.querySelector('[data-b="' + b + '"]'); var l = el && el.parentNode.querySelector('label'); if (l) l.classList.add('req'); });
   Array.prototype.forEach.call(document.querySelectorAll('#p-setup th'), function (th) { if (/^(TP|b) \(cm\)$/.test(th.textContent)) th.classList.add('req'); });
 }
 function saveEntry() {
@@ -888,7 +996,7 @@ function saveEntry() {
   });
   var had = S.days.some(function (x) { return x.d === d; });
   S.days = S.days.filter(function (x) { return x.d !== d; }); S.days.push(dy); saveLocal();
-  $('e-status').textContent = t('saved') + (had ? ' (' + t('b_update') + ')' : ''); toast(t('saved')); renderLists();
+  $('e-status').textContent = t('saved') + (had ? ' (' + t('b_update') + ')' : ''); toast(t('saved')); renderLists(); renderToday();
 }
 function renderLists() {
   renderRecLists(); renderStat();
@@ -898,20 +1006,20 @@ function renderLists() {
   var h = '<tr><th>' + esc(t('c_date')) + '</th><th>FP ' + esc(t('c_wl')) + '</th><th>FP ' + esc(t('c_irr')) + '</th><th>3F4D+MD ' + esc(t('c_wl')) + '</th><th>3F4D+MD ' + esc(t('c_irr')) + '</th><th>' + esc(t('c_qc')) + '</th><th></th></tr>';
   days.forEach(function (dy) {
     var a = byKey[dy.d + '|FP'] || {}, b = byKey[dy.d + '|3F4D+MD'] || {}, q = [a.qc, b.qc].filter(Boolean).join('; ');
-    h += '<tr><td>' + dy.d + '</td><td class="n">' + fmt(a.wl) + '</td><td class="n">' + (a.irr ? fmt(a.irrMm, 1) : '') + '</td><td class="n">' + fmt(b.wl) + '</td><td class="n">' + (b.irr ? fmt(b.irrMm, 1) : '') + '</td><td class="warn">' + esc(q) + '</td>' +
+    h += '<tr><td>' + esc(fmtD(dy.d)) + (PH.keys[phKey(dy.d)] ? ' 📷' : '') + '</td><td class="n">' + fmt(a.wl) + '</td><td class="n">' + (a.irr ? fmt(a.irrMm, 1) : '') + '</td><td class="n">' + fmt(b.wl) + '</td><td class="n">' + (b.irr ? fmt(b.irrMm, 1) : '') + '</td><td class="warn">' + esc(q) + '</td>' +
       '<td><button type="button" data-ed="' + dy.d + '">✎</button> <button type="button" class="del editonly" data-rm="' + dy.d + '">✕</button></td></tr>';
   });
   $('entTbl').innerHTML = h;
   Array.prototype.forEach.call($('entTbl').querySelectorAll('button'), function (el) {
     el.onclick = function () {
-      if (el.hasAttribute('data-ed')) { fillEntry(el.getAttribute('data-ed')); window.scrollTo(0, 0); }
+      if (el.hasAttribute('data-ed')) { setSeg('wl'); fillEntry(el.getAttribute('data-ed')); window.scrollTo(0, 0); }
       else { var d = el.getAttribute('data-rm'); S.days = S.days.filter(function (x) { return x.d !== d; }); saveLocal(); renderLists(); toast(t('deleted')); }
     };
   });
   var th = '<tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>TP</th><th>b</th><th></th></tr>';
   C.tpb.slice().sort(function (a, b) { return a.d < b.d ? 1 : -1; }).forEach(function (x) {
     var ri = S.rem.findIndex(function (r) { return r.d === x.d && r.p === x.p && num(r.tp) === x.tp && num(r.b) === x.b; });
-    th += '<tr><td>' + x.d + '</td><td>' + esc(x.p) + '</td><td class="n">' + x.tp + '</td><td class="n">' + x.b + '</td><td>' + (ri >= 0 ? '<button type="button" class="editonly" data-redit="r' + ri + '">✎</button> <button type="button" class="del editonly" data-rt="' + ri + '">✕</button>' : '<span class="muted">initial</span>') + '</td></tr>';
+    th += '<tr><td>' + esc(fmtD(x.d)) + '</td><td>' + esc(x.p) + '</td><td class="n">' + x.tp + '</td><td class="n">' + x.b + '</td><td>' + (ri >= 0 ? '<button type="button" class="editonly" data-redit="r' + ri + '">✎</button> <button type="button" class="del editonly" data-rt="' + ri + '">✕</button>' : '<span class="muted">initial</span>') + '</td></tr>';
   });
   $('tpbTbl').innerHTML = th;
   Array.prototype.forEach.call($('tpbTbl').querySelectorAll('[data-rt]'), function (el) {
@@ -973,20 +1081,20 @@ function editRec(key) {
   if (k === 'p') { r = S.pests[i]; if (!r) return; $('rp-d').value = r.d; $('rp-p').value = r.p; $('rp-t').value = r.t; $('rp-c').value = r.c; $('rp-u').value = r.u; $('rp-n').value = r.n; box = $('rp-d'); }
   if (k === 't') { r = S.tillers[i]; if (!r) return; $('rt-d').value = r.d; $('rt-p').value = r.p; r.h.forEach(function (v, j) { $('rt-' + (j + 1)).value = v; }); box = $('rt-d'); }
   if (k === 'r') { r = S.rem[i]; if (!r) return; $('t-plot').value = r.p; $('t-date').value = r.d; $('t-tp').value = r.tp; $('t-b').value = r.b; box = $('t-date'); }
-  setEditing(k, i); refreshValidity();
+  setSeg(k === 'r' ? 'tpb' : 'rec'); setEditing(k, i); refreshValidity();
   var dt = box.closest('details'); if (dt) dt.open = true;
   box.scrollIntoView({block: 'center'});
 }
 function renderRecLists() {
   var F = S.ferts.map(function (r, i) { return {r: r, i: i}; }).sort(function (a, b) { return a.r.d < b.r.d ? 1 : -1; });
   $('fertTbl').innerHTML = '<tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_amt')) + '</th><th></th></tr>' +
-    F.map(function (x) { return '<tr><td>' + x.r.d + '</td><td>' + esc(plotName(x.r.p)) + '</td><td>' + FERTS.filter(function (f) { return x.r.kg[f] != null; }).map(function (f) { return esc(f) + ' ' + x.r.kg[f]; }).join(', ') + '</td><td><button type="button" class="editonly" data-redit="f' + x.i + '">✎</button> <button type="button" class="del editonly" data-rec="f' + x.i + '">✕</button></td></tr>'; }).join('');
+    F.map(function (x) { return '<tr><td>' + esc(fmtD(x.r.d)) + '</td><td>' + esc(plotName(x.r.p)) + '</td><td>' + FERTS.filter(function (f) { return x.r.kg[f] != null; }).map(function (f) { return esc(f) + ' ' + x.r.kg[f]; }).join(', ') + '</td><td><button type="button" class="editonly" data-redit="f' + x.i + '">✎</button> <button type="button" class="del editonly" data-rec="f' + x.i + '">✕</button></td></tr>'; }).join('');
   var P = S.pests.map(function (r, i) { return {r: r, i: i}; }).sort(function (a, b) { return a.r.d < b.r.d ? 1 : -1; });
   $('pestTbl').innerHTML = '<tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_type')) + '</th><th>' + esc(t('c_chem')) + '</th><th>' + esc(t('c_purp')) + '</th><th></th></tr>' +
-    P.map(function (x) { return '<tr><td>' + x.r.d + '</td><td>' + esc(plotName(x.r.p)) + '</td><td>' + esc(t('pt_' + x.r.t)) + '</td><td>' + esc(x.r.c) + '</td><td>' + esc(x.r.u) + '</td><td><button type="button" class="editonly" data-redit="p' + x.i + '">✎</button> <button type="button" class="del editonly" data-rec="p' + x.i + '">✕</button></td></tr>'; }).join('');
+    P.map(function (x) { return '<tr><td>' + esc(fmtD(x.r.d)) + '</td><td>' + esc(plotName(x.r.p)) + '</td><td>' + esc(t('pt_' + x.r.t)) + '</td><td>' + esc(x.r.c) + '</td><td>' + esc(x.r.u) + '</td><td><button type="button" class="editonly" data-redit="p' + x.i + '">✎</button> <button type="button" class="del editonly" data-rec="p' + x.i + '">✕</button></td></tr>'; }).join('');
   var T = S.tillers.map(function (r, i) { return {r: r, i: i}; }).sort(function (a, b) { return a.r.d < b.r.d ? 1 : -1; });
   $('tillTbl').innerHTML = '<tr><th>' + esc(t('c_date')) + '</th><th>' + esc(t('f_plot')) + '</th><th>' + esc(t('c_hills')) + '</th><th>' + esc(t('c_tiller')) + '</th><th></th></tr>' +
-    T.map(function (x) { return '<tr><td>' + x.r.d + '</td><td>' + esc(x.r.p) + '</td><td>' + x.r.h.join(', ') + '</td><td class="n">' + fmt(tillerMean(x.r.h), 1) + '</td><td><button type="button" class="editonly" data-redit="t' + x.i + '">✎</button> <button type="button" class="del editonly" data-rec="t' + x.i + '">✕</button></td></tr>'; }).join('');
+    T.map(function (x) { return '<tr><td>' + esc(fmtD(x.r.d)) + '</td><td>' + esc(x.r.p) + '</td><td>' + x.r.h.join(', ') + '</td><td class="n">' + fmt(tillerMean(x.r.h), 1) + '</td><td><button type="button" class="editonly" data-redit="t' + x.i + '">✎</button> <button type="button" class="del editonly" data-rec="t' + x.i + '">✕</button></td></tr>'; }).join('');
   Array.prototype.forEach.call(document.querySelectorAll('[data-rec]'), function (el) {
     el.onclick = function () {
       var k = el.getAttribute('data-rec'), i = +k.slice(1), a = k.charAt(0) === 'f' ? S.ferts : k.charAt(0) === 'p' ? S.pests : S.tillers;
@@ -1039,11 +1147,10 @@ function renderStat() {
   if (st !== 'cfg' && st !== 'demo') h += '<button type="button" class="srcref">' + esc(t('b_refresh')) + '</button>';
   Array.prototype.forEach.call(document.querySelectorAll('.srcstat'), function (el) { el.innerHTML = readOnly ? '' : h; });
   var w = $('cfgWarn'); if (w) w.style.display = (!demo && !readOnly && !sheetConfigured()) ? '' : 'none';
-  var yc = $('y-cfg');
-  if (yc) {
-    var u = String(S.sync.url || '').trim();
+  var u = String(S.sync.url || '').trim();
+  Array.prototype.forEach.call(document.querySelectorAll('.ycfg'), function (yc) {
     yc.innerHTML = !u ? '<span class="muted">' + esc(t('cf_url_none')) + '</span>' : (urlOk() ? '<span class="okc">' + esc(t('cf_url_ok')) + '</span>' : '<span class="warn">' + esc(t('cf_url_bad')) + '</span>');
-  }
+  });
 }
 function schedulePush() { clearTimeout(pushT); pushT = setTimeout(function () { pushSheet(); }, 3000); }
 async function encodeSnap() {
@@ -1133,19 +1240,19 @@ async function restoreFromSheet() {
   if (r === 'adopted') say('rst_ok', 'okc'); else if (r === 'notfound') say('rst_none', 'warn'); else if (r === 'cancel') yi.textContent = ''; else say('ss_fetchfail', 'warn');
 }
 async function testConn() {
-  var yi = $('y-info');
+  var yi = $('y-tinfo');
   if (!urlOk()) { yi.innerHTML = '<span class="warn">' + esc(t('cf_url_bad')) + '</span>'; return; }
   yi.textContent = '...';
   try { var r = await fetch(S.sync.url.trim() + '?action=ping&_=' + Date.now(), {cache: 'no-store'}), j = await r.json(); yi.innerHTML = (j && j.ok && j.app === 'ati-monitor') ? '<span class="okc">' + esc(t('test_ok')) + '</span>' : '<span class="warn">' + esc(t('test_bad')) + '</span>'; }
   catch (e) { yi.innerHTML = '<span class="warn">' + esc(t('test_bad')) + '</span>'; }
 }
 async function copyScript() {
-  var yi = $('y-info');
+  var yi = $('y-tinfo');
   try { var r = await fetch('ATI_Monitor_Sheet.gs'); if (!r.ok) throw new Error('x'); var tx = await r.text(); await navigator.clipboard.writeText(tx); yi.innerHTML = '<span class="okc">' + esc(t('scr_ok')) + '</span>'; }
   catch (e) { yi.innerHTML = '<span class="warn">' + esc(t('scr_bad')) + '</span>'; }
 }
 function classLink() {
-  var yi = $('y-info');
+  var yi = $('y-tinfo');
   if (!urlOk()) { yi.innerHTML = '<span class="warn">' + esc(t('y_cfgbad')) + '</span>'; return; }
   var url = location.href.split('#')[0] + '#c=' + b64u(new TextEncoder().encode(JSON.stringify({u: S.sync.url.trim()})));
   $('y-link').value = url; yi.innerHTML = '<span class="okc">' + esc(t('cls_ok')) + '</span>';
@@ -1305,27 +1412,185 @@ function exportCsv() {
   download('ati_water_monitor.csv', '﻿' + lines.join('\n'), 'text/csv');
 }
 
+/* ====================================================== UX: dates, today, more, entry segments, live calc, photos */
+function fmtD(s, noYear) {
+  if (!isDate(s)) return s || '-';
+  try { return new Date(s + 'T00:00:00Z').toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-GB', noYear ? {timeZone: 'UTC', day: 'numeric', month: 'short'} : {timeZone: 'UTC', day: 'numeric', month: 'short', year: 'numeric'}); }
+  catch (e) { return s; }
+}
+function relDays(d) {
+  var n = dayDiff(d, todayStr());
+  return n === 0 ? t('rd_0') : n === 1 ? t('rd_1') : n > 1 ? t('rd_in').replace('{n}', n) : t('rd_ago').replace('{n}', -n);
+}
+function wlState(wl) { return wl > 0 ? 'above' : wl < 0 ? 'below' : 'at'; }
+var IC = {
+  today: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/>',
+  setup: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+  sched: '<rect x="3.500" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.500 10h17"/>',
+  entry: '<path d="M12 5v14M5 12h14"/>',
+  dash: '<path d="M5 20V11M12 20V5M19 20v-7"/>',
+  compare: '<path d="M4 17l5-6 4 3 7-8"/><path d="M4 20h16"/>',
+  share: '<circle cx="6" cy="12" r="2.500"/><circle cx="18" cy="6" r="2.500"/><circle cx="18" cy="18" r="2.500"/><path d="M8.300 10.800l7.400-3.600M8.300 13.200l7.400 3.600"/>',
+  help: '<circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h0"/>',
+  more: '<circle cx="5" cy="12" r="1.600"/><circle cx="12" cy="12" r="1.600"/><circle cx="19" cy="12" r="1.600"/>',
+  teacher: '<path d="M3 9l9-5 9 5-9 5-9-5z"/><path d="M7 11.500v4.500c2.500 2 7.500 2 10 0v-4.500"/>',
+  demo: '<path d="M8 5l11 7-11 7z"/>'
+};
+function svgI(k) { return '<svg viewBox="0 0 24 24">' + (IC[k] || '') + '</svg>'; }
+
+function renderMore() {
+  var it = [['setup', 'tab_setup', 'm_setup'], ['sched', 'tab_sched', 'm_sched'], ['share', 'tab_share2', 'm_share'], ['help', 'tab_help', 'm_help'], ['teacher', 'tab_teacher', 'm_teacher']];
+  var h = it.map(function (x) { return '<button type="button" class="mi" data-go="' + x[0] + '">' + svgI(x[0]) + '<div><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></div><i>›</i></button>'; }).join('');
+  h += demo ? '' : '<button type="button" class="mi" data-demo="1">' + svgI('demo') + '<div><b>' + esc(t('b_demo')) + '</b><span>' + esc(t('m_demo')) + '</span></div><i>›</i></button>';
+  $('moreList').innerHTML = h;
+}
+
+function renderToday() {
+  var box = $('today'); if (!box) return;
+  var td = todayStr(), C = compute(), h = '';
+  if (!demo && !readOnly) {
+    var setupMiss = missingSetup().filter(function (x) { return x !== t('f_sheetcfg'); });
+    var steps = [[sheetConfigured(), 'ts_1', 'share'], [!setupMiss.length, 'ts_2', 'setup'], [S.days.length > 0, 'ts_3', 'entry']];
+    if (!steps.every(function (x) { return x[0]; })) {
+      h += '<div class="card steps"><h2>' + esc(t('t_start')) + '</h2><ol>' + steps.map(function (x, i) {
+        return '<li class="' + (x[0] ? 'done' : '') + '"><span class="dot">' + (x[0] ? '✓' : (i + 1)) + '</span><span class="tx">' + esc(t(x[1])) + '</span>' + (x[0] ? '' : '<button type="button" data-go="' + x[2] + '">' + esc(t('b_go')) + '</button>') + '</li>';
+      }).join('') + '</ol></div>';
+    }
+  }
+  var dy = S.days.filter(function (x) { return x.d === td; })[0], trans = transDate(), dat = trans ? dayDiff(td, trans) : null;
+  h += '<div class="card"><div class="muted">' + esc(fmtD(td)) + (dat != null && dat >= 0 ? ' &middot; ' + esc(t('t_dat').replace('{n}', dat)) : '') + '</div>';
+  if (dy) {
+    var rt = C.rows.filter(function (r) { return r.date === td; });
+    h += '<h2 class="okc" style="margin-top:6px">✓ ' + esc(t('t_done')) + '</h2><div class="muted">' + rt.map(function (r) { return esc(r.tr) + ': ' + (r.wl != null ? (r.wl > 0 ? '+' : '') + fmt(r.wl) + ' cm' : '-') + (r.irr ? ' &middot; ' + esc(t('lv_irr')) + ' ' + fmt(r.irrMm) + ' mm' : ''); }).join('<br>') + '</div>' +
+      (readOnly ? '' : '<div class="row" style="margin-top:10px"><button type="button" data-go="entry" data-seg="wl" data-date="' + td + '">✎ ' + esc(t('t_edit')) + '</button></div>');
+  } else if (!readOnly) {
+    h += '<h2 style="margin-top:6px">' + esc(t('t_todo')) + '</h2><button type="button" class="pri today-btn" data-go="entry" data-seg="wl" data-date="' + td + '">+ ' + esc(t('t_enter')) + '</button>';
+  }
+  var ds = S.days.map(function (x) { return x.d; }).filter(function (d) { return d <= td; }).sort(), last = ds[ds.length - 1];
+  if (last && last !== td && dayDiff(td, last) > 1) h += '<p class="warn" style="margin:10px 0 0">' + esc(t('t_gap').replace('{d}', fmtD(last)).replace('{n}', dayDiff(td, last) - 1)) + '</p>';
+  h += '</div>';
+  var tiles = TR.map(function (tr) {
+    var y = C.rows.filter(function (r) { return r.tr === tr && r.wl != null; }); var r = y[y.length - 1];
+    if (!r) return '';
+    var v = r.irr && r.aw != null ? r.aw : r.wl, st = wlState(v);
+    return '<div class="lvl ' + st + '"><span class="pl" style="color:' + COL[tr] + '">' + esc(tr) + '</span><b>' + (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v)) + '<small> cm</small></b><span>' + esc(t('lv_' + st)) + '</span><span class="muted">' + esc(fmtD(r.date)) + (r.irr ? ' &middot; ' + esc(t('t_afterirr')) : '') + '</span></div>';
+  }).join('');
+  if (tiles) h += '<div class="card"><h2>' + esc(t('t_levels')) + '</h2><div class="lvls">' + tiles + '</div><div class="row" style="margin-top:10px"><button type="button" data-go="dash">' + esc(t('t_graphs')) + '</button></div></div>';
+  var cal = C.cal, bands = bandsFor(cal), sc = '';
+  bands.forEach(function (b) { if (b.x0 <= td && td <= b.x1) sc += '<div class="now"><span class="chip" style="background:' + b.fill + '22;color:inherit;border:1.5px solid ' + b.fill + '">' + esc(t('t_now')) + '</span> <b>' + esc(b.label) + '</b> <span class="muted">' + esc(t('t_until')) + ' ' + esc(fmtD(b.x1, true)) + '</span></div>'; });
+  var over = cal.filter(function (c) { return c.st === 'st_over'; });
+  if (over.length) sc += '<p class="warn" style="margin:8px 0">' + esc(t('t_over')) + ': ' + over.slice(0, 3).map(function (c) { return esc(lang === 'bn' ? c.bn : c.ev) + ' (' + esc(fmtD(c.plan, true)) + ')'; }).join(', ') + (over.length > 3 ? ' …' : '') + '</p>';
+  var nx = cal.filter(function (c) { return !c.act && c.plan && c.plan >= td; }).sort(function (a, b) { return a.plan < b.plan ? -1 : 1; }).slice(0, 3);
+  sc += nx.length ? '<div class="nxt">' + nx.map(function (c) { return '<div><span>' + esc(lang === 'bn' ? c.bn : c.ev) + '</span><b>' + esc(fmtD(c.plan, true)) + '</b><span class="muted">' + esc(relDays(c.plan)) + '</span></div>'; }).join('') + '</div>' : (cal.some(function (c) { return c.plan; }) ? '<p class="muted">' + esc(t('t_none_next')) + '</p>' : '');
+  if (sc) h += '<div class="card"><h2>' + esc(t('t_next')) + '</h2>' + sc + '<div class="row" style="margin-top:10px"><button type="button" data-go="sched">' + esc(t('t_full')) + '</button></div></div>';
+  if (!readOnly) h += '<div class="card"><div class="row"><button type="button" data-go="entry" data-seg="rec">' + esc(t('sg_rec')) + '</button><button type="button" data-go="entry" data-seg="tpb">' + esc(t('sg_tpb')) + '</button><button type="button" data-go="compare">' + esc(t('tab_compare')) + '</button></div></div>';
+  box.innerHTML = h;
+}
+
+var SEG = 'wl';
+function setSeg(x) {
+  SEG = x || 'wl';
+  Array.prototype.forEach.call(document.querySelectorAll('#p-entry [data-sg]'), function (el) { el.style.display = el.getAttribute('data-sg') === SEG ? '' : 'none'; });
+  Array.prototype.forEach.call(document.querySelectorAll('#eseg button'), function (b) { b.className = b.getAttribute('data-seg') === SEG ? 'on' : ''; });
+}
+
+function lastM(tr, before) {
+  var d = S.days.filter(function (x) { return x.d < before && x.p && x.p[tr] && num(x.p[tr].m) != null; }).sort(function (a, b) { return a.d < b.d ? -1 : 1; });
+  return d.length ? num(d[d.length - 1].p[tr].m) : null;
+}
+function liveCalc() {
+  if (!$('e-fp-m')) return;
+  var d = $('e-date').value, L = tpbList();
+  [['fp', 'FP'], ['md', '3F4D+MD']].forEach(function (a) {
+    var k = a[0], tr = a[1], el = $('e-' + k + '-lv'), ex = $('e-' + k + '-lx'), m = num($('e-' + k + '-m').value);
+    var tb = isDate(d) ? tpbFor(L, tr, d) : null;
+    if (m == null) { el.style.display = 'none'; }
+    else if (!tb) { el.style.display = ''; el.className = 'live none'; el.textContent = t('lv_notpb'); }
+    else { var wl = r1(m - tb.tp + tb.b), st = wlState(wl); el.style.display = ''; el.className = 'live ' + st; el.textContent = t('lv_wl') + ': ' + (wl > 0 ? '+' : '') + fmt(wl) + ' cm · ' + t('lv_' + st); }
+    var bf = num($('e-' + k + '-bf').value), af = num($('e-' + k + '-af').value);
+    if ($('e-' + k + '-i').value === 'Yes' && bf != null && af != null && tb) {
+      var bw = r1(bf - tb.tp + tb.b), aw = r1(af - tb.tp + tb.b), mm = r1((aw - Math.max(bw, 0)) * 10);
+      ex.style.display = ''; ex.className = 'live ' + (aw < bw ? 'none' : 'above'); ex.textContent = aw < bw ? t('lv_bad') : t('lv_irr') + ': ' + fmt(mm) + ' mm (' + (bw > 0 ? '+' : '') + fmt(bw) + ' → ' + (aw > 0 ? '+' : '') + fmt(aw) + ' cm)';
+    } else ex.style.display = 'none';
+  });
+}
+function stepM(k, step) {
+  var tr = k === 'fp' ? 'FP' : '3F4D+MD', el = $('e-' + k + '-m'), v = num(el.value);
+  if (v == null) v = lastM(tr, $('e-date').value || todayStr());
+  if (v == null) v = 0;
+  el.value = (Math.round((v + step) * 10) / 10).toFixed(1);
+  el.dispatchEvent(new Event('input', {bubbles: true}));
+}
+
+/* photos: kept on this device only (IndexedDB), never sent to the sheet */
+var PH = {db: null, keys: {}, url: ''};
+function phDb() {
+  return new Promise(function (res, rej) {
+    if (PH.db) return res(PH.db);
+    if (!window.indexedDB) return rej(new Error('no idb'));
+    var r = indexedDB.open('ati_photos', 1);
+    r.onupgradeneeded = function () { r.result.createObjectStore('p'); };
+    r.onsuccess = function () { PH.db = r.result; res(PH.db); };
+    r.onerror = function () { rej(r.error); };
+  });
+}
+function phReq(mode, fn) {
+  return phDb().then(function (db) { return new Promise(function (res, rej) { var q = fn(db.transaction('p', mode).objectStore('p')); q.onsuccess = function () { res(q.result); }; q.onerror = function () { rej(q.error); }; }); });
+}
+function phKey(d) { return (S.site.name || '').trim() + '|' + d; }
+function phLoadKeys() { return phReq('readonly', function (st) { return st.getAllKeys(); }).then(function (ks) { PH.keys = {}; (ks || []).forEach(function (k) { PH.keys[k] = 1; }); }).catch(function () {}); }
+function phShow(d) {
+  var img = $('e-ph-img'); if (!img) return;
+  if (PH.url) { URL.revokeObjectURL(PH.url); PH.url = ''; }
+  img.style.display = 'none'; $('e-ph-del').style.display = 'none';
+  if (demo || readOnly || !isDate(d)) return;
+  phReq('readonly', function (st) { return st.get(phKey(d)); }).then(function (b) {
+    if (!b || $('e-date').value !== d) return;
+    PH.url = URL.createObjectURL(b); img.src = PH.url; img.style.display = ''; $('e-ph-del').style.display = '';
+  }).catch(function () {});
+}
+function phResize(file) {
+  return new Promise(function (res, rej) {
+    var u = URL.createObjectURL(file), im = new Image();
+    im.onload = function () {
+      var s = Math.min(1, 1280 / Math.max(im.width, im.height)), c = document.createElement('canvas');
+      c.width = Math.round(im.width * s); c.height = Math.round(im.height * s); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(u); c.toBlob(function (b) { b ? res(b) : rej(new Error('blob')); }, 'image/jpeg', 0.72);
+    };
+    im.onerror = function () { URL.revokeObjectURL(u); rej(new Error('img')); };
+    im.src = u;
+  });
+}
+async function phPick(file) {
+  var d = $('e-date').value;
+  if (demo) { toast(t('ph_demo')); return; }
+  if (!file || !isDate(d)) return;
+  try { var b = await phResize(file); await phReq('readwrite', function (st) { return st.put(b, phKey(d)); }); PH.keys[phKey(d)] = 1; phShow(d); renderLists(); toast(t('saved')); }
+  catch (e) { toast(t('ph_fail')); }
+}
+async function phRemove() {
+  var d = $('e-date').value; if (!isDate(d)) return;
+  try { await phReq('readwrite', function (st) { return st.delete(phKey(d)); }); delete PH.keys[phKey(d)]; phShow(d); renderLists(); toast(t('deleted')); } catch (e) {}
+}
+
 /* ====================================================== navigation / language / boot */
-var TABS = ['setup', 'sched', 'entry', 'dash', 'compare', 'share', 'help'];
+var TABS = ['today', 'entry', 'dash', 'compare', 'more', 'setup', 'sched', 'share', 'help', 'teacher'], NAV = ['today', 'entry', 'dash', 'compare', 'more'];
 function show(tab) {
+  if (TABS.indexOf(tab) < 0) tab = 'today';
   TABS.forEach(function (x) { $('p-' + x).className = 'pane' + (x === tab ? ' on' : ''); });
-  Array.prototype.forEach.call($('nav').querySelectorAll('button'), function (b) { b.className = b.getAttribute('data-tab') === tab ? 'on' : ''; });
+  var navTab = readOnly ? tab : (NAV.indexOf(tab) >= 0 ? tab : 'more');
+  Array.prototype.forEach.call($('nav').querySelectorAll('button'), function (b) { b.className = b.getAttribute('data-tab') === navTab ? 'on' : ''; });
+  if (tab === 'today') renderToday();
+  if (tab === 'more') renderMore();
   if (tab === 'dash') renderDash();
-  if (tab === 'entry') renderLists();
+  if (tab === 'entry') { renderLists(); setSeg(SEG); }
   if (tab === 'compare') renderCompare();
+  window.scrollTo(0, 0);
   try { sessionStorage.setItem('ati_tab', tab); } catch (e) {}
 }
 function buildNav() {
-  var tabs = readOnly ? ['dash', 'sched'] : TABS;
-  var IC = {
-    setup: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
-    sched: '<rect x="3.500" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.500 10h17"/>',
-    entry: '<path d="M12 5v14M5 12h14"/>',
-    dash: '<path d="M5 20V11M12 20V5M19 20v-7"/>',
-    compare: '<path d="M4 17l5-6 4 3 7-8"/><path d="M4 20h16"/>',
-    share: '<circle cx="6" cy="12" r="2.500"/><circle cx="18" cy="6" r="2.500"/><circle cx="18" cy="18" r="2.500"/><path d="M8.300 10.800l7.400-3.600M8.300 13.200l7.400 3.600"/>',
-    help: '<circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h0"/>'};
-  $('nav').innerHTML = tabs.map(function (x) { return '<button type="button" data-tab="' + x + '"><svg viewBox="0 0 24 24">' + (IC[x] || '') + '</svg><span>' + esc(t('tab_' + x)) + '</span></button>'; }).join('');
+  var tabs = readOnly ? ['dash', 'sched'] : NAV;
+  $('nav').innerHTML = tabs.map(function (x) { return '<button type="button" data-tab="' + x + '">' + svgI(x) + '<span>' + esc(t('tab_' + x)) + '</span></button>'; }).join('');
   Array.prototype.forEach.call($('nav').querySelectorAll('button'), function (b) { b.onclick = function () { show(b.getAttribute('data-tab')); }; });
 }
 function applyLang() {
@@ -1336,7 +1601,7 @@ function applyLang() {
   plotBox('e-fp', 'FP'); plotBox('e-md', '3F4D+MD'); buildRecForms(); markRequired(); setEditing(editing ? editing.k : null, editing ? editing.i : 0);
   buildNav(); renderSched(); renderStat();
   var cur = ''; try { cur = sessionStorage.getItem('ati_tab') || ''; } catch (e) {}
-  show(readOnly ? 'dash' : (TABS.indexOf(cur) >= 0 ? cur : (S.days.length ? 'dash' : 'setup')));
+  show(readOnly ? 'dash' : (TABS.indexOf(cur) >= 0 ? cur : 'today'));
   fillEntry($('e-date').value && isDate($('e-date').value) ? $('e-date').value : todayStr());
   if (readOnly) setBanner();
   if (demo) setDemoBanner();
@@ -1363,7 +1628,18 @@ function initHandlers() {
   $('t-add').onclick = addRem;
   Array.prototype.forEach.call(document.querySelectorAll('.rcancel'), function (b) { b.onclick = function () { setEditing(null); clearRecForms(); refreshValidity(); }; });
   document.addEventListener('input', refreshValidity); document.addEventListener('change', refreshValidity);
-  $('demoBtn').onclick = function () { location.hash = '#demo'; location.reload(); };
+  document.addEventListener('click', function (ev) {
+    var g = ev.target.closest ? ev.target.closest('[data-go],[data-demo],.stp,#eseg button') : null; if (!g) return;
+    if (g.hasAttribute('data-demo')) { location.hash = '#demo'; location.reload(); return; }
+    if (g.classList.contains('stp')) { stepM(g.getAttribute('data-k'), Number(g.getAttribute('data-s'))); return; }
+    if (g.hasAttribute('data-seg') && !g.hasAttribute('data-go')) { setSeg(g.getAttribute('data-seg')); return; }
+    var go = g.getAttribute('data-go'); show(go);
+    if (g.hasAttribute('data-seg')) setSeg(g.getAttribute('data-seg'));
+    if (g.hasAttribute('data-date')) fillEntry(g.getAttribute('data-date'));
+  });
+  $('e-ph-btn').onclick = function () { $('e-ph').click(); };
+  $('e-ph').onchange = function () { var f = this.files[0]; this.value = ''; phPick(f); };
+  $('e-ph-del').onclick = phRemove;
   $('cfgGo').onclick = function () { show('share'); };
   document.addEventListener('click', function (ev) { var c = ev.target.className || ''; if (/srcsend/.test(c)) pushSheet(true); else if (/srcref/.test(c)) sheetPull(); });
   $('y-mk').onclick = classLink; $('y-lcopy').onclick = async function () { var v = $('y-link').value; if (!v) return; try { await navigator.clipboard.writeText(v); toast(t('copied')); } catch (e) { $('y-link').select(); toast(t('copyfail')); } };
@@ -1406,6 +1682,7 @@ async function boot() {
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { location.hash = ''; }
   } else { S = normalize(loadLocal()); }
   initHandlers(); bindInputs(); applyLang(); renderLists();
+  phLoadKeys().then(function () { renderLists(); });
   if (cfgJustSet) toast(t('cfg_ok'));
   if (!$('e-date').value) fillEntry(todayStr());
   if (!demo && !readOnly) {

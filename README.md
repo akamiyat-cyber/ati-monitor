@@ -20,11 +20,12 @@ Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. N
 ファイルを更新したら、`sw.js` の `VERSION` を変えてください(古いキャッシュが入れ替わります)。
 
 ## 使い方 / How to use
-1. **Setup**: ATI名、場所、播種日、苗齢、TP と b、測定日を入れる。
-2. **Schedule**: 予定日が自動で出る。実際に作業した日は「Actual」に入れる。
-3. **Entry**: 毎朝、日付・水位の読み(m)を入れる。灌漑した日は「Yes」にして、前後の読みと時間を入れる。
-4. **Dashboard**: グラフを見る。
-5. **Share**: 「Create link」で閲覧専用リンクを作り、WhatsApp などで送る。入力を足したら新しいリンクを作り直す。
+画面の下に5つのボタンがあります: **Today / Entry / Graphs / Compare / More**。
+1. **Today**: 今日の入力が済んだか、最新の水位、スケジュールの「今」と「次」。最初の準備(シートにつなぐ・Setup・最初の入力)も、ここに出ます。
+2. **Entry**: Water level(毎日の水位)、Field records(施肥・農薬・分げつ数)、TP / b(再測定)に分かれています。mを入れると、すぐ下に水位が出ます。「−」「+」で0.1ずつ変えられます。パイプの写真も残せます(写真は端末だけに残り、シートには送られません)。
+3. **Graphs**: 水位、累積灌漑量、日減水量、節水量のグラフとデータチェック。
+4. **Compare**: シートにある他のATIとの比較。
+5. **More**: Setup、Schedule(実際の日付の入力)、Google Sheet & sharing(接続・復元・閲覧専用リンク・バックアップ)、Help、For the teacher(Excel雛形・スクリプト・クラス設定リンク・マニュアル)、デモ。
 
 ## データの扱い / Data
 - 正本は、先生のGoogleシートです。ブラウザ(localStorage)には、送信が済むまでの控えが残ります。Share ▸ Export file で、バックアップもできます。
@@ -42,12 +43,12 @@ Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. N
 
 ## Googleシートへの自動書き込み・比較・必須項目・デモ
 - Googleシートへの保存は必須です。保存(Save entry など)のたびに、共有シートのスクリプト(Google Apps Script)を通して、そのATIのデータが自動で書き込まれます。ダッシュボードと Compare には、シートにあるデータが出ます。端末には、書き込みが済むまでの控えが残ります。
-- 先生の準備(1回だけ): Setup の「Excel template」(`ATI_Monitor_Shared_TEMPLATE.xlsx`)をGoogleドライブに上げて「Googleスプレッドシートとして保存」→ 拡張機能 ▸ Apps Script に `ATI_Monitor_Sheet.gs` を貼る(アプリの Share ▸ Google Sheet connection の「Copy script」)→ デプロイ ▸ ウェブアプリ(実行: 自分、アクセス: 全員)→ 出たURLをアプリに貼る。
-- Share タブで「Create class setup link」を押すと、URL入りのリンクができます。それを学生に配ると、学生は開くだけでつながります。
-- 新しい端末では、Share ▸ Restore from the sheet で、ATI名を入れて、シートから戻せます。
-- マニュアル(PDF)は、アプリの Share タブの「Downloads」からダウンロードできます(GitHubには、このフォルダごと上げてください: `manual/`、`ATI_Monitor_Shared_TEMPLATE.xlsx`、`ATI_Monitor_Sheet.gs` を含む)。
+- 先生の準備(1回だけ): More ▸ For the teacher の「Excel template」(`ATI_Monitor_Shared_TEMPLATE.xlsx`)をGoogleドライブに上げて「Googleスプレッドシートとして保存」→ 拡張機能 ▸ Apps Script に `ATI_Monitor_Sheet.gs` を貼る(アプリの More ▸ For the teacher の「Copy script」)→ デプロイ ▸ ウェブアプリ(実行: 自分、アクセス: 全員)→ 出たURLをアプリに貼る。
+- More ▸ For the teacher で「Create class setup link」を押すと、URL入りのリンクができます。それを学生に配ると、学生は開くだけでつながります。
+- 新しい端末では、More ▸ Google Sheet & sharing ▸ Restore from the sheet で、ATI名を入れて、シートから戻せます。
+- マニュアル(PDF)は、アプリの More ▸ For the teacher の「Downloads」からダウンロードできます(GitHubには、このフォルダごと上げてください: `manual/`、`ATI_Monitor_Shared_TEMPLATE.xlsx`、`ATI_Monitor_Sheet.gs` を含む)。
 - * の項目が空だと、またはシートにつながっていないと、「Save entry」「Add」は押せません。✎ で入力を直せます。
-- Setup の「Try with demo data」(アドレスの末尾 `#demo`)で、例のデータを試せます。何も保存・送信されません。
+- More ▸ Try with demo data(アドレスの末尾 `#demo`)で、例のデータを試せます。何も保存・送信されません。
 - 未確認: 本物のGoogleシートでの承認・デプロイ・書き込み・読み込み(模擬では確認済み)。最初のATIで試験してから配布してください。
 
 ## 施肥・農薬・分げつ数
