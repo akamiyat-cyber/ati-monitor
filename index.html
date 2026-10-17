@@ -117,6 +117,11 @@ a{color:var(--accent)} a button{pointer-events:none}
   <div class="card editonly" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
     <button type="button" id="demoBtn" data-t="b_demo">Try with demo data</button><span class="muted" data-t="n_demo">Opens the app with example data (nothing is saved). You can try every tab, including Compare.</span>
   </div>
+  <div class="card editonly">
+    <h2 data-t="h_xl">Excel template</h2>
+    <p class="muted" data-t="n_xl">Template of the shared sheet (tab "Data" and a guide). Use it for a spare sheet, or to keep your own records. The app itself sends data through the Google Form.</p>
+    <div class="row"><a href="ATI_Monitor_Shared_TEMPLATE.xlsx" download><button type="button" class="pri" data-t="b_dlx">Excel template (shared sheet)</button></a></div>
+  </div>
   <p class="muted"><b class="req"></b> <span data-t="n_req">= required</span></p>
   <div class="card">
     <h2 data-t="h_site">ATI and field</h2>
@@ -423,7 +428,8 @@ var I18N = {
     b_send: 'Send now', b_refresh: 'Refresh', b_load: 'Refresh from sheet',
     ss_cfg: 'Google Sheet not connected.', ss_empty: 'Nothing to send yet.', ss_unsent: 'Not yet sent to the Google Sheet.', ss_wait: 'Sent. Waiting for the sheet to show it (can take a few minutes).', ss_ok: 'Saved in Google Sheet', ss_late: 'Sent, but the sheet does not show it yet. Check the form link, or press Send now.', ss_demo: 'Demo: nothing is sent.',
     ss_offline: 'No internet. It will be sent later.', ss_toolarge: 'Data too large to send.', ss_nocompress: 'This browser cannot send data. Please update it.', ss_fetchfail: 'Could not read the sheet. Check the compare link and the internet.',
-    cf_form_none: 'Form link: not entered', cf_form_bad: 'Form link: not a Google Form pre-filled link', cf_form_fields: 'Form link: the 4 fields ATI / UPDATED / SUMMARY / DATA were not all found', cf_form_ok: 'Form link: OK', cf_csv_none: 'Compare link: not entered', cf_csv_bad: 'Compare link: not a Google Sheets link', cf_csv_ok: 'Compare link: OK', cfg_ok: 'Class setup saved.'
+    cf_form_none: 'Form link: not entered', cf_form_bad: 'Form link: not a Google Form pre-filled link', cf_form_fields: 'Form link: the 4 fields ATI / UPDATED / SUMMARY / DATA were not all found', cf_form_ok: 'Form link: OK', cf_csv_none: 'Compare link: not entered', cf_csv_bad: 'Compare link: not a Google Sheets link', cf_csv_ok: 'Compare link: OK', cfg_ok: 'Class setup saved.',
+    h_xl: 'Excel template', n_xl: 'Template of the shared sheet (tab "Data" and a guide). Use it for a spare sheet, or to keep your own records. The app itself sends data through the Google Form.', b_dlx: 'Excel template (shared sheet)'
   },
   bn: {
     h_rec: 'মাঠের রেকর্ড', n_rec: 'সার, বালাইনাশক ও কুশির সংখ্যা লিখুন। এগুলো শেয়ার লিংক ও এক্সপোর্টে থাকবে।', h_fert: 'সার', h_pest: 'বালাইনাশক', h_till: 'কুশির সংখ্যা',
@@ -471,7 +477,8 @@ var I18N = {
     f_form: 'গুগল ফর্ম লিংক (শিক্ষকের দেওয়া প্রি-ফিল্ড লিংক)', f_csv: 'তুলনার লিংক (প্রকাশিত CSV)', f_sheetcfg: 'গুগল শিট সংযোগ',
     h_cls: 'ক্লাস সেটআপ লিংক (শিক্ষকের জন্য)', b_mk: 'ক্লাস সেটআপ লিংক তৈরি', h_rst: 'শিট থেকে ফিরিয়ে আনুন', b_restore: 'শিট থেকে ফিরিয়ে আনুন', restore_q: 'এই ডিভাইসের তথ্য গুগল শিটের তথ্য দিয়ে বদলাবেন?',
     b_send: 'এখনই পাঠান', b_refresh: 'রিফ্রেশ', b_load: 'শিট থেকে রিফ্রেশ',
-    ss_cfg: 'গুগল শিট সংযুক্ত নয়।', ss_empty: 'এখনও পাঠানোর কিছু নেই।', ss_unsent: 'এখনও গুগল শিটে পাঠানো হয়নি।', ss_wait: 'পাঠানো হয়েছে। শিটে দেখাতে কয়েক মিনিট লাগতে পারে।', ss_ok: 'গুগল শিটে সংরক্ষিত', ss_late: 'পাঠানো হয়েছে কিন্তু শিটে এখনও দেখা যাচ্ছে না। ফর্ম লিংক দেখুন বা আবার পাঠান।', ss_demo: 'ডেমো: কিছু পাঠানো হয় না।', ss_offline: 'ইন্টারনেট নেই। পরে পাঠানো হবে।'
+    ss_cfg: 'গুগল শিট সংযুক্ত নয়।', ss_empty: 'এখনও পাঠানোর কিছু নেই।', ss_unsent: 'এখনও গুগল শিটে পাঠানো হয়নি।', ss_wait: 'পাঠানো হয়েছে। শিটে দেখাতে কয়েক মিনিট লাগতে পারে।', ss_ok: 'গুগল শিটে সংরক্ষিত', ss_late: 'পাঠানো হয়েছে কিন্তু শিটে এখনও দেখা যাচ্ছে না। ফর্ম লিংক দেখুন বা আবার পাঠান।', ss_demo: 'ডেমো: কিছু পাঠানো হয় না।', ss_offline: 'ইন্টারনেট নেই। পরে পাঠানো হবে।',
+    h_xl: 'এক্সেল টেমপ্লেট', n_xl: 'শেয়ার্ড শিটের টেমপ্লেট ("Data" ট্যাব ও নির্দেশিকা)। অ্যাপ নিজে গুগল ফর্মের মাধ্যমে তথ্য পাঠায়।'
   }
 };
 
