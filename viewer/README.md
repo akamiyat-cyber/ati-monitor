@@ -26,3 +26,6 @@ Files: `index.html` (the viewer), `plotly.min.js` (graphs, offline copy), `sw.js
 
 Template download: https://akamiyat-cyber.github.io/ati-monitor/viewer/3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx
 Bengali template: https://akamiyat-cyber.github.io/ati-monitor/viewer/3F4D_Water_Monitor_Sheet_TEMPLATE_BN.xlsx
+
+## Language
+The button at the top right switches between English and Bengali (বাংলা). The choice is kept on this device.

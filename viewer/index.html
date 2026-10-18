@@ -19,6 +19,8 @@ header{background:linear-gradient(135deg,#0b4a7a 0%,#0a9a8a 100%);color:#fff;pad
 header .logo{width:44px;height:44px;border-radius:12px;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
 h1{font-size:20px;margin:0}
 header .sub{font-size:13px;opacity:.85}
+.langb{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.55);color:#fff;flex:none}
+.langb:hover{background:rgba(255,255,255,.28);color:#fff;border-color:#fff}
 main{max-width:1200px;margin:-14px auto 0;padding:0 14px 40px}
 .card{background:var(--card);border-radius:20px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
 h2{font-size:18px;margin:0 0 8px}
@@ -56,42 +58,33 @@ details summary{cursor:pointer;color:var(--accent);font-weight:700}
 <div id="banner" class="banner" style="display:none"></div>
 <header>
   <img class="logo" src="icon.svg" alt="" width="44" height="44">
-  <div><h1>3F4D Site Viewer</h1><div class="sub">Graphs of the 3F4D Water Monitor sheets of several sites</div></div>
+  <div style="flex:1"><h1>3F4D Site Viewer</h1><div class="sub" data-t="sub">Graphs of the 3F4D Water Monitor sheets of several sites</div></div>
+  <button type="button" id="lang" class="langb">বাংলা</button>
 </header>
 <main>
   <div class="card">
-    <h2>Sites</h2>
-    <p class="muted">Paste the link of each site's Google Sheet (the 3F4D Water Monitor sheet version). The sheet must be shared as <b>"Anyone with the link: Viewer"</b>. Nothing is written to the sheets.</p>
-    <div class="row"><input id="link" style="flex:1 1 320px" placeholder="https://docs.google.com/spreadsheets/d/…/edit"><input id="label" style="flex:0 1 180px" placeholder="Label (optional)"><button class="pri" id="add" type="button">Add site</button></div>
+    <h2 data-t="h_sites">Sites</h2>
+    <p class="muted" data-h="p_sites">Paste the link of each site's Google Sheet (the 3F4D Water Monitor sheet version). The sheet must be shared as <b>"Anyone with the link: Viewer"</b>. Nothing is written to the sheets.</p>
+    <div class="row"><input id="link" style="flex:1 1 320px" placeholder="https://docs.google.com/spreadsheets/d/…/edit"><input id="label" style="flex:0 1 180px" placeholder="Label (optional)" data-ph="ph_label"><button class="pri" id="add" type="button" data-t="b_add">Add site</button></div>
     <div id="sites" style="margin-top:8px"></div>
-    <div class="row" style="margin-top:10px"><button id="load" type="button" class="pri">Load / refresh all</button><button id="share" type="button">Share this list</button><button id="csv" type="button">Download data (CSV)</button><button id="demo" type="button">Try demo</button><span class="muted" id="info"></span></div>
+    <div class="row" style="margin-top:10px"><button id="load" type="button" class="pri" data-t="b_load">Load / refresh all</button><button id="share" type="button" data-t="b_share">Share this list</button><button id="csv" type="button" data-t="b_csv">Download data (CSV)</button><button id="demo" type="button" data-t="b_demo">Try demo</button><span class="muted" id="info"></span></div>
     <textarea id="shareTxt" readonly style="display:none;margin-top:8px"></textarea>
-    <div class="row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)"><span class="muted" style="flex:1 1 260px">Sheet template for the sites (upload to Google Drive and save as Google Sheets; one copy per site):</span><a href="3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx" download><button type="button">Download sheet template (.xlsx)</button></a><a href="3F4D_Water_Monitor_Sheet_TEMPLATE_BN.xlsx" download><button type="button">বাংলা শিট (Bengali template)</button></a></div>
+    <div class="row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)"><span class="muted" style="flex:1 1 260px" data-t="p_tpl">Sheet template for the sites (upload to Google Drive and save as Google Sheets; one copy per site):</span><a href="3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx" download><button type="button" data-t="b_tpl">Download sheet template (.xlsx)</button></a><a href="3F4D_Water_Monitor_Sheet_TEMPLATE_BN.xlsx" download><button type="button">বাংলা শিট (Bengali template)</button></a></div>
   </div>
   <div class="card" id="sumCard" style="display:none">
-    <h2>Summary</h2>
+    <h2 data-t="h_sum">Summary</h2>
     <div class="tw"><table id="sum"></table></div>
   </div>
   <div class="card" id="ctlCard" style="display:none">
     <div class="row">
-      <label>View <select id="mode"><option value="overlay">Compare sites</option><option value="each">Each site</option></select></label>
-      <label>X axis <select id="xaxis"><option value="dat">Days after transplanting</option><option value="date">Date</option></select></label>
+      <label><span data-t="l_view">View</span> <select id="mode"><option value="overlay" data-t="o_cmp">Compare sites</option><option value="each" data-t="o_each">Each site</option></select></label>
+      <label><span data-t="l_x">X axis</span> <select id="xaxis"><option value="dat" data-t="o_dat">Days after transplanting</option><option value="date" data-t="o_date">Date</option></select></label>
     </div>
     <div class="chk" id="pick" style="margin-top:8px"></div>
   </div>
   <div id="out"></div>
   <div class="card">
-    <details><summary>How to use / help</summary>
-      <ol class="muted">
-        <li>Each site uses its own copy of <b>3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx</b> (button "Download sheet template" above) converted to a Google Sheet: upload it to Google Drive, open it and choose File &gt; Save as Google Sheets.</li>
-        <li>The site shares the sheet: <b>Share &gt; General access &gt; Anyone with the link &gt; Viewer</b>, and sends you the link.</li>
-        <li>Paste the link above and press "Add site". Repeat for every site. The list is kept in this browser; "Share this list" makes a link that opens the same list on another device.</li>
-        <li>"Compare sites" draws all sites in the same graphs (x axis: days after transplanting or date). "Each site" shows the graphs of every site separately, with the MD, Pitan and 3F4D periods.</li>
-        <li>Works offline: the app and the data of the last successful load are kept on this device. Without internet the graphs show the saved data (marked "Offline"). Install it with the browser menu: "Add to Home screen" / "Install app".</li>
-        <li>The data are read from the tab <b>Viewer_export</b> (or Data_Farmer) each time you press "Load / refresh all". The sheets are never changed.</li>
-      </ol>
-      <p class="muted">If a site shows "Could not read": check the sharing setting, and that the sheet is the 3F4D Water Monitor sheet version (tab Data_Farmer).</p>
-    </details>
+    <details><summary data-t="h_help">How to use / help</summary><div data-h="help"></div></details>
   </div>
 </main>
 <div id="msg"></div>
@@ -101,16 +94,31 @@ var DEMO_CSV = "date_serial,rain,fp_m,fp_wl,fp_irr,fp_cum,fp_dec,fp_till,fp_fmin
 var KEY = 'f4d_viewer_sites_v1', CKEY = 'f4d_viewer_cache_v1';
 function cacheGet() { try { return JSON.parse(localStorage.getItem(CKEY) || '{}') || {}; } catch (e) { return {}; } }
 function cachePut(u, txt) { var c = cacheGet(); c[u] = {t: txt, at: new Date().toISOString()}; Object.keys(c).forEach(function (k) { if (!LIST.some(function (e) { return e.u === k; })) delete c[k]; }); try { localStorage.setItem(CKEY, JSON.stringify(c)); } catch (e) {} }
-function fmtT(iso) { var d = new Date(iso); return d.toLocaleDateString('en-GB', {day: 'numeric', month: 'short'}) + ' ' + d.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'}); }
+function LOC() { return LANG === 'bn' ? 'bn-BD' : 'en-GB'; }
+function fmtT(iso) { var d = new Date(iso); return d.toLocaleDateString(LOC(), {day: 'numeric', month: 'short'}) + ' ' + d.toLocaleTimeString(LOC(), {hour: '2-digit', minute: '2-digit'}); }
 var PAL = ['#0072B2', '#D55E00', '#009E73', '#CC79A7', '#E69F00', '#56B4E9', '#8c564b', '#7f7f7f', '#bcbd22', '#17becf'];
 var CFG = {responsive: true, displaylogo: false};
 var LIST = [], DATA = {}, DEMO = false, SEL = {};
 function $(id) { return document.getElementById(id); }
+var I18N = {"en": {"sub": "Graphs of the 3F4D Water Monitor sheets of several sites", "h_sites": "Sites", "p_sites": "Paste the link of each site's Google Sheet (the 3F4D Water Monitor sheet version). The sheet must be shared as <b>\"Anyone with the link: Viewer\"</b>. Nothing is written to the sheets.", "ph_label": "Label (optional)", "b_add": "Add site", "b_load": "Load / refresh all", "b_share": "Share this list", "b_csv": "Download data (CSV)", "b_demo": "Try demo", "p_tpl": "Sheet template for the sites (upload to Google Drive and save as Google Sheets; one copy per site):", "b_tpl": "Download sheet template (.xlsx)", "h_sum": "Summary", "l_view": "View", "o_cmp": "Compare sites", "o_each": "Each site", "l_x": "X axis", "o_dat": "Days after transplanting", "o_date": "Date", "h_help": "How to use / help", "help": "<ol class=\"muted\"><li>Each site uses its own copy of <b>3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx</b> (English) or <b>…_TEMPLATE_BN.xlsx</b> (Bengali), converted to a Google Sheet: upload it to Google Drive, open it and choose File &gt; Save as Google Sheets.</li><li>The site shares the sheet: <b>Share &gt; General access &gt; Anyone with the link &gt; Viewer</b>, and sends you the link.</li><li>Paste the link above and press \"Add site\". Repeat for every site. The list is kept in this browser; \"Share this list\" makes a link that opens the same list on another device.</li><li>\"Compare sites\" draws all sites in the same graphs (x axis: days after transplanting or date). \"Each site\" shows the graphs of every site separately, with the MD, Pitan and 3F4D periods.</li><li>Works offline: the app and the data of the last successful load are kept on this device. Without internet the graphs show the saved data (marked \"Offline\"). Install it with the browser menu: \"Add to Home screen\" / \"Install app\".</li><li>The data are read from the tab <b>Viewer_export</b> (or Data_Farmer) each time you press \"Load / refresh all\". The sheets are never changed.</li></ol><p class=\"muted\">If a site shows \"Could not read\": check the sharing setting, and that the sheet is the 3F4D Water Monitor sheet version.</p>", "site": "Site", "loaded": "Loaded: {d} days, last {l}", "offline_st": "Offline: saved data of {t} ({d} days, last {l})", "notloaded": "not loaded", "nosites": "No sites yet.", "addfirst": "Add a site first.", "loading": "Loading…", "offline_pre": "Offline - ", "loadedn": "Loaded {a} / {b}", "dup": "This site is already in the list.", "e_published": "Use the normal sheet link (or a published CSV link of the tab Viewer_export).", "e_notsheet": "Not a Google Sheets link.", "e_format": "Not the 3F4D Water Monitor sheet (tab Viewer_export / Data_Farmer not found).", "e_offline": "Offline, and no saved data for this site yet.", "e_private": "The sheet is not shared as \"Anyone with the link: Viewer\".", "e_http": "Could not read the sheet (sharing or link).", "e_other": "Could not read (check the internet and the sharing setting).", "th": ["Site", "Place", "Variety", "Transplanting", "Last entry", "Days", "FP irrigation (mm)", "3F4D+MD irrigation (mm)", "Saving (mm)", "Saving (%)", "Irrigations FP / 3F4D+MD", "N FP / 3F4D+MD (kg/10a)"], "x_date": "Date", "x_dat": "Days after transplanting (DAT)", "g_bar": "Total irrigation and saving", "y_irr": "Irrigation (mm)", "g_cum": "Cumulative irrigation", "g_wl": "Water level", "g_till": "Tillers per hill", "y_till": "tillers", "g_wlrain": "Water level (cm) and rain", "y_wl": "Water level (cm)", "y_rain": "Rain", "rain_mm": "Rain (mm)", "g_cummm": "Cumulative irrigation (mm)", "each_line": "{p} · transplanting {t} · last entry {l} · FP {f} mm, 3F4D+MD {m} mm, saving {s}%", "addsites": "Add sites first.", "copied": "Link copied.", "copybelow": "Copy the link below.", "loadfirst": "Load the sites first.", "demo_banner": "DEMO data (3 example sites)", "exitdemo": "Exit demo", "demo_noload": "Demo: nothing to load.", "from_link": "Sites added from the link.", "badlink": "The list link is broken.", "online": "Online again"}, "bn": {"sub": "কয়েকটি সাইটের 3F4D Water Monitor শিটের গ্রাফ", "h_sites": "সাইট", "p_sites": "প্রতিটি সাইটের Google Sheet-এর লিংক দিন (3F4D Water Monitor শিট সংস্করণ)। শিটটি <b>\"Anyone with the link: Viewer\"</b> হিসেবে শেয়ার করা থাকতে হবে। শিটে কিছুই লেখা হয় না।", "ph_label": "নাম (ঐচ্ছিক)", "b_add": "সাইট যোগ করুন", "b_load": "সব লোড / রিফ্রেশ", "b_share": "তালিকা শেয়ার করুন", "b_csv": "তথ্য ডাউনলোড (CSV)", "b_demo": "ডেমো দেখুন", "p_tpl": "সাইটের জন্য শিট টেমপ্লেট (Google Drive-এ আপলোড করে Google Sheets হিসেবে সংরক্ষণ করুন; প্রতি সাইটে একটি কপি):", "b_tpl": "শিট টেমপ্লেট ডাউনলোড (.xlsx, ইংরেজি)", "h_sum": "সারসংক্ষেপ", "l_view": "দেখার ধরন", "o_cmp": "সাইট তুলনা", "o_each": "প্রতিটি সাইট", "l_x": "X অক্ষ", "o_dat": "রোপণের পর দিন", "o_date": "তারিখ", "h_help": "ব্যবহারের নিয়ম / সাহায্য", "help": "<ol class=\"muted\"><li>প্রতিটি সাইট নিজের কপি ব্যবহার করে: <b>3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx</b> (ইংরেজি) বা <b>…_TEMPLATE_BN.xlsx</b> (বাংলা)। Google Drive-এ আপলোড করে খুলুন, তারপর File &gt; Save as Google Sheets।</li><li>সাইট শিটটি শেয়ার করে: <b>Share &gt; General access &gt; Anyone with the link &gt; Viewer</b>, তারপর লিংক আপনাকে পাঠায়।</li><li>উপরে লিংক দিয়ে \"সাইট যোগ করুন\" চাপুন। প্রতিটি সাইটের জন্য একই কাজ। তালিকা এই ব্রাউজারে থাকে; \"তালিকা শেয়ার করুন\" দিয়ে অন্য ডিভাইসে একই তালিকা খোলার লিংক তৈরি হয়।</li><li>\"সাইট তুলনা\" সব সাইট একই গ্রাফে দেখায় (X অক্ষ: রোপণের পর দিন বা তারিখ)। \"প্রতিটি সাইট\" প্রতিটি সাইটের গ্রাফ আলাদাভাবে দেখায়, এমডি, পিটান ও 3F4D-এর সময়সহ।</li><li>ইন্টারনেট ছাড়াও চলে: অ্যাপ ও শেষবার লোড করা তথ্য এই ডিভাইসে থাকে। ইন্টারনেট না থাকলে সংরক্ষিত তথ্যের গ্রাফ দেখায় (\"অফলাইন\" চিহ্নসহ)। ব্রাউজারের মেনু থেকে ইনস্টল করুন: \"Add to Home screen\" / \"Install app\"।</li><li>\"সব লোড / রিফ্রেশ\" চাপলে প্রতিবার <b>Viewer_export</b> (বা Data_Farmer) ট্যাব থেকে তথ্য পড়া হয়। শিট কখনো বদলানো হয় না।</li></ol><p class=\"muted\">কোনো সাইটে \"পড়া যায়নি\" দেখালে: শেয়ারের সেটিং দেখুন, এবং শিটটি 3F4D Water Monitor শিট সংস্করণ কিনা দেখুন।</p>", "site": "সাইট", "loaded": "লোড হয়েছে: {d} দিন, শেষ {l}", "offline_st": "অফলাইন: {t}-এর সংরক্ষিত তথ্য ({d} দিন, শেষ {l})", "notloaded": "লোড হয়নি", "nosites": "এখনও কোনো সাইট নেই।", "addfirst": "আগে একটি সাইট যোগ করুন।", "loading": "লোড হচ্ছে…", "offline_pre": "অফলাইন - ", "loadedn": "লোড হয়েছে {a} / {b}", "dup": "এই সাইট আগেই তালিকায় আছে।", "e_published": "সাধারণ শিট লিংক দিন (বা Viewer_export ট্যাবের প্রকাশিত CSV লিংক)।", "e_notsheet": "এটি Google Sheets-এর লিংক নয়।", "e_format": "3F4D Water Monitor শিট নয় (Viewer_export / Data_Farmer ট্যাব নেই)।", "e_offline": "অফলাইন, এবং এই সাইটের কোনো সংরক্ষিত তথ্য নেই।", "e_private": "শিটটি \"Anyone with the link: Viewer\" হিসেবে শেয়ার করা নেই।", "e_http": "শিট পড়া যায়নি (শেয়ার বা লিংক দেখুন)।", "e_other": "পড়া যায়নি (ইন্টারনেট ও শেয়ারের সেটিং দেখুন)।", "th": ["সাইট", "স্থান", "জাত", "রোপণ", "শেষ লেখা", "দিন", "FP সেচ (মিমি)", "3F4D+MD সেচ (মিমি)", "সাশ্রয় (মিমি)", "সাশ্রয় (%)", "সেচের সংখ্যা FP / 3F4D+MD", "N FP / 3F4D+MD (কেজি/১০ আর)"], "x_date": "তারিখ", "x_dat": "রোপণের পর দিন (DAT)", "g_bar": "মোট সেচ ও সাশ্রয়", "y_irr": "সেচ (মিমি)", "g_cum": "মোট সেচ", "g_wl": "পানির স্তর", "g_till": "প্রতি গোছায় কুশি", "y_till": "কুশি", "g_wlrain": "পানির স্তর (সেমি) ও বৃষ্টি", "y_wl": "পানির স্তর (সেমি)", "y_rain": "বৃষ্টি", "rain_mm": "বৃষ্টি (মিমি)", "g_cummm": "মোট সেচ (মিমি)", "each_line": "{p} · রোপণ {t} · শেষ লেখা {l} · FP {f} মিমি, 3F4D+MD {m} মিমি, সাশ্রয় {s}%", "addsites": "আগে সাইট যোগ করুন।", "copied": "লিংক কপি হয়েছে।", "copybelow": "নিচের লিংকটি কপি করুন।", "loadfirst": "আগে সাইটগুলো লোড করুন।", "demo_banner": "ডেমো তথ্য (৩টি উদাহরণ সাইট)", "exitdemo": "ডেমো বন্ধ", "demo_noload": "ডেমো: লোড করার কিছু নেই।", "from_link": "লিংক থেকে সাইট যোগ হয়েছে।", "badlink": "তালিকার লিংকটি ভাঙা।", "online": "আবার অনলাইন"}};
+var LKEY = 'f4d_viewer_lang';
+var LANG = (function () { try { var v = localStorage.getItem(LKEY); if (v === 'en' || v === 'bn') return v; } catch (e) {} return /^bn/i.test(navigator.language || '') ? 'bn' : 'en'; })();
+function t(k, o) { var s = (I18N[LANG] && I18N[LANG][k] != null) ? I18N[LANG][k] : I18N.en[k]; if (o && typeof s === 'string') Object.keys(o).forEach(function (x) { s = s.split('{' + x + '}').join(o[x]); }); return s; }
+function applyLang() {
+  document.documentElement.lang = LANG;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (el) { el.textContent = t(el.getAttribute('data-t')); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-h]'), function (el) { el.innerHTML = t(el.getAttribute('data-h')); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-ph]'), function (el) { el.placeholder = t(el.getAttribute('data-ph')); });
+  $('lang').textContent = LANG === 'bn' ? 'English' : 'বাংলা';
+  if (DEMO) $('banner').innerHTML = t('demo_banner') + ' <button type="button" id="b-exit" style="margin-left:8px;min-height:30px;padding:2px 12px">' + esc(t('exitdemo')) + '</button>', $('b-exit').onclick = exitDemo;
+}
+function setLang(l) { LANG = l; try { localStorage.setItem(LKEY, l); } catch (e) {} applyLang(); renderList(); render(); }
+
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); }
 function toast(m) { var e = $('msg'); e.textContent = m; e.className = 'on'; clearTimeout(toast.t); toast.t = setTimeout(function () { e.className = ''; }, 2200); }
 function fmt(x, d) { return (x == null || !isFinite(x)) ? '-' : x.toFixed(d == null ? 0 : d); }
 function serialToISO(n) { return new Date(Date.UTC(1899, 11, 30) + n * 86400000).toISOString().slice(0, 10); }
-function fmtD(iso) { if (!iso) return '-'; var d = new Date(iso + 'T00:00:00Z'); return d.toLocaleDateString('en-GB', {timeZone: 'UTC', day: 'numeric', month: 'short', year: 'numeric'}); }
+function fmtD(iso) { if (!iso) return '-'; var d = new Date(iso + 'T00:00:00Z'); return d.toLocaleDateString(LOC(), {timeZone: 'UTC', day: 'numeric', month: 'short', year: 'numeric'}); }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(LIST)); } catch (e) {} }
 function load() { try { return JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch (e) { return []; } }
 function b64u(s) { return btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
@@ -211,33 +219,33 @@ async function fetchSite(entry) {
 }
 function errText(e) {
   var m = String(e && e.message || e);
-  return {published: 'Use the normal sheet link (or a published CSV link of the tab Data_Farmer).', notsheet: 'Not a Google Sheets link.', format: 'Not the 3F4D Water Monitor sheet (tab Viewer_export / Data_Farmer not found).',
-    offline: 'Offline, and no saved data for this site yet.', private: 'The sheet is not shared as "Anyone with the link: Viewer".', http: 'Could not read the sheet (sharing or link).'}[m] || 'Could not read (check the internet and the sharing setting).';
+  return ['published', 'notsheet', 'format', 'offline', 'private', 'http'].indexOf(m) >= 0 ? m : 'other';
 }
+function errMsg(c) { return t('e_' + c); }
 
 /* ---------- list UI */
 function color(i) { return PAL[i % PAL.length]; }
 function renderList() {
   $('sites').innerHTML = LIST.length ? LIST.map(function (e, i) {
-    var d = DATA[e.u], st = e.err && !d ? '<span class="st-err">' + esc(e.err) + '</span>' : (d ? (e.off ? '<span class="st-err">Offline: saved data of ' + esc(fmtT(e.off)) + ' (' + d.sum.days + ' days, last ' + esc(fmtD(d.sum.last)) + ')</span>' : '<span class="st-ok">Loaded: ' + d.sum.days + ' days, last ' + esc(fmtD(d.sum.last)) + '</span>') : '<span class="muted">not loaded</span>');
-    return '<div class="site"><span class="dot" style="background:' + color(i) + '"></span><div><b>' + esc(e.n || (d && d.name) || 'Site ' + (i + 1)) + '</b><div class="u">' + esc(e.u) + '</div>' + st + '</div>' +
+    var d = DATA[e.u], st = e.err && !d ? '<span class="st-err">' + esc(errMsg(e.err)) + '</span>' : (d ? (e.off ? '<span class="st-err">' + esc(t('offline_st', {t: fmtT(e.off), d: d.sum.days, l: fmtD(d.sum.last)})) + '</span>' : '<span class="st-ok">' + esc(t('loaded', {d: d.sum.days, l: fmtD(d.sum.last)})) + '</span>') : '<span class="muted">' + t('notloaded') + '</span>');
+    return '<div class="site"><span class="dot" style="background:' + color(i) + '"></span><div><b>' + esc(e.n || (d && d.name) || t('site') + ' ' + (i + 1)) + '</b><div class="u">' + esc(e.u) + '</div>' + st + '</div>' +
       (DEMO ? '' : '<button type="button" class="del" data-rm="' + i + '">✕</button>') + '</div>';
-  }).join('') : '<p class="muted">No sites yet.</p>';
+  }).join('') : '<p class="muted">' + t('nosites') + '</p>';
   Array.prototype.forEach.call($('sites').querySelectorAll('[data-rm]'), function (b) { b.onclick = function () { var i = +b.getAttribute('data-rm'); delete DATA[LIST[i].u]; LIST.splice(i, 1); save(); renderList(); render(); }; });
 }
 async function loadAll() {
-  if (!LIST.length) { toast('Add a site first.'); return; }
-  $('info').textContent = 'Loading…';
+  if (!LIST.length) { toast(t('addfirst')); return; }
+  $('info').textContent = t('loading');
   await Promise.all(LIST.map(function (e) {
     return fetchSite(e).then(function (d) { DATA[e.u] = d; e.err = ''; if (!e.n) e.n = d.name; }, function (err) { e.err = errText(err); });
   }));
-  save(); $('info').textContent = (navigator.onLine === false ? 'Offline - ' : '') + 'Loaded ' + LIST.filter(function (e) { return DATA[e.u]; }).length + ' / ' + LIST.length;
+  save(); $('info').textContent = (navigator.onLine === false ? t('offline_pre') : '') + t('loadedn', {a: LIST.filter(function (e) { return DATA[e.u]; }).length, b: LIST.length});
   renderList(); render();
 }
 function addSite() {
   var u = $('link').value.trim(), n = $('label').value.trim();
-  try { csvUrls(u); } catch (e) { toast(errText(e)); return; }
-  if (LIST.some(function (e) { return e.u === u; })) { toast('This site is already in the list.'); return; }
+  try { csvUrls(u); } catch (e) { toast(errMsg(errText(e))); return; }
+  if (LIST.some(function (e) { return e.u === u; })) { toast(t('dup')); return; }
   if (DEMO) exitDemo();
   LIST.push({u: u, n: n}); save(); $('link').value = ''; $('label').value = ''; renderList();
   fetchSite(LIST[LIST.length - 1]).then(function (d) { var e = LIST.filter(function (x) { return x.u === u; })[0]; if (e) { DATA[u] = d; e.err = ''; if (!e.n) e.n = d.name; save(); } renderList(); render(); },
@@ -247,7 +255,7 @@ function addSite() {
 /* ---------- charts */
 function loaded() { return LIST.map(function (e, i) { return {e: e, i: i, d: DATA[e.u]}; }).filter(function (x) { return x.d && SEL[x.e.u] !== false; }); }
 function xv(d) { return $('xaxis').value === 'date' ? d.dates : d.dat; }
-function xTitle() { return $('xaxis').value === 'date' ? 'Date' : 'Days after transplanting (DAT)'; }
+function xTitle() { return $('xaxis').value === 'date' ? t('x_date') : t('x_dat'); }
 function lay(title, ytitle, extra) {
   var cs = getComputedStyle(document.body), L = {title: {text: title, x: 0, font: {size: 14}}, height: 380, margin: {l: 56, r: 14, t: 46, b: 50}, hovermode: 'closest',
     paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', font: {color: cs.color, size: 12}, legend: {orientation: 'h', y: -0.22},
@@ -268,7 +276,7 @@ function render() {
   var all = LIST.map(function (e, i) { return {e: e, i: i, d: DATA[e.u]}; }).filter(function (x) { return x.d; });
   $('pick').innerHTML = all.map(function (x) { return '<label><input type="checkbox" data-s="' + esc(x.e.u) + '"' + (SEL[x.e.u] !== false ? ' checked' : '') + '><span class="dot" style="display:inline-block;background:' + color(x.i) + '"></span>' + esc(x.e.n || x.d.name) + '</label>'; }).join('');
   Array.prototype.forEach.call($('pick').querySelectorAll('input'), function (el) { el.onchange = function () { SEL[el.getAttribute('data-s')] = el.checked; render(); }; });
-  $('sum').innerHTML = '<tr><th>Site</th><th>Place</th><th>Variety</th><th>Transplanting</th><th>Last entry</th><th>Days</th><th>FP irrigation (mm)</th><th>3F4D+MD irrigation (mm)</th><th>Saving (mm)</th><th>Saving (%)</th><th>Irrigations FP / 3F4D+MD</th><th>N FP / 3F4D+MD (kg/10a)</th></tr>' +
+  $('sum').innerHTML = '<tr>' + t('th').map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr>' +
     all.map(function (x) { var s = x.d.sum; return '<tr><td><span class="dot" style="display:inline-block;background:' + color(x.i) + '"></span> <b>' + esc(x.e.n || x.d.name) + '</b></td><td>' + esc(x.d.place) + '</td><td>' + esc(x.d.variety) + '</td><td>' + esc(fmtD(x.d.trans)) + '</td><td>' + esc(fmtD(s.last)) + '</td><td class="n">' + s.days +
       '</td><td class="n">' + fmt(s.fp) + '</td><td class="n">' + fmt(s.md) + '</td><td class="n">' + fmt(s.save) + '</td><td class="n">' + fmt(s.pct) + '</td><td class="n">' + s.nF + ' / ' + s.nM + '</td><td class="n">' + fmt(x.d.np.nf, 1) + ' / ' + fmt(x.d.np.nm, 1) + '</td></tr>'; }).join('');
   if (!S.length) { out.innerHTML = ''; return; }
@@ -278,18 +286,17 @@ function render() {
     var names = S.map(function (x) { return x.e.n || x.d.name; });
     draw('g-bar', [{x: names, y: S.map(function (x) { return x.d.sum.fp; }), type: 'bar', name: 'FP', marker: {color: '#D55E00'}},
                    {x: names, y: S.map(function (x) { return x.d.sum.md; }), type: 'bar', name: '3F4D+MD', marker: {color: '#0072B2'}, text: S.map(function (x) { return x.d.sum.pct != null ? '-' + fmt(x.d.sum.pct) + '%' : ''; }), textposition: 'outside'}],
-      lay('Total irrigation and saving', 'Irrigation (mm)', {barmode: 'group', xaxis: {automargin: true}, yaxis: {title: {text: 'mm'}, rangemode: 'tozero'}}));
-    draw('g-cf', lineSeries(S, 'FP', 'cum', {shape: 'hv'}), lay('Cumulative irrigation - FP', 'mm'));
-    draw('g-cm', lineSeries(S, '3F4D+MD', 'cum', {shape: 'hv'}), lay('Cumulative irrigation - 3F4D+MD', 'mm'));
-    draw('g-wf', lineSeries(S, 'FP', 'wl', {mode: 'lines+markers'}).map(function (t) { t.marker.size = 3; return t; }), lay('Water level - FP', 'cm'));
-    draw('g-wm', lineSeries(S, '3F4D+MD', 'wl', {mode: 'lines+markers'}).map(function (t) { t.marker.size = 3; return t; }), lay('Water level - 3F4D+MD', 'cm'));
-    draw('g-tf', lineSeries(S, 'FP', 'till', {mode: 'lines+markers'}), lay('Tillers per hill - FP', 'tillers', {yaxis: {title: {text: 'tillers'}, rangemode: 'tozero'}}));
-    draw('g-tm', lineSeries(S, '3F4D+MD', 'till', {mode: 'lines+markers'}), lay('Tillers per hill - 3F4D+MD', 'tillers', {yaxis: {title: {text: 'tillers'}, rangemode: 'tozero'}}));
+      lay(t('g_bar'), t('y_irr'), {barmode: 'group', xaxis: {automargin: true}, yaxis: {title: {text: t('y_irr')}, rangemode: 'tozero'}}));
+    draw('g-cf', lineSeries(S, 'FP', 'cum', {shape: 'hv'}), lay(t('g_cum') + ' - FP', 'mm'));
+    draw('g-cm', lineSeries(S, '3F4D+MD', 'cum', {shape: 'hv'}), lay(t('g_cum') + ' - 3F4D+MD', 'mm'));
+    draw('g-wf', lineSeries(S, 'FP', 'wl', {mode: 'lines+markers'}).map(function (t) { t.marker.size = 3; return t; }), lay(t('g_wl') + ' - FP', 'cm'));
+    draw('g-wm', lineSeries(S, '3F4D+MD', 'wl', {mode: 'lines+markers'}).map(function (t) { t.marker.size = 3; return t; }), lay(t('g_wl') + ' - 3F4D+MD', 'cm'));
+    draw('g-tf', lineSeries(S, 'FP', 'till', {mode: 'lines+markers'}), lay(t('g_till') + ' - FP', t('y_till'), {yaxis: {title: {text: t('y_till')}, rangemode: 'tozero'}}));
+    draw('g-tm', lineSeries(S, '3F4D+MD', 'till', {mode: 'lines+markers'}), lay(t('g_till') + ' - 3F4D+MD', t('y_till'), {yaxis: {title: {text: t('y_till')}, rangemode: 'tozero'}}));
   } else {
     out.innerHTML = S.map(function (x, j) {
       var s = x.d.sum;
-      return '<div class="card"><h2><span class="dot" style="display:inline-block;background:' + color(x.i) + '"></span> ' + esc(x.e.n || x.d.name) + '</h2><p class="muted">' + esc(x.d.place) + ' · transplanting ' + esc(fmtD(x.d.trans)) + ' · last entry ' + esc(fmtD(s.last)) +
-        ' · FP ' + fmt(s.fp) + ' mm, 3F4D+MD ' + fmt(s.md) + ' mm, saving ' + fmt(s.pct) + '%</p><div class="plot" id="e-w' + j + '" style="min-height:420px"></div><div class="two"><div class="plot" id="e-c' + j + '"></div><div class="plot" id="e-d' + j + '"></div></div></div>';
+      return '<div class="card"><h2><span class="dot" style="display:inline-block;background:' + color(x.i) + '"></span> ' + esc(x.e.n || x.d.name) + '</h2><p class="muted">' + esc(t('each_line', {p: x.d.place, t: fmtD(x.d.trans), l: fmtD(s.last), f: fmt(s.fp), m: fmt(s.md), s: fmt(s.pct)})) + '</p><div class="plot" id="e-w' + j + '" style="min-height:420px"></div><div class="two"><div class="plot" id="e-c' + j + '"></div><div class="plot" id="e-d' + j + '"></div></div></div>';
     }).join('');
     S.forEach(function (x, j) {
       var d = x.d, X = xv(d), data = [], shapes = [], ann = [];
@@ -298,7 +305,7 @@ function render() {
         data.push({x: xs, y: ys, type: 'scatter', mode: 'lines+markers', name: p[0], line: {color: p[1], width: 2}, marker: {size: 3, color: p[1]}});
       });
       var rx = [], ry = []; d.rain.forEach(function (v, k) { if (v) { rx.push(X[k]); ry.push(v); } });
-      data.push({x: rx, y: ry, type: 'bar', name: 'Rain (mm)', yaxis: 'y2', marker: {color: '#56B4E9'}});
+      data.push({x: rx, y: ry, type: 'bar', name: t('rain_mm'), yaxis: 'y2', marker: {color: '#56B4E9'}});
       var row = 0;
       [['MD', '#009E73'], ['Pitan', '#E69F00'], ['3F4D', '#CC79A7']].forEach(function (b) {
         var be = d.bands[b[0]]; if (!be[0] || !be[1]) return;
@@ -306,28 +313,28 @@ function render() {
         shapes.push({type: 'rect', xref: 'x', x0: x0, x1: x1, yref: 'paper', y0: 0.27, y1: 1, fillcolor: b[1], opacity: 0.16, line: {width: 0}, layer: 'below'});
         ann.push({x: x0, xref: 'x', y: 1 + 0.06 * (b[0] === 'Pitan' ? 1 : 0), yref: 'paper', text: b[0], showarrow: false, xanchor: 'left', yanchor: 'bottom', font: {size: 11}});
       });
-      var L = lay('Water level (cm) and rain', 'cm', {height: 420, yaxis: {domain: [0.27, 1], title: {text: 'Water level (cm)'}, gridcolor: 'rgba(128,128,128,.2)'}, yaxis2: {domain: [0, 0.2], title: {text: 'Rain'}, rangemode: 'tozero', anchor: 'x'}, shapes: shapes, annotations: ann, margin: {l: 56, r: 14, t: 60, b: 50}});
+      var L = lay(t('g_wlrain'), 'cm', {height: 420, yaxis: {domain: [0.27, 1], title: {text: t('y_wl')}, gridcolor: 'rgba(128,128,128,.2)'}, yaxis2: {domain: [0, 0.2], title: {text: t('y_rain')}, rangemode: 'tozero', anchor: 'x'}, shapes: shapes, annotations: ann, margin: {l: 56, r: 14, t: 60, b: 50}});
       L.xaxis.anchor = 'y2';
       draw('e-w' + j, data, L);
-      draw('e-c' + j, [['FP', '#D55E00'], ['3F4D+MD', '#0072B2']].map(function (p) { var xs = [], ys = []; d.plots[p[0]].cum.forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); } }); return {x: xs, y: ys, type: 'scatter', mode: 'lines', line: {color: p[1], width: 2.4, shape: 'hv'}, name: p[0]}; }), lay('Cumulative irrigation (mm)', 'mm'));
-      draw('e-d' + j, [['FP', '#D55E00'], ['3F4D+MD', '#0072B2']].map(function (p) { var xs = [], ys = []; d.plots[p[0]].till.forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); } }); return {x: xs, y: ys, type: 'scatter', mode: 'lines+markers', line: {color: p[1]}, marker: {size: 7, color: p[1]}, name: p[0]}; }), lay('Tillers per hill', 'tillers', {yaxis: {title: {text: 'tillers'}, rangemode: 'tozero'}}));
+      draw('e-c' + j, [['FP', '#D55E00'], ['3F4D+MD', '#0072B2']].map(function (p) { var xs = [], ys = []; d.plots[p[0]].cum.forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); } }); return {x: xs, y: ys, type: 'scatter', mode: 'lines', line: {color: p[1], width: 2.4, shape: 'hv'}, name: p[0]}; }), lay(t('g_cummm'), 'mm'));
+      draw('e-d' + j, [['FP', '#D55E00'], ['3F4D+MD', '#0072B2']].map(function (p) { var xs = [], ys = []; d.plots[p[0]].till.forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); } }); return {x: xs, y: ys, type: 'scatter', mode: 'lines+markers', line: {color: p[1]}, marker: {size: 7, color: p[1]}, name: p[0]}; }), lay(t('g_till'), t('y_till'), {yaxis: {title: {text: t('y_till')}, rangemode: 'tozero'}}));
     });
   }
 }
 
 /* ---------- share list, CSV export, demo */
 function shareList() {
-  if (!LIST.length || DEMO) { toast('Add sites first.'); return; }
+  if (!LIST.length || DEMO) { toast(t('addsites')); return; }
   var url = location.href.split('#')[0] + '#l=' + b64u(JSON.stringify(LIST.map(function (e) { return {u: e.u, n: e.n || ''}; })));
   var ta = $('shareTxt'); ta.style.display = ''; ta.value = url; ta.select();
-  try { navigator.clipboard.writeText(url).then(function () { toast('Link copied.'); }, function () { toast('Copy the link below.'); }); } catch (e) { toast('Copy the link below.'); }
+  try { navigator.clipboard.writeText(url).then(function () { toast(t('copied')); }, function () { toast(t('copybelow')); }); } catch (e) { toast(t('copybelow')); }
 }
 function exportCsv() {
   var rows = [['site', 'date', 'dat', 'plot', 'water_level_cm', 'irrigation_mm', 'cumulative_mm', 'daily_decrease_mm', 'tillers_per_hill', 'rain_mm'].join(',')];
   LIST.forEach(function (e) { var d = DATA[e.u]; if (!d) return;
     d.dates.forEach(function (dt, k) { ['FP', '3F4D+MD'].forEach(function (p) { var P = d.plots[p]; if ([P.wl[k], P.irr[k], P.till[k]].every(function (v) { return v == null; })) return;
       rows.push([JSON.stringify(e.n || d.name), dt, d.dat[k], p, P.wl[k], P.irr[k], P.cum[k], P.dec[k], P.till[k], d.rain[k]].map(function (v) { return v == null ? '' : v; }).join(',')); }); }); });
-  if (rows.length < 2) { toast('Load the sites first.'); return; }
+  if (rows.length < 2) { toast(t('loadfirst')); return; }
   var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + rows.join('\n')], {type: 'text/csv'})); a.download = '3f4d_sites_' + new Date().toISOString().slice(0, 10) + '.csv'; document.body.appendChild(a); a.click(); setTimeout(function () { a.remove(); }, 500);
 }
 function demoSites() {
@@ -344,24 +351,25 @@ function demoSites() {
 }
 function startDemo() {
   DEMO = true; var ds = demoSites(); LIST = ds.map(function (d) { return {u: d.link, n: d.name}; }); DATA = {}; ds.forEach(function (d) { DATA[d.link] = d; });
-  $('banner').style.display = ''; $('banner').innerHTML = 'DEMO data (3 example sites) <button type="button" id="b-exit" style="margin-left:8px;min-height:30px;padding:2px 12px">Exit demo</button>';
-  $('b-exit').onclick = exitDemo; renderList(); render();
+  $('banner').style.display = ''; applyLang(); renderList(); render();
 }
 function exitDemo() { DEMO = false; $('banner').style.display = 'none'; LIST = load(); DATA = {}; renderList(); render(); if (LIST.length) loadAll(); }
 
 /* ---------- boot */
-$('add').onclick = addSite; $('load').onclick = function () { if (DEMO) { toast('Demo: nothing to load.'); return; } loadAll(); };
+$('add').onclick = addSite; $('load').onclick = function () { if (DEMO) { toast(t('demo_noload')); return; } loadAll(); };
 $('share').onclick = shareList; $('csv').onclick = exportCsv; $('demo').onclick = startDemo;
 $('mode').onchange = render; $('xaxis').onchange = render;
+$('lang').onclick = function () { setLang(LANG === 'bn' ? 'en' : 'bn'); };
+applyLang();
 LIST = load();
 var h = location.hash;
 if (/^#l=/.test(h)) {
-  try { var inc = JSON.parse(unb64u(h.slice(3))); inc.forEach(function (e) { if (e && e.u && !LIST.some(function (x) { return x.u === e.u; })) LIST.push({u: String(e.u), n: String(e.n || '')}); }); save(); toast('Sites added from the link.'); } catch (e) { toast('The list link is broken.'); }
+  try { var inc = JSON.parse(unb64u(h.slice(3))); inc.forEach(function (e) { if (e && e.u && !LIST.some(function (x) { return x.u === e.u; })) LIST.push({u: String(e.u), n: String(e.n || '')}); }); save(); toast(t('from_link')); } catch (e) { toast(t('badlink')); }
   try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
 }
 if (h === '#demo') startDemo(); else { renderList(); if (LIST.length) loadAll(); }
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(function () {});
-window.addEventListener('online', function () { toast('Online again'); if (!DEMO && LIST.length) loadAll(); });
+window.addEventListener('online', function () { toast(t('online')); if (!DEMO && LIST.length) loadAll(); });
 </script>
 </body>
 </html>
