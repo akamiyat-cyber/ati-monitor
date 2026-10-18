@@ -210,7 +210,7 @@ var JSONP_N = 0;
 function jsonpGrid(url) {
   return new Promise(function (resolve, reject) {
     var cb = '__f4d_cb' + (++JSONP_N) + '_' + Date.now(), sc = document.createElement('script'), done = false;
-    var tm = setTimeout(function () { finish(); reject(new Error('private')); }, 20000);
+    var tm = setTimeout(function () { finish(); reject(new Error('private')); }, 8000);
     function finish() { done = true; clearTimeout(tm); try { delete window[cb]; } catch (e) { window[cb] = undefined; } if (sc.parentNode) sc.parentNode.removeChild(sc); }
     window[cb] = function (res) {
       if (done) return; finish();
