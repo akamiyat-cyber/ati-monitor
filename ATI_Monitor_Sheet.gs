@@ -1,29 +1,29 @@
 /**
- * ATI Water Monitor - shared Google Sheet script (Apps Script, container-bound)
+ * 3F4D Water Monitor - shared Google Sheet script (Apps Script, container-bound)
  *
  * Put this code into the Google Sheet made from ATI_Monitor_Shared_TEMPLATE.xlsx
  * (Extensions > Apps Script), then Deploy > New deployment > Web app:
  *   Execute as: Me      Who has access: Anyone
  * Copy the web app URL into the app (Share > Google Sheet connection).
  *
- * The app sends the data of one ATI each time a student saves (doPost),
- * and reads the data of all ATIs for the dashboard and Compare tab (doGet).
+ * The app sends the data of one site each time a user saves (doPost),
+ * and reads the data of all sites for the dashboard and Compare tab (doGet).
  *
  * Tabs:
- *   Data   : readable daily results of all ATIs (one block of rows per ATI, replaced on every save)
- *   ATIs   : one summary row per ATI
+ *   Data   : readable daily results of all sites (one block of rows per site, replaced on every save)
+ *   Sites  : one summary row per site
  *   _Store : machine copy used by the app (hidden, do not edit)
  */
-var HEAD_DATA = ['ATI', 'Upload', 'Type', 'Date', 'DAT', 'Plot', 'Water level (cm)', 'Irrigated', 'Irrigation (mm)', 'Cumulative irrigation (mm)', 'Daily decrease (mm)', 'Tillers per hill', 'Item', 'Amount (kg)', 'Note'];
-var HEAD_ATIS = ['ATI', 'Place', 'Sowing date', 'Last entry', 'Days of data', 'FP irrigation (mm)', '3F4D+MD irrigation (mm)', 'Saving (mm)', 'Saving (%)', 'Last updated (UTC)'];
-var HEAD_STORE = ['ATI', 'Updated', 'Data'];
+var HEAD_DATA = ['Site', 'Upload', 'Type', 'Date', 'DAT', 'Plot', 'Water level (cm)', 'Irrigated', 'Irrigation (mm)', 'Cumulative irrigation (mm)', 'Daily decrease (mm)', 'Tillers per hill', 'Item', 'Amount (kg)', 'Note'];
+var HEAD_ATIS = ['Site', 'Place', 'Sowing date', 'Last entry', 'Days of data', 'FP irrigation (mm)', '3F4D+MD irrigation (mm)', 'Saving (mm)', 'Saving (%)', 'Last updated (UTC)'];
+var HEAD_STORE = ['Site', 'Updated', 'Data'];
 
 function onOpen() {
-  SpreadsheetApp.getUi().createMenu('ATI Monitor')
+  SpreadsheetApp.getUi().createMenu('3F4D Monitor')
     .addItem('Show web app URL', 'showUrl')
     .addItem('Check sheets', 'checkSheets')
     .addSeparator()
-    .addItem('Delete ALL ATI data', 'clearAll')
+    .addItem('Delete ALL site data', 'clearAll')
     .addToUi();
 }
 
@@ -38,11 +38,11 @@ function ensure_(name, head, hide) {
   return s;
 }
 function sheets_() {
-  return {data: ensure_('Data', HEAD_DATA), atis: ensure_('ATIs', HEAD_ATIS), store: ensure_('_Store', HEAD_STORE, true)};
+  return {data: ensure_('Data', HEAD_DATA), atis: ensure_('Sites', HEAD_ATIS), store: ensure_('_Store', HEAD_STORE, true)};
 }
 function checkSheets() {
   sheets_();
-  SpreadsheetApp.getUi().alert('The tabs Data, ATIs and _Store are ready.');
+  SpreadsheetApp.getUi().alert('The tabs Data, Sites and _Store are ready.');
 }
 function showUrl() {
   var u = ''; try { u = ScriptApp.getService().getUrl(); } catch (e) {}
@@ -51,7 +51,7 @@ function showUrl() {
 }
 function clearAll() {
   var ui = SpreadsheetApp.getUi();
-  if (ui.alert('Delete all ATI data?', 'This removes every ATI from Data, ATIs and the app store.', ui.ButtonSet.YES_NO) !== ui.Button.YES) return;
+  if (ui.alert('Delete all site data?', 'This removes every site from Data, Sites and the app store.', ui.ButtonSet.YES_NO) !== ui.Button.YES) return;
   var s = sheets_();
   [s.data, s.atis, s.store].forEach(function (sh) { if (sh.getLastRow() > 1) sh.getRange(2, 1, sh.getLastRow() - 1, sh.getMaxColumns()).clearContent(); });
 }
@@ -88,7 +88,7 @@ function readStore_() {
   return out;
 }
 
-// replace all rows of one ATI in a sheet (first column = ATI name); rows = new rows of that ATI
+// replace all rows of one site in a sheet (first column = Site name); rows = new rows of that site
 function replaceRows_(sheet, ati, rows, width) {
   var last = sheet.getLastRow(), keep = [];
   if (last > 1) {
@@ -105,7 +105,7 @@ function replaceRows_(sheet, ati, rows, width) {
 
 function push_(b) {
   var ati = String(b.ati || '').trim();
-  if (!ati) return {ok: false, error: 'ATI name is empty'};
+  if (!ati) return {ok: false, error: 'Site name is empty'};
   var snap = String(b.snap || '');
   if (snap.indexOf('v1.') !== 0 || snap.length > 45000) return {ok: false, error: 'bad data'};
   var s = sheets_(), now = new Date().toISOString(), rev = String(b.rev || '');

@@ -1,6 +1,6 @@
 {
-  "name": "ATI Water Monitor",
-  "short_name": "ATI Water",
+  "name": "3F4D Water Monitor",
+  "short_name": "3F4D Water",
   "description": "Water-level monitoring for FP vs 3F4D+MD plots (offline)",
   "start_url": "./",
   "scope": "./",
