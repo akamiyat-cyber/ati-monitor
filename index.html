@@ -341,9 +341,10 @@ input.big{font-size:24px;font-weight:700;text-align:center;min-height:58px;font-
     <li><b>Compare</b>: your site against the other sites in the shared sheet.</li>
     <li><b>More</b>: Setup, Schedule, Google Sheet &amp; sharing, Help, For the administrator, demo.</li></ul>
     <h3>1. First time</h3>
-    <ol><li>Open the <b>setup link</b> from your administrator once. It connects the app to the shared Google Sheet.</li>
+    <ol start="0"><li><b>Administrator, once</b>: More &gt; For the administrator. Download the Excel template, make the shared Google Sheet from it, add the script and create the setup link.</li>
+    <li>Open the <b>setup link</b> from your administrator once. It connects the app to the shared Google Sheet.</li>
     <li><b>More &gt; Setup</b>: enter Site name, place, sowing date, seedling age, and TP / b of both plots (items marked <b style="color:#c62828">*</b> are required).</li>
-    <li>The <b>Today</b> screen shows these steps with a tick when each is done.</li></ol>
+    <li>The <b>Today</b> screen shows these steps (0 to 3) with a tick when each is done.</li></ol>
     <h3>2. Every day</h3>
     <p>How to read m, TP and b:</p><a href="water_level.png" target="_blank" rel="noopener"><img src="water_level.png" alt="Water level measurement: m, TP and b" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px;margin-top:6px"></a><div class="muted">Tap the figure to enlarge. m = reading at the water surface, TP = reading at the top of the pipe, b = height of the pipe top above the ground. Water level = m - TP + b.</div>
     <ol><li><b>Today &gt; Enter today's water level</b> (or Entry &gt; Water level). Enter the tape reading m of FP and 3F4D+MD. The water level appears at once under the box. The − and + buttons change m by 0.1.</li>
@@ -534,7 +535,8 @@ var I18N = {
     f_photo: 'Photo (stays on this phone, not sent to the sheet)', b_photo: 'Add photo', b_phdel: 'Remove photo', ph_demo: 'Photos are not saved in the demo.', ph_fail: 'Could not save the photo.',
     w_cfg: 'Google Sheet is not connected yet. Open the setup link from your administrator, or enter the web app URL in More > Google Sheet & sharing. You cannot save entries until this is done.', b_cfggo: 'Open Google Sheet & sharing',
     n_xl: 'Template of the shared sheet (tab "Data" and a guide). Upload it to Google Drive and make the shared Google Sheet from it (steps below).',
-    f_url2: 'Web app URL (from the deployment)'
+    f_url2: 'Web app URL (from the deployment)',
+    ts_0: 'Administrator, once: download the Excel template, make the Google Sheet and add the script (More > For the administrator)'
   },
   bn: {
     h_rec: 'মাঠের রেকর্ড', n_rec: 'সার, বালাইনাশক ও কুশির সংখ্যা লিখুন। এগুলো শেয়ার লিংক ও এক্সপোর্টে থাকবে।', h_fert: 'সার', h_pest: 'বালাইনাশক', h_till: 'কুশির সংখ্যা',
@@ -593,7 +595,8 @@ var I18N = {
     t_dat: 'রোপণের পর {n}তম দিন', t_done: 'আজকের পানির স্তর সংরক্ষিত', t_todo: 'আজকের পানির স্তর', t_enter: 'আজকের পানির স্তর দিন', t_edit: 'সম্পাদনা', t_gap: 'শেষ এন্ট্রি: {d}। {n} দিন কোনো এন্ট্রি নেই।',
     t_levels: 'সর্বশেষ পানির স্তর', t_afterirr: 'সেচের পর', t_graphs: 'গ্রাফ খুলুন', t_next: 'সময়সূচি', t_now: 'এখন', t_until: 'পর্যন্ত', t_none_next: 'আর কোনো কাজ পরিকল্পিত নেই।', t_full: 'পূর্ণ সময়সূচি', t_over: 'প্রকৃত তারিখ দেওয়া হয়নি',
     lv_wl: 'পানির স্তর', lv_above: 'মাটির উপরে পানি', lv_below: 'মাটির নিচে পানি', lv_at: 'মাটির সমতলে', lv_notpb: 'পানির স্তর দেখতে TP ও b দিন (আরও > সেটআপ)', lv_irr: 'সেচ', lv_bad: 'সেচের পরের মাপ আগের চেয়ে কম',
-    f_photo: 'ছবি (এই ফোনেই থাকে, শিটে যায় না)', b_photo: 'ছবি যোগ করুন', b_phdel: 'ছবি মুছুন', w_cfg: 'গুগল শিট এখনও সংযুক্ত নয়। প্রশাসকের সেটআপ লিংকটি খুলুন। এটি না করলে এন্ট্রি সংরক্ষণ করা যাবে না।', b_cfggo: 'গুগল শিট ও শেয়ার খুলুন'
+    f_photo: 'ছবি (এই ফোনেই থাকে, শিটে যায় না)', b_photo: 'ছবি যোগ করুন', b_phdel: 'ছবি মুছুন', w_cfg: 'গুগল শিট এখনও সংযুক্ত নয়। প্রশাসকের সেটআপ লিংকটি খুলুন। এটি না করলে এন্ট্রি সংরক্ষণ করা যাবে না।', b_cfggo: 'গুগল শিট ও শেয়ার খুলুন',
+    ts_0: 'প্রশাসক, একবার: এক্সেল টেমপ্লেট ডাউনলোড করে গুগল শিট তৈরি করুন ও স্ক্রিপ্ট যোগ করুন (আরও > প্রশাসকের জন্য)'
   }
 };
 
@@ -1450,10 +1453,10 @@ function renderToday() {
   var td = todayStr(), C = compute(), h = '';
   if (!demo && !readOnly) {
     var setupMiss = missingSetup().filter(function (x) { return x !== t('f_sheetcfg'); });
-    var steps = [[sheetConfigured(), 'ts_1', 'share'], [!setupMiss.length, 'ts_2', 'setup'], [S.days.length > 0, 'ts_3', 'entry']];
+    var steps = [[sheetConfigured(), 'ts_0', 'administrator'], [sheetConfigured(), 'ts_1', 'share'], [!setupMiss.length, 'ts_2', 'setup'], [S.days.length > 0, 'ts_3', 'entry']];
     if (!steps.every(function (x) { return x[0]; })) {
       h += '<div class="card steps"><h2>' + esc(t('t_start')) + '</h2><ol>' + steps.map(function (x, i) {
-        return '<li class="' + (x[0] ? 'done' : '') + '"><span class="dot">' + (x[0] ? '✓' : (i + 1)) + '</span><span class="tx">' + esc(t(x[1])) + '</span>' + (x[0] ? '' : '<button type="button" data-go="' + x[2] + '">' + esc(t('b_go')) + '</button>') + '</li>';
+        return '<li class="' + (x[0] ? 'done' : '') + '"><span class="dot">' + (x[0] ? '✓' : i) + '</span><span class="tx">' + esc(t(x[1])) + '</span>' + (x[0] ? '' : '<button type="button" data-go="' + x[2] + '">' + esc(t('b_go')) + '</button>') + '</li>';
       }).join('') + '</ol></div>';
     }
   }
