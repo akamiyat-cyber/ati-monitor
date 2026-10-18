@@ -362,6 +362,8 @@ input.big{font-size:24px;font-weight:700;text-align:center;min-height:58px;font-
     <p>Compare shows your site and the other sites that your administrator added with compare links (More &gt; For the administrator &gt; Compare with other sites). It loads by itself when the app opens; "Refresh from sheet" reads again. Tick the sites to show. A compare link only lets others read; they cannot change your data.</p>
     <h3>6. Demo, new phone, backup</h3>
     <p>More &gt; Try with demo data: example data, nothing is saved. On a new phone: open the setup link, then More &gt; Google Sheet &amp; sharing &gt; Restore from the sheet. The shared Google Sheet is the master copy.</p>
+    <h3>Sheet-only version</h3>
+    <p>Sites that prefer to enter data directly in a Google Sheet can use the sheet version (More &gt; For the administrator &gt; Sheet-only version). It has the same calculations, checks, schedule and graphs, but no comparison between sites.</p>
     <h3>7. Install on a phone</h3>
     <p>Open the app address in Chrome once with internet, then choose "Add to Home screen". After that it also opens without internet; data are sent to the sheet when you are online again.</p>
   </div>
@@ -430,6 +432,11 @@ input.big{font-size:24px;font-weight:700;text-align:center;min-height:58px;font-
     <p class="muted" data-t="n_peer2">Sites added here appear in Compare for every user of your site.</p>
     <div class="row"><input id="y-peer" style="flex:1 1 220px" placeholder="https://…#p=…"><button id="y-peeradd" type="button" data-t="b_peeradd">Add site</button></div>
     <div id="y-peers" style="margin-top:8px"></div>
+  </div>
+  <div class="card editonly">
+    <h2 data-t="h_sv">Sheet-only version (without the app)</h2>
+    <p class="muted" data-t="n_sv">For sites that prefer to enter data directly in a Google Sheet. It has the same calculations, checks, schedule and graphs as the app (no comparison between sites). Upload it to Google Drive, open it with "Save as Google Sheets" and share it with the users of the site. Instructions are in the tab "Guide".</p>
+    <div class="row"><a href="3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx" download><button type="button" class="pri" data-t="b_sv1">Sheet version (empty)</button></a><a href="3F4D_Water_Monitor_Sheet_DEMO.xlsx" download><button type="button" data-t="b_sv2">Sheet version (with demo data)</button></a></div>
   </div>
   <div class="card" id="dl-card">
     <h2 data-t="h_dl">Downloads</h2>
@@ -556,7 +563,9 @@ var I18N = {
     peer_bad: 'This is not a compare link.', peer_self: 'This is the link of your own site.', peer_added: 'Site added. All users of your site will see it in Compare.', peer_local: 'Site added on this phone only.', peer_fail: 'Could not save. Check the internet and the setup link.',
     peer_none: 'No other sites added yet.', peer_onlyhere: 'this phone only', peer_rmq: 'Remove this site from Compare?', c_peers: 'Other sites', c_nopeers: 'No other sites added. Your administrator adds them in More > For the administrator.', c_peerfail: 'Could not read',
     ss_badkey: 'The sheet refused the write key. Open the latest setup link from your administrator.',
-    t_s5: 'To compare with other sites: exchange compare links with their administrators (below).'
+    t_s5: 'To compare with other sites: exchange compare links with their administrators (below).',
+    h_sv: 'Sheet-only version (without the app)', n_sv: 'For sites that prefer to enter data directly in a Google Sheet. It has the same calculations, checks, schedule and graphs as the app (no comparison between sites). Upload it to Google Drive, open it with "Save as Google Sheets" and share it with the users of the site. Instructions are in the tab "Guide".',
+    b_sv1: 'Sheet version (empty)', b_sv2: 'Sheet version (with demo data)'
   },
   bn: {
     h_rec: 'মাঠের রেকর্ড', n_rec: 'সার, বালাইনাশক ও কুশির সংখ্যা লিখুন। এগুলো শেয়ার লিংক ও এক্সপোর্টে থাকবে।', h_fert: 'সার', h_pest: 'বালাইনাশক', h_till: 'কুশির সংখ্যা',
@@ -617,7 +626,8 @@ var I18N = {
     lv_wl: 'পানির স্তর', lv_above: 'মাটির উপরে পানি', lv_below: 'মাটির নিচে পানি', lv_at: 'মাটির সমতলে', lv_notpb: 'পানির স্তর দেখতে TP ও b দিন (আরও > সেটআপ)', lv_irr: 'সেচ', lv_bad: 'সেচের পরের মাপ আগের চেয়ে কম',
     f_photo: 'ছবি (এই ফোনেই থাকে, শিটে যায় না)', b_photo: 'ছবি যোগ করুন', b_phdel: 'ছবি মুছুন', w_cfg: 'গুগল শিট এখনও সংযুক্ত নয়। প্রশাসকের সেটআপ লিংকটি খুলুন। এটি না করলে এন্ট্রি সংরক্ষণ করা যাবে না।', b_cfggo: 'গুগল শিট ও শেয়ার খুলুন',
     ts_0: 'প্রশাসক, একবার: এক্সেল টেমপ্লেট ডাউনলোড করে গুগল শিট তৈরি করুন ও স্ক্রিপ্ট যোগ করুন (আরও > প্রশাসকের জন্য)',
-    h_peer: 'অন্য সাইটের সাথে তুলনা', b_cmpmk: 'তুলনার লিংক তৈরি', b_peeradd: 'সাইট যোগ করুন', c_peers: 'অন্য সাইট', peer_added: 'সাইট যোগ হয়েছে।', ss_badkey: 'শিট লেখার চাবি গ্রহণ করেনি। প্রশাসকের সর্বশেষ সেটআপ লিংক খুলুন।'
+    h_peer: 'অন্য সাইটের সাথে তুলনা', b_cmpmk: 'তুলনার লিংক তৈরি', b_peeradd: 'সাইট যোগ করুন', c_peers: 'অন্য সাইট', peer_added: 'সাইট যোগ হয়েছে।', ss_badkey: 'শিট লেখার চাবি গ্রহণ করেনি। প্রশাসকের সর্বশেষ সেটআপ লিংক খুলুন।',
+    h_sv: 'শুধু শিট সংস্করণ (অ্যাপ ছাড়া)', b_sv1: 'শিট সংস্করণ (খালি)', b_sv2: 'শিট সংস্করণ (ডেমো তথ্যসহ)'
   }
 };
 
