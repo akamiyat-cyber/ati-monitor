@@ -205,8 +205,32 @@ function summarize(o) {
   o.sum = {last: last, days: days, fp: fp, md: mdv, save: (fp != null && mdv != null) ? fp - mdv : null, pct: (fp != null && mdv != null && fp > 0) ? 100 * (fp - mdv) / fp : null,
     nF: F.irr.filter(function (v) { return v != null; }).length, nM: M.irr.filter(function (v) { return v != null; }).length, fmin: sum(F.fmin) + sum(M.fmin), lbdt: sum(F.lbdt) + sum(M.lbdt)};
 }
+/* Fallback without CORS: Google's gviz JSONP (a <script> tag), used when fetch() is blocked by the browser. */
+var JSONP_N = 0;
+function jsonpGrid(url) {
+  return new Promise(function (resolve, reject) {
+    var cb = '__f4d_cb' + (++JSONP_N) + '_' + Date.now(), sc = document.createElement('script'), done = false;
+    var tm = setTimeout(function () { finish(); reject(new Error('private')); }, 20000);
+    function finish() { done = true; clearTimeout(tm); try { delete window[cb]; } catch (e) { window[cb] = undefined; } if (sc.parentNode) sc.parentNode.removeChild(sc); }
+    window[cb] = function (res) {
+      if (done) return; finish();
+      if (!res || res.status === 'error' || !res.table) { reject(new Error(res && res.errors && /sheet|range/i.test(JSON.stringify(res.errors)) ? 'format' : 'private')); return; }
+      var cols = (res.table.cols || []).length;
+      var G = (res.table.rows || []).map(function (r) {
+        var out = []; for (var i = 0; i < cols; i++) { var c = r.c && r.c[i]; out.push(c == null ? '' : (c.v == null ? (c.f == null ? '' : String(c.f)) : String(c.v))); } return out;
+      });
+      var lab = (res.table.cols || []).map(function (c) { return c.label || ''; });
+      if (lab.some(function (x) { return x; })) G.unshift(lab);
+      resolve(G);
+    };
+    sc.onerror = function () { if (!done) { finish(); reject(new Error('private')); } };
+    sc.src = url.replace('tqx=out:csv', 'tqx=out:json;responseHandler:' + cb) + '&_=' + Date.now();
+    document.head.appendChild(sc);
+  });
+}
+function gridToCsv(G) { return G.map(function (r) { return r.map(function (v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','); }).join('\n'); }
 async function fetchSite(entry) {
-  var urls = csvUrls(entry.u), last = null;
+  var urls = csvUrls(entry.u), last = null, blocked = false;
   for (var i = 0; i < urls.length; i++) {
     try {
       var r = await fetch(urls[i] + (urls[i].indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now(), {cache: 'no-store'});
@@ -214,7 +238,14 @@ async function fetchSite(entry) {
       var txt = await r.text();
       if (/^\s*</.test(txt)) throw new Error('private');
       var d = siteFromCsv(txt, entry.u); cachePut(entry.u, txt); entry.off = ''; return d;
-    } catch (e) { last = e instanceof TypeError ? new Error(navigator.onLine === false ? 'offline' : 'private') : e; }
+    } catch (e) { if (e instanceof TypeError) blocked = true; last = e instanceof TypeError ? new Error(navigator.onLine === false ? 'offline' : 'private') : e; }
+  }
+  if (navigator.onLine !== false && (blocked || (last && last.message === 'private'))) {
+    for (var j = 0; j < urls.length; j++) {
+      if (urls[j].indexOf('/gviz/tq?') < 0) continue;
+      try { var G = await jsonpGrid(urls[j]), t2 = gridToCsv(G), d2 = siteFromCsv(t2, entry.u); cachePut(entry.u, t2); entry.off = ''; return d2; }
+      catch (e) { last = e; }
+    }
   }
   var c = cacheGet()[entry.u];
   if (c && (last.message === 'offline' || last.message === 'private' || last.message === 'http')) { entry.off = c.at; return siteFromCsv(c.t, entry.u); }
