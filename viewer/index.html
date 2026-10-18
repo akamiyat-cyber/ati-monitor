@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3F4D Site Viewer</title>
+<meta name="theme-color" content="#00755a">
+<style>
+:root{--bg:#eef3f0;--fg:#13201a;--mut:#5b6a62;--card:#fff;--line:#dfe8e3;--accent:#00755a;--accent2:#009a74;--soft:#e2f4ec;--warn:#b4570a;--ok:#0a7a4b;--in:#f6faf8;--onacc:#fff;--shadow:0 1px 2px rgba(10,40,30,.05),0 8px 24px rgba(10,40,30,.07)}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1511;--fg:#e7efea;--mut:#98a89f;--card:#16211b;--line:#25332b;--accent:#3ddc97;--accent2:#1fb77d;--soft:#173226;--warn:#f0b35a;--ok:#4cc38a;--in:#101a15;--onacc:#06231a;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Bengali",sans-serif}
+header{background:linear-gradient(135deg,#00604a 0%,#00a07a 100%);color:#fff;padding:18px max(16px,calc((100% - 1200px)/2)) 30px;border-radius:0 0 28px 28px;display:flex;gap:12px;align-items:center}
+header .logo{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none}
+h1{font-size:20px;margin:0}
+header .sub{font-size:13px;opacity:.85}
+main{max-width:1200px;margin:-14px auto 0;padding:0 14px 40px}
+.card{background:var(--card);border-radius:20px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+h2{font-size:18px;margin:0 0 8px}
+.muted{color:var(--mut);font-size:13.5px}
+input,select{font:inherit;font-size:15px;min-height:44px;padding:8px 12px;border:1.5px solid var(--line);border-radius:14px;background:var(--in);color:var(--fg)}
+input:focus,select:focus{outline:0;border-color:var(--accent)}
+button{font:inherit;font-size:14px;font-weight:600;min-height:42px;padding:8px 16px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--fg);cursor:pointer}
+button:hover{border-color:var(--accent);color:var(--accent)}
+button.pri{background:var(--accent);border-color:var(--accent);color:var(--onacc)}
+button.del{border-color:transparent;color:var(--warn);background:transparent;padding:6px 10px;min-height:34px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.site{display:grid;grid-template-columns:14px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.site:last-child{border-bottom:0}
+.dot{width:12px;height:12px;border-radius:50%}
+.site b{display:block}.site .u{font-size:12px;color:var(--mut);word-break:break-all}
+.st-ok{color:var(--ok);font-weight:700;font-size:12.5px}.st-err{color:var(--warn);font-weight:700;font-size:12.5px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:var(--mut);font-size:12px;background:var(--in)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:800px){.two{grid-template-columns:1fr}}
+.plot{width:100%;min-height:340px}
+.chk label{display:inline-flex;gap:6px;align-items:center;margin:4px 14px 4px 0}
+textarea{width:100%;font:12px Menlo,Consolas,monospace;min-height:60px;border:1.5px solid var(--line);border-radius:12px;background:var(--in);color:var(--fg);padding:8px}
+#msg{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#14221b;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none}
+#msg.on{opacity:.95}
+.banner{background:#7b1fa2;color:#fff;text-align:center;padding:8px;font-weight:600;font-size:14px}
+details summary{cursor:pointer;color:var(--accent);font-weight:700}
+</style>
+<script src="plotly.min.js" charset="utf-8"></script>
+</head>
+<body>
+<div id="banner" class="banner" style="display:none"></div>
+<header>
+  <div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-6 4 3 7-8"/><path d="M4 20h16"/></svg></div>
+  <div><h1>3F4D Site Viewer</h1><div class="sub">Graphs of the 3F4D Water Monitor sheets of several sites</div></div>
+</header>
+<main>
+  <div class="card">
+    <h2>Sites</h2>
+    <p class="muted">Paste the link of each site's Google Sheet (the 3F4D Water Monitor sheet version). The sheet must be shared as <b>"Anyone with the link: Viewer"</b>. Nothing is written to the sheets.</p>
+    <div class="row"><input id="link" style="flex:1 1 320px" placeholder="https://docs.google.com/spreadsheets/d/…/edit"><input id="label" style="flex:0 1 180px" placeholder="Label (optional)"><button class="pri" id="add" type="button">Add site</button></div>
+    <div id="sites" style="margin-top:8px"></div>
+    <div class="row" style="margin-top:10px"><button id="load" type="button" class="pri">Load / refresh all</button><button id="share" type="button">Share this list</button><button id="csv" type="button">Download data (CSV)</button><button id="demo" type="button">Try demo</button><span class="muted" id="info"></span></div>
+    <textarea id="shareTxt" readonly style="display:none;margin-top:8px"></textarea>
+  </div>
+  <div class="card" id="sumCard" style="display:none">
+    <h2>Summary</h2>
+    <div class="tw"><table id="sum"></table></div>
+  </div>
+  <div class="card" id="ctlCard" style="display:none">
+    <div class="row">
+      <label>View <select id="mode"><option value="overlay">Compare sites</option><option value="each">Each site</option></select></label>
+      <label>X axis <select id="xaxis"><option value="dat">Days after transplanting</option><option value="date">Date</option></select></label>
+    </div>
+    <div class="chk" id="pick" style="margin-top:8px"></div>
+  </div>
+  <div id="out"></div>
+  <div class="card">
+    <details><summary>How to use / help</summary>
+      <ol class="muted">
+        <li>Each site uses its own copy of <b>3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx</b> converted to a Google Sheet.</li>
+        <li>The site shares the sheet: <b>Share &gt; General access &gt; Anyone with the link &gt; Viewer</b>, and sends you the link.</li>
+        <li>Paste the link above and press "Add site". Repeat for every site. The list is kept in this browser; "Share this list" makes a link that opens the same list on another device.</li>
+        <li>"Compare sites" draws all sites in the same graphs (x axis: days after transplanting or date). "Each site" shows the graphs of every site separately, with the MD, Pitan and 3F4D periods.</li>
+        <li>The data are read from the tab <b>Viewer_export</b> (or Data_Farmer) each time you press "Load / refresh all". The sheets are never changed.</li>
+      </ol>
+      <p class="muted">If a site shows "Could not read": check the sharing setting, and that the sheet is the 3F4D Water Monitor sheet version (tab Data_Farmer).</p>
+    </details>
+  </div>
+</main>
+<div id="msg"></div>
+<script>
+'use strict';
+var DEMO_CSV = "date_serial,rain,fp_m,fp_wl,fp_irr,fp_cum,fp_dec,fp_till,fp_fmin,fp_lbdt,md_m,md_wl,md_irr,md_cum,md_dec,md_till,md_fmin,md_lbdt,,key,value,,\"Used by the 3F4D Site Viewer. Do not edit. / \u09ad\u09bf\u0989\u09af\u09bc\u09be\u09b0 \u0985\u09cd\u09af\u09be\u09aa\u09c7\u09b0 \u099c\u09a8\u09cd\u09af, \u09aa\u09b0\u09bf\u09ac\u09b0\u09cd\u09a4\u09a8 \u0995\u09b0\u09ac\u09c7\u09a8 \u09a8\u09be\u0964\"\n46042,,280,1,,0,,,,,400.3,1.3,,0,,,,,,site,Demo Site-01,,\n46043,,279.9,0.9,7,7,1,,20,,400,1,5,5,3,,20,,,place,\"Chougachha, Jashore\",,\n46044,,280.5,1.5,,7,1,,,,400.3,1.3,,5,2,,,,,variety,Rod miniket,,\n46045,,280,1,25,32,5,,20,,400,1,25,30,3,,20,,,sow,45993,,\n46046,,282.1,3.1,,32,4,,,,402.2,3.2,,30,3,,,,,trans,46042,,\n46047,,281.4,2.4,,32,7,,,,401.3,2.3,,30,9,,,,,PitanS,46072,,\n46048,,281.2,2.2,,32,2,,,,401.1,2.1,,30,2,,,,,PitanE,46075,,\n46049,,280.5,1.5,19,51,7,,20,,400.5,1.5,19,49,6,,20,,,MDS,46073,,\n46050,,281.8,2.8,,51,6,,,,402,3,,49,4,,,,,MDE,46081,,\n46051,,281.5,2.5,,51,3,,,,401.5,2.5,,49,5,,,,,FloodS,46093,,\n46052,,281.1,2.1,,51,4,,,,401,2,,49,5,,,,,FloodE,46097,,\n46053,,280.5,1.5,,51,6,,,,400.5,1.5,,49,5,,,,,C1S,46097,,\n46054,,280.3,1.3,17,68,2,,20,,400.3,1.3,17,66,2,,20,,,C3E,46140,,\n46055,,281.5,2.5,,68,5,,,,401.5,2.5,,66,5,,,,,HeadD,46118,,\n46056,,281.1,2.1,,68,4,,,,401,2,,66,5,,,,,HarvD,46146,,\n46057,,280.4,1.4,,68,7,,,,400.5,1.5,,66,5,,,,,fp_area_dec,8.457,,\n46058,,280.2,1.2,,68,2,,,,400.3,1.3,,66,2,,,,,md_area_dec,8.457,,\n46059,,280,1,,68,2,,,,400.1,1.1,,66,2,,,,,n_fp,20.2,,\n46060,,279.9,0.9,,68,1,,,,400,1,,66,1,,,,,p_fp,2.3,,\n46061,,279.7,0.7,28,96,2,,20,,399.5,0.5,20,86,5,,20,,,n_md,20.2,,\n46062,,281.6,2.6,,96,9,,,,401.3,2.3,,86,2,,,,,p_md,2.3,,\n46063,,281.4,2.4,,96,2,7.3,,,401,2,,86,3,6.7,,,,version,sheet-v2,,\n46064,,280.9,1.9,,96,5,,,,400.5,1.5,,86,5,,,,,,,,\n46065,,,,,,,,,,,,,,,,,,,,,,\n46066,,280.1,1.1,,96,,,,,400,1,,86,,,,,,,,,\n46067,,279.5,0.5,,96,6,,,,398.8,-0.2,,86,12,,,,,,,,\n46068,,278.5,-0.5,24,120,10,,20,,398.3,-0.7,23,109,5,,20,,,,,,\n46069,,281,2,,120,4,,,,401,2,,109,3,,,,,,,,\n46070,,280.5,1.5,,120,5,,,,400.7,1.7,,109,3,,,,,,,,\n46071,,280.3,1.3,,120,2,,,,400.5,1.5,,109,2,,,,,,,,\n46072,,279.9,0.9,31,151,4,,20,,400,1,30,139,5,,20,,,,,,\n46073,,282.8,3.8,,151,2,,,,402.8,3.8,,139,2,,,,,,,,\n46074,,282.3,3.3,,151,5,,,,402.2,3.2,,139,6,,,,,,,,\n46075,,281.5,1.5,,151,18,,,,401.5,1.5,,139,17,,,,,,,,\n46076,,280,0,,151,15,,,,400,0,,139,15,,,,,,,,\n46077,3.2,279.7,-0.3,,151,3,,,,399.7,-0.3,,139,3,,,,,,,,\n46078,,279,-1,,151,7,13,,,399,-1,,139,7,12.7,,,,,,,\n46079,,277,-3,,151,20,,,,395,-5,,139,40,,,,,,,,\n46080,,275,-5,,151,20,,,,392,-8,,139,30,,,,,,,,\n46081,,272,-8,,151,30,,,,385,-15,,139,70,,,,,,,,\n46082,,265,-15,,151,70,,,,385,-15,,139,0,,,,,,,,\n46083,,265,-15,,151,0,,,,385,-15,,139,0,,,,,,,,\n46084,,265,-15,,151,0,,,,385,-15,,139,0,,,,,,,,\n46085,,265,-15,,151,0,,,,385,-15,,139,0,,,,,,,,\n46086,,265,-15,,151,0,,,,385,-15,,139,0,,,,,,,,\n46087,,265,-15,15,166,0,,20,,385,-15,15,154,0,,20,,,,,,\n46088,,281,1,,166,5,,,,401,1,,154,5,,,,,,,,\n46089,,280.7,0.7,,166,3,,,,400.7,0.7,,154,3,,,,,,,,\n46090,,280.2,0.2,18,184,5,,20,,400.2,0.2,18,172,5,,20,,,,,,\n46091,,281.7,1.7,,184,3,,,,401.7,1.7,,172,3,,,,,,,,\n46092,,281,1,,184,7,,,,401,1,,172,7,,,,,,,,\n46093,,280.5,0.5,30,214,5,17,20,,400.5,0.5,22,194,5,19,20,,,,,,\n46094,,282.5,2.5,,214,10,,,,401.6,1.6,,194,11,,,,,,,,\n46095,,282,2,,214,5,,,,401,1,,194,6,,,,,,,,\n46096,,281.5,1.5,,214,5,,,,400.7,0.7,,194,3,,,,,,,,\n46097,,281,1,,214,5,,,,400.3,0.3,10,204,4,,20,,,,,,\n46098,,280.7,0.7,,214,3,,,,400.8,0.8,,204,5,,,,,,,,\n46099,,280.1,0.1,24,238,6,,20,,400.4,0.4,,204,4,,,,,,,,\n46100,,280,0,20,258,25,,20,,397,-3,,204,34,,,,,,,,\n46101,,281,1,,258,10,,,,394,-6,,204,30,,,,,,,,\n46102,,,,,,,,,,,,,,,,,,,,,,\n46103,,280.2,0.2,8,266,,,20,,389,-11,,204,,,,,,,,,\n46104,,280.9,0.9,,266,1,,,,388,-12,15,219,10,,20,,,,,,\n46105,7.3,280,0,20,286,9,,20,,401,1,,219,5,,,,,,,,\n46106,,281,1,,286,10,,,,400.5,0.5,,219,5,,,,,,,,\n46107,,280.7,0.7,,286,3,,,,396,-4,,219,45,,,,,,,,\n46108,,280.3,0.3,7,293,4,16,20,,391,-9,,219,50,20,,,,,,,\n46109,,280.5,0.5,,293,5,,,,388,-12,,219,30,,,,,,,,\n46110,,280,0,20,313,5,,20,,385,-15,,219,30,,,,,,,,\n46111,2.1,281,1,,313,10,,,,385,-15,20,239,0,,20,,,,,,\n46112,,280.7,0.7,,313,3,,,,401,1,,239,10,,,,,,,,\n46113,,280.5,0.5,15,328,2,,20,,400.5,0.5,,239,5,,,,,,,,\n46114,,281,1,,328,10,,,,398,-2,,239,25,,,,,,,,\n46115,,280.7,0.7,,328,3,,,,393,-7,,239,50,,,,,,,,\n46116,,280.5,0.5,,328,2,,,,388,-12,,239,50,,,,,,,,\n46117,,280.1,0.1,21,349,4,,20,,385,-15,,239,30,,,,,,,,\n46118,7.3,281.5,1.5,,349,7,,,,385,-15,20,259,0,,20,,,,,,\n46119,2,281,1,,349,5,,,,401.5,1.5,,259,5,,,,,,,,\n46120,1.1,280.7,0.7,,349,3,,,,400.3,0.3,,259,12,,,,,,,,\n46121,21.1,282,2,,349,-13,,,,402,2,,259,-17,,,,,,,,\n46122,,281.7,1.7,,349,3,,,,399,-1,,259,30,,,,,,,,\n46123,,281,1,,349,7,,,,394.3,-5.7,,259,47,,,,,,,,\n46124,,280.6,0.6,14,363,4,,20,,389,-11,,259,53,,,,,,,,\n46125,,281.5,1.5,,363,5,,,,386,-14,,259,30,,,,,,,,\n46126,,281,1,25,388,5,,20,,385,-15,45,304,10,,20,,,,,,\n46127,,282.5,2.5,,388,10,,,,403,3,,304,15,,,,,,,,\n46128,,281.5,1.5,,388,10,,,,402,2,,304,10,,,,,,,,\n46129,15.8,282.5,2.5,,388,-10,,,,403,3,,304,-10,,,,,,,,\n46130,,282,2,,388,5,,,,402,2,,304,10,,,,,,,,\n46131,,281.5,1.5,,388,5,,,,400,0,,304,20,,,,,,,,\n46132,,280.5,0.5,15,403,10,,20,,397,-3,,304,30,,,,,,,,\n46133,,281.5,1.5,,403,5,,,,390,-10,,304,70,,,,,,,,\n46134,,280,0,,403,15,,,,385,-15,,304,50,,,,,,,,\n46135,,273.5,-6.5,,403,65,,,,385,-15,,304,0,,,,,,,,\n46136,,265,-15,,403,85,,,,385,-15,,304,0,,,,,,,,\n46137,,,,,,,,,,,,,,,,,,,,,,\n46138,,,,,,,,,,,,,,,,,,,,,,\n46139,,,,,,,,,,,,,,,,,,,,,,\n46140,,,,,,,,,,,,,,,,,,,,,,\n46141,,,,,,,,,,,,,,,,,,,,,,\n46142,,,,,,,,,,,,,,,,,,,,,,\n46143,,,,,,,,,,,,,,,,,,,,,,\n46144,,,,,,,,,,,,,,,,,,,,,,\n46145,,,,,,,,,,,,,,,,,,,,,,\n46146,,,,,,,,,,,,,,,,,,,,,,\n46147,,,,,,,,,,,,,,,,,,,,,,\n46148,,,,,,,,,,,,,,,,,,,,,,\n46149,,,,,,,,,,,,,,,,,,,,,,\n46150,,,,,,,,,,,,,,,,,,,,,,\n46151,,,,,,,,,,,,,,,,,,,,,,\n46152,,,,,,,,,,,,,,,,,,,,,,\n46153,,,,,,,,,,,,,,,,,,,,,,\n46154,,,,,,,,,,,,,,,,,,,,,,\n46155,,,,,,,,,,,,,,,,,,,,,,\n46156,,,,,,,,,,,,,,,,,,,,,,\n46157,,,,,,,,,,,,,,,,,,,,,,\n46158,,,,,,,,,,,,,,,,,,,,,,\n46159,,,,,,,,,,,,,,,,,,,,,,\n46160,,,,,,,,,,,,,,,,,,,,,,\n46161,,,,,,,,,,,,,,,,,,,,,,\n46162,,,,,,,,,,,,,,,,,,,,,,\n46163,,,,,,,,,,,,,,,,,,,,,,\n46164,,,,,,,,,,,,,,,,,,,,,,\n46165,,,,,,,,,,,,,,,,,,,,,,\n46166,,,,,,,,,,,,,,,,,,,,,,\n46167,,,,,,,,,,,,,,,,,,,,,,\n46168,,,,,,,,,,,,,,,,,,,,,,\n46169,,,,,,,,,,,,,,,,,,,,,,\n46170,,,,,,,,,,,,,,,,,,,,,,\n46171,,,,,,,,,,,,,,,,,,,,,,\n46172,,,,,,,,,,,,,,,,,,,,,,\n46173,,,,,,,,,,,,,,,,,,,,,,\n46174,,,,,,,,,,,,,,,,,,,,,,\n46175,,,,,,,,,,,,,,,,,,,,,,\n46176,,,,,,,,,,,,,,,,,,,,,,\n46177,,,,,,,,,,,,,,,,,,,,,,\n46178,,,,,,,,,,,,,,,,,,,,,,\n46179,,,,,,,,,,,,,,,,,,,,,,\n46180,,,,,,,,,,,,,,,,,,,,,,\n46181,,,,,,,,,,,,,,,,,,,,,,\n46182,,,,,,,,,,,,,,,,,,,,,,\n46183,,,,,,,,,,,,,,,,,,,,,,\n46184,,,,,,,,,,,,,,,,,,,,,,\n46185,,,,,,,,,,,,,,,,,,,,,,\n46186,,,,,,,,,,,,,,,,,,,,,,\n46187,,,,,,,,,,,,,,,,,,,,,,\n46188,,,,,,,,,,,,,,,,,,,,,,\n46189,,,,,,,,,,,,,,,,,,,,,,\n46190,,,,,,,,,,,,,,,,,,,,,,\n46191,,,,,,,,,,,,,,,,,,,,,,\n46192,,,,,,,,,,,,,,,,,,,,,,\n46193,,,,,,,,,,,,,,,,,,,,,,\n46194,,,,,,,,,,,,,,,,,,,,,,\n46195,,,,,,,,,,,,,,,,,,,,,,\n46196,,,,,,,,,,,,,,,,,,,,,,\n46197,,,,,,,,,,,,,,,,,,,,,,\n46198,,,,,,,,,,,,,,,,,,,,,,\n46199,,,,,,,,,,,,,,,,,,,,,,\n46200,,,,,,,,,,,,,,,,,,,,,,\n46201,,,,,,,,,,,,,,,,,,,,,,\n46202,,,,,,,,,,,,,,,,,,,,,,\n46203,,,,,,,,,,,,,,,,,,,,,,\n46204,,,,,,,,,,,,,,,,,,,,,,\n46205,,,,,,,,,,,,,,,,,,,,,,\n46206,,,,,,,,,,,,,,,,,,,,,,\n46207,,,,,,,,,,,,,,,,,,,,,,\n46208,,,,,,,,,,,,,,,,,,,,,,\n46209,,,,,,,,,,,,,,,,,,,,,,\n46210,,,,,,,,,,,,,,,,,,,,,,\n46211,,,,,,,,,,,,,,,,,,,,,,\n";
+var KEY = 'f4d_viewer_sites_v1';
+var PAL = ['#0072B2', '#D55E00', '#009E73', '#CC79A7', '#E69F00', '#56B4E9', '#8c564b', '#7f7f7f', '#bcbd22', '#17becf'];
+var CFG = {responsive: true, displaylogo: false};
+var LIST = [], DATA = {}, DEMO = false, SEL = {};
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); }
+function toast(m) { var e = $('msg'); e.textContent = m; e.className = 'on'; clearTimeout(toast.t); toast.t = setTimeout(function () { e.className = ''; }, 2200); }
+function fmt(x, d) { return (x == null || !isFinite(x)) ? '-' : x.toFixed(d == null ? 0 : d); }
+function serialToISO(n) { return new Date(Date.UTC(1899, 11, 30) + n * 86400000).toISOString().slice(0, 10); }
+function fmtD(iso) { if (!iso) return '-'; var d = new Date(iso + 'T00:00:00Z'); return d.toLocaleDateString('en-GB', {timeZone: 'UTC', day: 'numeric', month: 'short', year: 'numeric'}); }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(LIST)); } catch (e) {} }
+function load() { try { return JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch (e) { return []; } }
+function b64u(s) { return btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function unb64u(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return decodeURIComponent(escape(atob(s))); }
+
+/* ---------- reading a site sheet */
+function csvUrls(link) {
+  link = String(link || '').trim();
+  if (/^https:\/\/docs\.google\.com\/spreadsheets\/d\/e\//.test(link)) {
+    if (/output=csv/.test(link)) return [link];
+    throw new Error('published');
+  }
+  var m = link.match(/^https:\/\/docs\.google\.com\/spreadsheets\/d\/([\w-]+)/);
+  if (!m) throw new Error('notsheet');
+  var b = 'https://docs.google.com/spreadsheets/d/' + m[1] + '/gviz/tq?tqx=out:csv&headers=0&sheet=';
+  return [b + 'Viewer_export&range=A1:AC200', b + 'Data_Farmer&range=A1:FZ120'];
+}
+function parseCsv(txt) {
+  var rows = [], row = [], cur = '', q = false;
+  for (var i = 0; i < txt.length; i++) {
+    var c = txt.charAt(i);
+    if (q) { if (c === '"') { if (txt.charAt(i + 1) === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true; else if (c === ',') { row.push(cur); cur = ''; }
+    else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; } else if (c !== '\r') cur += c;
+  }
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  return rows;
+}
+function num(v) {
+  v = String(v == null ? '' : v).trim(); if (v === '') return null;
+  if (/^-?[\d,]+(\.\d+)?$/.test(v)) v = v.replace(/,/g, '');
+  var n = Number(v); return isFinite(n) ? n : null;
+}
+function siteFromCsv(txt, link) {
+  var G = parseCsv(txt);
+  if (G.length && String(G[0][0] || '').trim() === 'date_serial') return siteFromExport(G, link);
+  return siteFromWide(G, link);
+}
+function build(link, meta, serials, rain, P) {
+  function md(k) { var n = num(meta[k]); return n == null ? null : serialToISO(n); }
+  var o = {link: link, name: String(meta.site || '').trim() || 'Site', place: meta.place || '', variety: meta.variety || '', sow: md('sow'), trans: md('trans'),
+    dates: serials.map(serialToISO), rain: rain, plots: P,
+    bands: {MD: [md('MDS'), md('MDE')], Pitan: [md('PitanS'), md('PitanE')], '3F4D': [md('C1S'), md('C3E')]}, head: md('HeadD'), harv: md('HarvD'),
+    np: {nf: num(meta.n_fp), pf: num(meta.p_fp), nm: num(meta.n_md), pm: num(meta.p_md)}};
+  o.dat = o.trans ? o.dates.map(function (d) { return Math.round((Date.parse(d) - Date.parse(o.trans)) / 86400000); }) : o.dates.map(function (d, i) { return i; });
+  summarize(o); return o;
+}
+var KEYS = ['m', 'wl', 'irr', 'cum', 'dec', 'till', 'fmin', 'lbdt'];
+function siteFromExport(G, link) {
+  var H = G[0].map(function (h) { return String(h || '').trim(); }), ci = {}, meta = {};
+  H.forEach(function (h, i) { if (h && !(h in ci)) ci[h] = i; });
+  if (!('fp_wl' in ci)) throw new Error('format');
+  var rows = G.slice(1).filter(function (r) { return num(r[ci.date_serial]) != null; });
+  G.slice(1).forEach(function (r) { var k = String(r[ci.key] || '').trim(); if (k) meta[k] = r[ci.value]; });
+  function col(h) { return rows.map(function (r) { return h in ci ? num(r[ci[h]]) : null; }); }
+  var P = {};
+  [['FP', 'fp'], ['3F4D+MD', 'md']].forEach(function (p) { P[p[0]] = {}; KEYS.forEach(function (k) { P[p[0]][k] = col(p[1] + '_' + k); }); });
+  return build(link, meta, col('date_serial'), col('rain'), P);
+}
+function siteFromWide(G, link) {
+  var meta = {}, serialRow = null, C0 = 3;
+  function findRow(block, label) { for (var i = 0; i < G.length; i++) { var a = String(G[i][0] || '').trim(), b = String(G[i][1] || '').trim(); if ((block == null || a === block) && b.indexOf(label) === 0) return G[i]; } return null; }
+  G.forEach(function (r) { var a = String(r[0] || '').trim(); if (a.charAt(0) === '@' && a !== '@export') meta[a.slice(1)] = r[1]; if (String(r[1] || '').trim() === '(date serial)') serialRow = r; });
+  if (!serialRow || !findRow('FP', 'Daily water level')) throw new Error('format');
+  var idx = [];
+  for (var c = C0; c < serialRow.length; c++) { if (num(serialRow[c]) != null) idx.push(c); }
+  function series(block, label) { var r = findRow(block, label); return idx.map(function (c) { return r ? num(r[c]) : null; }); }
+  var P = {};
+  [['FP', 'FP'], ['3F4D+MD', '3F4D+MD']].forEach(function (p) {
+    P[p[0]] = {m: series(p[1], 'Daily m (cm)'), wl: series(p[1], 'Daily water level'), irr: series(p[1], 'Irrigation (mm)'), cum: series(p[1], 'Cumulative irrigation'),
+      dec: series(p[1], 'Daily water-level decrease'), till: series(p[1], 'Tillers per hill'), fmin: series(p[1], 'Farmer (land owner) min'), lbdt: series(p[1], 'Labour BDT')};
+  });
+  return build(link, meta, idx.map(function (c) { return num(serialRow[c]); }), series('Both', 'Rain fall'), P);
+}
+function lastNN(a) { for (var i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; }
+function sum(a) { return a.reduce(function (s, v) { return s + (v || 0); }, 0); }
+function summarize(o) {
+  var F = o.plots.FP, M = o.plots['3F4D+MD'], last = null, days = 0;
+  o.dates.forEach(function (d, i) { if (F.wl[i] != null || M.wl[i] != null) last = d; if (F.m[i] != null || M.m[i] != null) days++; });
+  var fp = lastNN(F.cum), mdv = lastNN(M.cum);
+  o.sum = {last: last, days: days, fp: fp, md: mdv, save: (fp != null && mdv != null) ? fp - mdv : null, pct: (fp != null && mdv != null && fp > 0) ? 100 * (fp - mdv) / fp : null,
+    nF: F.irr.filter(function (v) { return v != null; }).length, nM: M.irr.filter(function (v) { return v != null; }).length, fmin: sum(F.fmin) + sum(M.fmin), lbdt: sum(F.lbdt) + sum(M.lbdt)};
+}
+async function fetchSite(entry) {
+  var urls = csvUrls(entry.u), last = null;
+  for (var i = 0; i < urls.length; i++) {
+    try {
+      var r = await fetch(urls[i] + (urls[i].indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now(), {cache: 'no-store'});
+      if (!r.ok) throw new Error('http');
+      var txt = await r.text();
+      if (/^\s*</.test(txt)) throw new Error('private');
+      return siteFromCsv(txt, entry.u);
+    } catch (e) { last = e instanceof TypeError ? new Error('private') : e; }
+  }
+  throw last;
+}
+function errText(e) {
+  var m = String(e && e.message || e);
+  return {published: 'Use the normal sheet link (or a published CSV link of the tab Data_Farmer).', notsheet: 'Not a Google Sheets link.', format: 'Not the 3F4D Water Monitor sheet (tab Viewer_export / Data_Farmer not found).',
+    private: 'The sheet is not shared as "Anyone with the link: Viewer".', http: 'Could not read the sheet (sharing or link).'}[m] || 'Could not read (check the internet and the sharing setting).';
+}
+
+/* ---------- list UI */
+function color(i) { return PAL[i % PAL.length]; }
+function renderList() {
+  $('sites').innerHTML = LIST.length ? LIST.map(function (e, i) {
+    var d = DATA[e.u], st = e.err ? '<span class="st-err">' + esc(e.err) + '</span>' : (d ? '<span class="st-ok">Loaded: ' + d.sum.days + ' days, last ' + esc(fmtD(d.sum.last)) + '</span>' : '<span class="muted">not loaded</span>');
+    return '<div class="site"><span class="dot" style="background:' + color(i) + '"></span><div><b>' + esc(e.n || (d && d.name) || 'Site ' + (i + 1)) + '</b><div class="u">' + esc(e.u) + '</div>' + st + '</div>' +
+      (DEMO ? '' : '<button type="button" class="del" data-rm="' + i + '">✕</button>') + '</div>';
+  }).join('') : '<p class="muted">No sites yet.</p>';
+  Array.prototype.forEach.call($('sites').querySelectorAll('[data-rm]'), function (b) { b.onclick = function () { var i = +b.getAttribute('data-rm'); delete DATA[LIST[i].u]; LIST.splice(i, 1); save(); renderList(); render(); }; });
+}
+async function loadAll() {
+  if (!LIST.length) { toast('Add a site first.'); return; }
+  $('info').textContent = 'Loading…';
+  await Promise.all(LIST.map(function (e) {
+    return fetchSite(e).then(function (d) { DATA[e.u] = d; e.err = ''; if (!e.n) e.n = d.name; }, function (err) { e.err = errText(err); });
+  }));
+  save(); $('info').textContent = 'Loaded ' + LIST.filter(function (e) { return DATA[e.u]; }).length + ' / ' + LIST.length;
+  renderList(); render();
+}
+function addSite() {
+  var u = $('link').value.trim(), n = $('label').value.trim();
+  try { csvUrls(u); } catch (e) { toast(errText(e)); return; }
+  if (LIST.some(function (e) { return e.u === u; })) { toast('This site is already in the list.'); return; }
+  if (DEMO) exitDemo();
+  LIST.push({u: u, n: n}); save(); $('link').value = ''; $('label').value = ''; renderList();
+  fetchSite(LIST[LIST.length - 1]).then(function (d) { var e = LIST.filter(function (x) { return x.u === u; })[0]; if (e) { DATA[u] = d; e.err = ''; if (!e.n) e.n = d.name; save(); } renderList(); render(); },
+    function (err) { var e = LIST.filter(function (x) { return x.u === u; })[0]; if (e) e.err = errText(err); renderList(); });
+}
+
+/* ---------- charts */
+function loaded() { return LIST.map(function (e, i) { return {e: e, i: i, d: DATA[e.u]}; }).filter(function (x) { return x.d && SEL[x.e.u] !== false; }); }
+function xv(d) { return $('xaxis').value === 'date' ? d.dates : d.dat; }
+function xTitle() { return $('xaxis').value === 'date' ? 'Date' : 'Days after transplanting (DAT)'; }
+function lay(title, ytitle, extra) {
+  var cs = getComputedStyle(document.body), L = {title: {text: title, x: 0, font: {size: 14}}, height: 380, margin: {l: 56, r: 14, t: 46, b: 50}, hovermode: 'closest',
+    paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', font: {color: cs.color, size: 12}, legend: {orientation: 'h', y: -0.22},
+    xaxis: {title: {text: xTitle()}, gridcolor: 'rgba(128,128,128,.2)', type: $('xaxis').value === 'date' ? 'date' : 'linear'}, yaxis: {title: {text: ytitle}, gridcolor: 'rgba(128,128,128,.2)'}};
+  return Object.assign(L, extra || {});
+}
+function draw(id, data, layout) { var el = document.getElementById(id); if (el) Plotly.newPlot(el, data, layout, CFG); }
+function lineSeries(S, plot, key, opts) {
+  return S.map(function (x) {
+    var y = x.d.plots[plot][key], X = xv(x.d), xs = [], ys = [];
+    y.forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); } });
+    return {x: xs, y: ys, type: 'scatter', mode: opts.mode || 'lines', name: x.e.n || x.d.name, line: {color: color(x.i), width: 2.2, shape: opts.shape || 'linear'}, marker: {color: color(x.i), size: 6}};
+  });
+}
+function render() {
+  var S = loaded(), out = $('out');
+  $('sumCard').style.display = $('ctlCard').style.display = S.length || LIST.some(function (e) { return DATA[e.u]; }) ? '' : 'none';
+  var all = LIST.map(function (e, i) { return {e: e, i: i, d: DATA[e.u]}; }).filter(function (x) { return x.d; });
+  $('pick').innerHTML = all.map(function (x) { return '<label><input type="checkbox" data-s="' + esc(x.e.u) + '"' + (SEL[x.e.u] !== false ? ' checked' : '') + '><span class="dot" style="display:inline-block;background:' + color(x.i) + '"></span>' + esc(x.e.n || x.d.name) + '</label>'; }).join('');
+  Array.prototype.forEach.call($('pick').querySelectorAll('input'), function (el) { el.onchange = function () { SEL[el.getAttribute('data-s')] = el.checked; render(); }; });
+  $('sum').innerHTML = '<tr><th>Site</th><th>Place</th><th>Variety</th><th>Transplanting</th><th>Last entry</th><th>Days</th><th>FP irrigation (mm)</th><th>3F4D+MD irrigation (mm)</th><th>Saving (mm)</th><th>Saving (%)</th><th>Irrigations FP / 3F4D+MD</th><th>N FP / 3F4D+MD (kg/10a)</th></tr>' +
+    all.map(function (x) { var s = x.d.sum; return '<tr><td><span class="dot" style="display:inline-block;background:' + color(x.i) + '"></span> <b>' + esc(x.e.n || x.d.name) + '</b></td><td>' + esc(x.d.place) + '</td><td>' + esc(x.d.variety) + '</td><td>' + esc(fmtD(x.d.trans)) + '</td><td>' + esc(fmtD(s.last)) + '</td><td class="n">' + s.days +
+      '</td><td class="n">' + fmt(s.fp) + '</td><td class="n">' + fmt(s.md) + '</td><td class="n">' + fmt(s.save) + '</td><td class="n">' + fmt(s.pct) + '</td><td class="n">' + s.nF + ' / ' + s.nM + '</td><td class="n">' + fmt(x.d.np.nf, 1) + ' / ' + fmt(x.d.np.nm, 1) + '</td></tr>'; }).join('');
+  if (!S.length) { out.innerHTML = ''; return; }
+  if ($('mode').value === 'overlay') {
+    out.innerHTML = '<div class="card"><div class="plot" id="g-bar"></div></div><div class="card"><div class="two"><div class="plot" id="g-cf"></div><div class="plot" id="g-cm"></div></div></div>' +
+      '<div class="card"><div class="two"><div class="plot" id="g-wf"></div><div class="plot" id="g-wm"></div></div></div><div class="card"><div class="two"><div class="plot" id="g-tf"></div><div class="plot" id="g-tm"></div></div></div>';
+    var names = S.map(function (x) { return x.e.n || x.d.name; });
+    draw('g-bar', [{x: names, y: S.map(function (x) { return x.d.sum.fp; }), type: 'bar', name: 'FP', marker: {color: '#D55E00'}},
+                   {x: names, y: S.map(function (x) { return x.d.sum.md; }), type: 'bar', name: '3F4D+MD', marker: {color: '#0072B2'}, text: S.map(function (x) { return x.d.sum.pct != null ? '-' + fmt(x.d.sum.pct) + '%' : ''; }), textposition: 'outside'}],
+      lay('Total irrigation and saving', 'Irrigation (mm)', {barmode: 'group', xaxis: {automargin: true}, yaxis: {title: {text: 'mm'}, rangemode: 'tozero'}}));
+    draw('g-cf', lineSeries(S, 'FP', 'cum', {shape: 'hv'}), lay('Cumulative irrigation - FP', 'mm'));
+    draw('g-cm', lineSeries(S, '3F4D+MD', 'cum', {shape: 'hv'}), lay('Cumulative irrigation - 3F4D+MD', 'mm'));
+    draw('g-wf', lineSeries(S, 'FP', 'wl', {mode: 'lines+markers'}).map(function (t) { t.marker.size = 3; return t; }), lay('Water level - FP', 'cm'));
+    draw('g-wm', lineSeries(S, '3F4D+MD', 'wl', {mode: 'lines+markers'}).map(function (t) { t.marker.size = 3; return t; }), lay('Water level - 3F4D+MD', 'cm'));
+    draw('g-tf', lineSeries(S, 'FP', 'till', {mode: 'lines+markers'}), lay('Tillers per hill - FP', 'tillers', {yaxis: {title: {text: 'tillers'}, rangemode: 'tozero'}}));
+    draw('g-tm', lineSeries(S, '3F4D+MD', 'till', {mode: 'lines+markers'}), lay('Tillers per hill - 3F4D+MD', 'tillers', {yaxis: {title: {text: 'tillers'}, rangemode: 'tozero'}}));
+  } else {
+    out.innerHTML = S.map(function (x, j) {
+      var s = x.d.sum;
+      return '<div class="card"><h2><span class="dot" style="display:inline-block;background:' + color(x.i) + '"></span> ' + esc(x.e.n || x.d.name) + '</h2><p class="muted">' + esc(x.d.place) + ' · transplanting ' + esc(fmtD(x.d.trans)) + ' · last entry ' + esc(fmtD(s.last)) +
+        ' · FP ' + fmt(s.fp) + ' mm, 3F4D+MD ' + fmt(s.md) + ' mm, saving ' + fmt(s.pct) + '%</p><div class="plot" id="e-w' + j + '" style="min-height:420px"></div><div class="two"><div class="plot" id="e-c' + j + '"></div><div class="plot" id="e-d' + j + '"></div></div></div>';
+    }).join('');
+    S.forEach(function (x, j) {
+      var d = x.d, X = xv(d), data = [], shapes = [], ann = [];
+      [['FP', '#D55E00'], ['3F4D+MD', '#0072B2']].forEach(function (p) {
+        var xs = [], ys = []; d.plots[p[0]].wl.forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); } });
+        data.push({x: xs, y: ys, type: 'scatter', mode: 'lines+markers', name: p[0], line: {color: p[1], width: 2}, marker: {size: 3, color: p[1]}});
+      });
+      var rx = [], ry = []; d.rain.forEach(function (v, k) { if (v) { rx.push(X[k]); ry.push(v); } });
+      data.push({x: rx, y: ry, type: 'bar', name: 'Rain (mm)', yaxis: 'y2', marker: {color: '#56B4E9'}});
+      var row = 0;
+      [['MD', '#009E73'], ['Pitan', '#E69F00'], ['3F4D', '#CC79A7']].forEach(function (b) {
+        var be = d.bands[b[0]]; if (!be[0] || !be[1]) return;
+        var x0 = $('xaxis').value === 'date' ? be[0] : Math.round((Date.parse(be[0]) - Date.parse(d.trans)) / 86400000), x1 = $('xaxis').value === 'date' ? be[1] : Math.round((Date.parse(be[1]) - Date.parse(d.trans)) / 86400000);
+        shapes.push({type: 'rect', xref: 'x', x0: x0, x1: x1, yref: 'paper', y0: 0.27, y1: 1, fillcolor: b[1], opacity: 0.16, line: {width: 0}, layer: 'below'});
+        ann.push({x: x0, xref: 'x', y: 1 + 0.06 * (b[0] === 'Pitan' ? 1 : 0), yref: 'paper', text: b[0], showarrow: false, xanchor: 'left', yanchor: 'bottom', font: {size: 11}});
+      });
+      var L = lay('Water level (cm) and rain', 'cm', {height: 420, yaxis: {domain: [0.27, 1], title: {text: 'Water level (cm)'}, gridcolor: 'rgba(128,128,128,.2)'}, yaxis2: {domain: [0, 0.2], title: {text: 'Rain'}, rangemode: 'tozero', anchor: 'x'}, shapes: shapes, annotations: ann, margin: {l: 56, r: 14, t: 60, b: 50}});
+      L.xaxis.anchor = 'y2';
+      draw('e-w' + j, data, L);
+      draw('e-c' + j, [['FP', '#D55E00'], ['3F4D+MD', '#0072B2']].map(function (p) { var xs = [], ys = []; d.plots[p[0]].cum.forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); } }); return {x: xs, y: ys, type: 'scatter', mode: 'lines', line: {color: p[1], width: 2.4, shape: 'hv'}, name: p[0]}; }), lay('Cumulative irrigation (mm)', 'mm'));
+      draw('e-d' + j, [['FP', '#D55E00'], ['3F4D+MD', '#0072B2']].map(function (p) { var xs = [], ys = []; d.plots[p[0]].till.forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); } }); return {x: xs, y: ys, type: 'scatter', mode: 'lines+markers', line: {color: p[1]}, marker: {size: 7, color: p[1]}, name: p[0]}; }), lay('Tillers per hill', 'tillers', {yaxis: {title: {text: 'tillers'}, rangemode: 'tozero'}}));
+    });
+  }
+}
+
+/* ---------- share list, CSV export, demo */
+function shareList() {
+  if (!LIST.length || DEMO) { toast('Add sites first.'); return; }
+  var url = location.href.split('#')[0] + '#l=' + b64u(JSON.stringify(LIST.map(function (e) { return {u: e.u, n: e.n || ''}; })));
+  var ta = $('shareTxt'); ta.style.display = ''; ta.value = url; ta.select();
+  try { navigator.clipboard.writeText(url).then(function () { toast('Link copied.'); }, function () { toast('Copy the link below.'); }); } catch (e) { toast('Copy the link below.'); }
+}
+function exportCsv() {
+  var rows = [['site', 'date', 'dat', 'plot', 'water_level_cm', 'irrigation_mm', 'cumulative_mm', 'daily_decrease_mm', 'tillers_per_hill', 'rain_mm'].join(',')];
+  LIST.forEach(function (e) { var d = DATA[e.u]; if (!d) return;
+    d.dates.forEach(function (dt, k) { ['FP', '3F4D+MD'].forEach(function (p) { var P = d.plots[p]; if ([P.wl[k], P.irr[k], P.till[k]].every(function (v) { return v == null; })) return;
+      rows.push([JSON.stringify(e.n || d.name), dt, d.dat[k], p, P.wl[k], P.irr[k], P.cum[k], P.dec[k], P.till[k], d.rain[k]].map(function (v) { return v == null ? '' : v; }).join(',')); }); }); });
+  if (rows.length < 2) { toast('Load the sites first.'); return; }
+  var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + rows.join('\n')], {type: 'text/csv'})); a.download = '3f4d_sites_' + new Date().toISOString().slice(0, 10) + '.csv'; document.body.appendChild(a); a.click(); setTimeout(function () { a.remove(); }, 500);
+}
+function demoSites() {
+  var base = siteFromCsv(DEMO_CSV, 'demo:1'), spec = [['Demo Site-01 (Jashore)', 1, 1, 0, 1], ['Demo Site-02 (Bogura)', 1.2, 1.1, 1.5, 0.9], ['Demo Site-03 (Rangpur)', 0.85, 0.75, -1, 1.1]];
+  return spec.map(function (sp, i) {
+    var d = JSON.parse(JSON.stringify(base)); d.link = 'demo:' + (i + 1); d.name = sp[0]; d.place = 'demo';
+    ['FP', '3F4D+MD'].forEach(function (p) { var P = d.plots[p], f = p === 'FP' ? sp[1] : sp[2];
+      P.irr = P.irr.map(function (v) { return v == null ? null : Math.round(v * f * 10) / 10; });
+      var run = 0; P.cum = P.cum.map(function (v, k) { if (P.irr[k] != null) run += P.irr[k]; return v == null ? null : Math.round(run * 10) / 10; });
+      P.wl = P.wl.map(function (v, k) { return v == null ? null : Math.round((v + sp[3] * 0.3 * Math.sin(k / 3)) * 10) / 10; });
+      P.till = P.till.map(function (v) { return v == null ? null : Math.round(v * sp[4] * 10) / 10; }); });
+    summarize(d); return d;
+  });
+}
+function startDemo() {
+  DEMO = true; var ds = demoSites(); LIST = ds.map(function (d) { return {u: d.link, n: d.name}; }); DATA = {}; ds.forEach(function (d) { DATA[d.link] = d; });
+  $('banner').style.display = ''; $('banner').innerHTML = 'DEMO data (3 example sites) <button type="button" id="b-exit" style="margin-left:8px;min-height:30px;padding:2px 12px">Exit demo</button>';
+  $('b-exit').onclick = exitDemo; renderList(); render();
+}
+function exitDemo() { DEMO = false; $('banner').style.display = 'none'; LIST = load(); DATA = {}; renderList(); render(); if (LIST.length) loadAll(); }
+
+/* ---------- boot */
+$('add').onclick = addSite; $('load').onclick = function () { if (DEMO) { toast('Demo: nothing to load.'); return; } loadAll(); };
+$('share').onclick = shareList; $('csv').onclick = exportCsv; $('demo').onclick = startDemo;
+$('mode').onchange = render; $('xaxis').onchange = render;
+LIST = load();
+var h = location.hash;
+if (/^#l=/.test(h)) {
+  try { var inc = JSON.parse(unb64u(h.slice(3))); inc.forEach(function (e) { if (e && e.u && !LIST.some(function (x) { return x.u === e.u; })) LIST.push({u: String(e.u), n: String(e.n || '')}); }); save(); toast('Sites added from the link.'); } catch (e) { toast('The list link is broken.'); }
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+}
+if (h === '#demo') startDemo(); else { renderList(); if (LIST.length) loadAll(); }
+</script>
+</body>
+</html>
