@@ -315,18 +315,38 @@ function render() {
       '</td><td class="n">' + fmt(s.fp) + '</td><td class="n">' + fmt(s.md) + '</td><td class="n">' + fmt(s.save) + '</td><td class="n">' + fmt(s.pct) + '</td><td class="n">' + s.nF + ' / ' + s.nM + '</td><td class="n">' + fmt(x.d.np.nf, 1) + ' / ' + fmt(x.d.np.nm, 1) + '</td></tr>'; }).join('');
   if (!S.length) { out.innerHTML = ''; return; }
   if ($('mode').value === 'overlay') {
-    out.innerHTML = '<div class="card"><div class="plot" id="g-bar"></div></div><div class="card"><div class="two"><div class="plot" id="g-cf"></div><div class="plot" id="g-cm"></div></div></div>' +
-      '<div class="card"><div class="two"><div class="plot" id="g-wf"></div><div class="plot" id="g-wm"></div></div></div><div class="card"><div class="two"><div class="plot" id="g-tf"></div><div class="plot" id="g-tm"></div></div></div>';
+    out.innerHTML = '<div class="card"><div class="plot" id="g-bar"></div></div>';
     var names = S.map(function (x) { return x.e.n || x.d.name; });
     draw('g-bar', [{x: names, y: S.map(function (x) { return x.d.sum.fp; }), type: 'bar', name: 'FP', marker: {color: '#D55E00'}},
                    {x: names, y: S.map(function (x) { return x.d.sum.md; }), type: 'bar', name: '3F4D+MD', marker: {color: '#0072B2'}, text: S.map(function (x) { return x.d.sum.pct != null ? '-' + fmt(x.d.sum.pct) + '%' : ''; }), textposition: 'outside'}],
       lay(t('g_bar'), t('y_irr'), {barmode: 'group', xaxis: {automargin: true}, yaxis: {title: {text: t('y_irr')}, rangemode: 'tozero'}}));
-    draw('g-cf', lineSeries(S, 'FP', 'cum', {shape: 'hv'}), lay(t('g_cum') + ' - FP', 'mm'));
-    draw('g-cm', lineSeries(S, '3F4D+MD', 'cum', {shape: 'hv'}), lay(t('g_cum') + ' - 3F4D+MD', 'mm'));
-    draw('g-wf', lineSeries(S, 'FP', 'wl', {mode: 'lines+markers'}).map(function (t) { t.marker.size = 3; return t; }), lay(t('g_wl') + ' - FP', 'cm'));
-    draw('g-wm', lineSeries(S, '3F4D+MD', 'wl', {mode: 'lines+markers'}).map(function (t) { t.marker.size = 3; return t; }), lay(t('g_wl') + ' - 3F4D+MD', 'cm'));
-    draw('g-tf', lineSeries(S, 'FP', 'till', {mode: 'lines+markers'}), lay(t('g_till') + ' - FP', t('y_till'), {yaxis: {title: {text: t('y_till')}, rangemode: 'tozero'}}));
-    draw('g-tm', lineSeries(S, '3F4D+MD', 'till', {mode: 'lines+markers'}), lay(t('g_till') + ' - 3F4D+MD', t('y_till'), {yaxis: {title: {text: t('y_till')}, rangemode: 'tozero'}}));
+    /* one panel per site; FP and 3F4D+MD overlaid; same axes for all sites of a graph */
+    var PL = [['FP', '#D55E00'], ['3F4D+MD', '#0072B2']];
+    var G = [['cum', t('g_cum'), 'mm', {mode: 'lines', shape: 'hv', w: 2.4}], ['wl', t('g_wl'), 'cm', {mode: 'lines+markers', w: 1.8, ms: 3}], ['till', t('g_till'), t('y_till'), {mode: 'lines+markers', w: 2, ms: 7, zero: true}]];
+    var html = '';
+    G.forEach(function (g, gi) {
+      html += '<div class="card"><h2>' + esc(g[1]) + '</h2><div class="two">' + S.map(function (x, j) { return '<div class="plot" id="p-' + gi + '-' + j + '" style="min-height:300px"></div>'; }).join('') + '</div></div>';
+    });
+    out.insertAdjacentHTML('beforeend', html);
+    G.forEach(function (g, gi) {
+      var lo = Infinity, hi = -Infinity, xlo = Infinity, xhi = -Infinity, isDate = $('xaxis').value === 'date';
+      var per = S.map(function (x) {
+        var X = xv(x.d);
+        return PL.map(function (p) {
+          var xs = [], ys = [];
+          x.d.plots[p[0]][g[0]].forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); lo = Math.min(lo, v); hi = Math.max(hi, v); var xx = isDate ? Date.parse(X[k]) : X[k]; xlo = Math.min(xlo, xx); xhi = Math.max(xhi, xx); } });
+          return {x: xs, y: ys, type: 'scatter', mode: g[3].mode, name: p[0], line: {color: p[1], width: g[3].w, shape: g[3].shape || 'linear'}, marker: {color: p[1], size: g[3].ms || 4}};
+        });
+      });
+      var yr = isFinite(lo) ? [g[3].zero ? 0 : lo - 0.06 * (hi - lo || 1), hi + 0.06 * (hi - lo || 1)] : null;
+      var xr = isFinite(xlo) ? (isDate ? [new Date(xlo - 2 * 864e5).toISOString().slice(0, 10), new Date(xhi + 2 * 864e5).toISOString().slice(0, 10)] : [xlo - 2, xhi + 2]) : null;
+      S.forEach(function (x, j) {
+        var L = lay(x.e.n || x.d.name, g[2], {height: 300, margin: {l: 52, r: 10, t: 40, b: 46}, legend: {orientation: 'h', y: -0.28}});
+        L.title.font = {size: 13, color: color(x.i)};
+        if (yr) L.yaxis.range = yr; if (xr) L.xaxis.range = xr;
+        draw('p-' + gi + '-' + j, per[j], L);
+      });
+    });
   } else {
     out.innerHTML = S.map(function (x, j) {
       var s = x.d.sum;
