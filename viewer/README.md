@@ -25,3 +25,4 @@ The viewer works without internet after the first visit (service worker). The da
 Files: `index.html` (the viewer), `plotly.min.js` (graphs, offline copy), `sw.js` (offline), `manifest.webmanifest` and `icon*.png` / `icon.svg` / `apple-touch-icon.png` (app icon), `3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx` (the sheet template for the sites).
 
 Template download: https://akamiyat-cyber.github.io/ati-monitor/viewer/3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx
+Bengali template: https://akamiyat-cyber.github.io/ati-monitor/viewer/3F4D_Water_Monitor_Sheet_TEMPLATE_BN.xlsx
