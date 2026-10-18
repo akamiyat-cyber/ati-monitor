@@ -4,14 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3F4D Site Viewer</title>
-<meta name="theme-color" content="#00755a">
+<meta name="theme-color" content="#0b4a7a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="3F4D Viewer">
 <style>
 :root{--bg:#eef3f0;--fg:#13201a;--mut:#5b6a62;--card:#fff;--line:#dfe8e3;--accent:#00755a;--accent2:#009a74;--soft:#e2f4ec;--warn:#b4570a;--ok:#0a7a4b;--in:#f6faf8;--onacc:#fff;--shadow:0 1px 2px rgba(10,40,30,.05),0 8px 24px rgba(10,40,30,.07)}
 @media (prefers-color-scheme:dark){:root{--bg:#0d1511;--fg:#e7efea;--mut:#98a89f;--card:#16211b;--line:#25332b;--accent:#3ddc97;--accent2:#1fb77d;--soft:#173226;--warn:#f0b35a;--ok:#4cc38a;--in:#101a15;--onacc:#06231a;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Bengali",sans-serif}
-header{background:linear-gradient(135deg,#00604a 0%,#00a07a 100%);color:#fff;padding:18px max(16px,calc((100% - 1200px)/2)) 30px;border-radius:0 0 28px 28px;display:flex;gap:12px;align-items:center}
-header .logo{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none}
+header{background:linear-gradient(135deg,#0b4a7a 0%,#0a9a8a 100%);color:#fff;padding:18px max(16px,calc((100% - 1200px)/2)) 30px;border-radius:0 0 28px 28px;display:flex;gap:12px;align-items:center}
+header .logo{width:44px;height:44px;border-radius:12px;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
 h1{font-size:20px;margin:0}
 header .sub{font-size:13px;opacity:.85}
 main{max-width:1200px;margin:-14px auto 0;padding:0 14px 40px}
@@ -50,7 +55,7 @@ details summary{cursor:pointer;color:var(--accent);font-weight:700}
 <body>
 <div id="banner" class="banner" style="display:none"></div>
 <header>
-  <div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-6 4 3 7-8"/><path d="M4 20h16"/></svg></div>
+  <img class="logo" src="icon.svg" alt="" width="44" height="44">
   <div><h1>3F4D Site Viewer</h1><div class="sub">Graphs of the 3F4D Water Monitor sheets of several sites</div></div>
 </header>
 <main>
@@ -82,6 +87,7 @@ details summary{cursor:pointer;color:var(--accent);font-weight:700}
         <li>The site shares the sheet: <b>Share &gt; General access &gt; Anyone with the link &gt; Viewer</b>, and sends you the link.</li>
         <li>Paste the link above and press "Add site". Repeat for every site. The list is kept in this browser; "Share this list" makes a link that opens the same list on another device.</li>
         <li>"Compare sites" draws all sites in the same graphs (x axis: days after transplanting or date). "Each site" shows the graphs of every site separately, with the MD, Pitan and 3F4D periods.</li>
+        <li>Works offline: the app and the data of the last successful load are kept on this device. Without internet the graphs show the saved data (marked "Offline"). Install it with the browser menu: "Add to Home screen" / "Install app".</li>
         <li>The data are read from the tab <b>Viewer_export</b> (or Data_Farmer) each time you press "Load / refresh all". The sheets are never changed.</li>
       </ol>
       <p class="muted">If a site shows "Could not read": check the sharing setting, and that the sheet is the 3F4D Water Monitor sheet version (tab Data_Farmer).</p>
@@ -92,7 +98,10 @@ details summary{cursor:pointer;color:var(--accent);font-weight:700}
 <script>
 'use strict';
 var DEMO_CSV = "date_serial,rain,fp_m,fp_wl,fp_irr,fp_cum,fp_dec,fp_till,fp_fmin,fp_lbdt,md_m,md_wl,md_irr,md_cum,md_dec,md_till,md_fmin,md_lbdt,,key,value,,\"Used by the 3F4D Site Viewer. Do not edit. / \u09ad\u09bf\u0989\u09af\u09bc\u09be\u09b0 \u0985\u09cd\u09af\u09be\u09aa\u09c7\u09b0 \u099c\u09a8\u09cd\u09af, \u09aa\u09b0\u09bf\u09ac\u09b0\u09cd\u09a4\u09a8 \u0995\u09b0\u09ac\u09c7\u09a8 \u09a8\u09be\u0964\"\n46042,,280,1,,0,,,,,400.3,1.3,,0,,,,,,site,Demo Site-01,,\n46043,,279.9,0.9,7,7,1,,20,,400,1,5,5,3,,20,,,place,\"Chougachha, Jashore\",,\n46044,,280.5,1.5,,7,1,,,,400.3,1.3,,5,2,,,,,variety,Rod miniket,,\n46045,,280,1,25,32,5,,20,,400,1,25,30,3,,20,,,sow,45993,,\n46046,,282.1,3.1,,32,4,,,,402.2,3.2,,30,3,,,,,trans,46042,,\n46047,,281.4,2.4,,32,7,,,,401.3,2.3,,30,9,,,,,PitanS,46072,,\n46048,,281.2,2.2,,32,2,,,,401.1,2.1,,30,2,,,,,PitanE,46075,,\n46049,,280.5,1.5,19,51,7,,20,,400.5,1.5,19,49,6,,20,,,MDS,46073,,\n46050,,281.8,2.8,,51,6,,,,402,3,,49,4,,,,,MDE,46081,,\n46051,,281.5,2.5,,51,3,,,,401.5,2.5,,49,5,,,,,FloodS,46093,,\n46052,,281.1,2.1,,51,4,,,,401,2,,49,5,,,,,FloodE,46097,,\n46053,,280.5,1.5,,51,6,,,,400.5,1.5,,49,5,,,,,C1S,46097,,\n46054,,280.3,1.3,17,68,2,,20,,400.3,1.3,17,66,2,,20,,,C3E,46140,,\n46055,,281.5,2.5,,68,5,,,,401.5,2.5,,66,5,,,,,HeadD,46118,,\n46056,,281.1,2.1,,68,4,,,,401,2,,66,5,,,,,HarvD,46146,,\n46057,,280.4,1.4,,68,7,,,,400.5,1.5,,66,5,,,,,fp_area_dec,8.457,,\n46058,,280.2,1.2,,68,2,,,,400.3,1.3,,66,2,,,,,md_area_dec,8.457,,\n46059,,280,1,,68,2,,,,400.1,1.1,,66,2,,,,,n_fp,20.2,,\n46060,,279.9,0.9,,68,1,,,,400,1,,66,1,,,,,p_fp,2.3,,\n46061,,279.7,0.7,28,96,2,,20,,399.5,0.5,20,86,5,,20,,,n_md,20.2,,\n46062,,281.6,2.6,,96,9,,,,401.3,2.3,,86,2,,,,,p_md,2.3,,\n46063,,281.4,2.4,,96,2,7.3,,,401,2,,86,3,6.7,,,,version,sheet-v2,,\n46064,,280.9,1.9,,96,5,,,,400.5,1.5,,86,5,,,,,,,,\n46065,,,,,,,,,,,,,,,,,,,,,,\n46066,,280.1,1.1,,96,,,,,400,1,,86,,,,,,,,,\n46067,,279.5,0.5,,96,6,,,,398.8,-0.2,,86,12,,,,,,,,\n46068,,278.5,-0.5,24,120,10,,20,,398.3,-0.7,23,109,5,,20,,,,,,\n46069,,281,2,,120,4,,,,401,2,,109,3,,,,,,,,\n46070,,280.5,1.5,,120,5,,,,400.7,1.7,,109,3,,,,,,,,\n46071,,280.3,1.3,,120,2,,,,400.5,1.5,,109,2,,,,,,,,\n46072,,279.9,0.9,31,151,4,,20,,400,1,30,139,5,,20,,,,,,\n46073,,282.8,3.8,,151,2,,,,402.8,3.8,,139,2,,,,,,,,\n46074,,282.3,3.3,,151,5,,,,402.2,3.2,,139,6,,,,,,,,\n46075,,281.5,1.5,,151,18,,,,401.5,1.5,,139,17,,,,,,,,\n46076,,280,0,,151,15,,,,400,0,,139,15,,,,,,,,\n46077,3.2,279.7,-0.3,,151,3,,,,399.7,-0.3,,139,3,,,,,,,,\n46078,,279,-1,,151,7,13,,,399,-1,,139,7,12.7,,,,,,,\n46079,,277,-3,,151,20,,,,395,-5,,139,40,,,,,,,,\n46080,,275,-5,,151,20,,,,392,-8,,139,30,,,,,,,,\n46081,,272,-8,,151,30,,,,385,-15,,139,70,,,,,,,,\n46082,,265,-15,,151,70,,,,385,-15,,139,0,,,,,,,,\n46083,,265,-15,,151,0,,,,385,-15,,139,0,,,,,,,,\n46084,,265,-15,,151,0,,,,385,-15,,139,0,,,,,,,,\n46085,,265,-15,,151,0,,,,385,-15,,139,0,,,,,,,,\n46086,,265,-15,,151,0,,,,385,-15,,139,0,,,,,,,,\n46087,,265,-15,15,166,0,,20,,385,-15,15,154,0,,20,,,,,,\n46088,,281,1,,166,5,,,,401,1,,154,5,,,,,,,,\n46089,,280.7,0.7,,166,3,,,,400.7,0.7,,154,3,,,,,,,,\n46090,,280.2,0.2,18,184,5,,20,,400.2,0.2,18,172,5,,20,,,,,,\n46091,,281.7,1.7,,184,3,,,,401.7,1.7,,172,3,,,,,,,,\n46092,,281,1,,184,7,,,,401,1,,172,7,,,,,,,,\n46093,,280.5,0.5,30,214,5,17,20,,400.5,0.5,22,194,5,19,20,,,,,,\n46094,,282.5,2.5,,214,10,,,,401.6,1.6,,194,11,,,,,,,,\n46095,,282,2,,214,5,,,,401,1,,194,6,,,,,,,,\n46096,,281.5,1.5,,214,5,,,,400.7,0.7,,194,3,,,,,,,,\n46097,,281,1,,214,5,,,,400.3,0.3,10,204,4,,20,,,,,,\n46098,,280.7,0.7,,214,3,,,,400.8,0.8,,204,5,,,,,,,,\n46099,,280.1,0.1,24,238,6,,20,,400.4,0.4,,204,4,,,,,,,,\n46100,,280,0,20,258,25,,20,,397,-3,,204,34,,,,,,,,\n46101,,281,1,,258,10,,,,394,-6,,204,30,,,,,,,,\n46102,,,,,,,,,,,,,,,,,,,,,,\n46103,,280.2,0.2,8,266,,,20,,389,-11,,204,,,,,,,,,\n46104,,280.9,0.9,,266,1,,,,388,-12,15,219,10,,20,,,,,,\n46105,7.3,280,0,20,286,9,,20,,401,1,,219,5,,,,,,,,\n46106,,281,1,,286,10,,,,400.5,0.5,,219,5,,,,,,,,\n46107,,280.7,0.7,,286,3,,,,396,-4,,219,45,,,,,,,,\n46108,,280.3,0.3,7,293,4,16,20,,391,-9,,219,50,20,,,,,,,\n46109,,280.5,0.5,,293,5,,,,388,-12,,219,30,,,,,,,,\n46110,,280,0,20,313,5,,20,,385,-15,,219,30,,,,,,,,\n46111,2.1,281,1,,313,10,,,,385,-15,20,239,0,,20,,,,,,\n46112,,280.7,0.7,,313,3,,,,401,1,,239,10,,,,,,,,\n46113,,280.5,0.5,15,328,2,,20,,400.5,0.5,,239,5,,,,,,,,\n46114,,281,1,,328,10,,,,398,-2,,239,25,,,,,,,,\n46115,,280.7,0.7,,328,3,,,,393,-7,,239,50,,,,,,,,\n46116,,280.5,0.5,,328,2,,,,388,-12,,239,50,,,,,,,,\n46117,,280.1,0.1,21,349,4,,20,,385,-15,,239,30,,,,,,,,\n46118,7.3,281.5,1.5,,349,7,,,,385,-15,20,259,0,,20,,,,,,\n46119,2,281,1,,349,5,,,,401.5,1.5,,259,5,,,,,,,,\n46120,1.1,280.7,0.7,,349,3,,,,400.3,0.3,,259,12,,,,,,,,\n46121,21.1,282,2,,349,-13,,,,402,2,,259,-17,,,,,,,,\n46122,,281.7,1.7,,349,3,,,,399,-1,,259,30,,,,,,,,\n46123,,281,1,,349,7,,,,394.3,-5.7,,259,47,,,,,,,,\n46124,,280.6,0.6,14,363,4,,20,,389,-11,,259,53,,,,,,,,\n46125,,281.5,1.5,,363,5,,,,386,-14,,259,30,,,,,,,,\n46126,,281,1,25,388,5,,20,,385,-15,45,304,10,,20,,,,,,\n46127,,282.5,2.5,,388,10,,,,403,3,,304,15,,,,,,,,\n46128,,281.5,1.5,,388,10,,,,402,2,,304,10,,,,,,,,\n46129,15.8,282.5,2.5,,388,-10,,,,403,3,,304,-10,,,,,,,,\n46130,,282,2,,388,5,,,,402,2,,304,10,,,,,,,,\n46131,,281.5,1.5,,388,5,,,,400,0,,304,20,,,,,,,,\n46132,,280.5,0.5,15,403,10,,20,,397,-3,,304,30,,,,,,,,\n46133,,281.5,1.5,,403,5,,,,390,-10,,304,70,,,,,,,,\n46134,,280,0,,403,15,,,,385,-15,,304,50,,,,,,,,\n46135,,273.5,-6.5,,403,65,,,,385,-15,,304,0,,,,,,,,\n46136,,265,-15,,403,85,,,,385,-15,,304,0,,,,,,,,\n46137,,,,,,,,,,,,,,,,,,,,,,\n46138,,,,,,,,,,,,,,,,,,,,,,\n46139,,,,,,,,,,,,,,,,,,,,,,\n46140,,,,,,,,,,,,,,,,,,,,,,\n46141,,,,,,,,,,,,,,,,,,,,,,\n46142,,,,,,,,,,,,,,,,,,,,,,\n46143,,,,,,,,,,,,,,,,,,,,,,\n46144,,,,,,,,,,,,,,,,,,,,,,\n46145,,,,,,,,,,,,,,,,,,,,,,\n46146,,,,,,,,,,,,,,,,,,,,,,\n46147,,,,,,,,,,,,,,,,,,,,,,\n46148,,,,,,,,,,,,,,,,,,,,,,\n46149,,,,,,,,,,,,,,,,,,,,,,\n46150,,,,,,,,,,,,,,,,,,,,,,\n46151,,,,,,,,,,,,,,,,,,,,,,\n46152,,,,,,,,,,,,,,,,,,,,,,\n46153,,,,,,,,,,,,,,,,,,,,,,\n46154,,,,,,,,,,,,,,,,,,,,,,\n46155,,,,,,,,,,,,,,,,,,,,,,\n46156,,,,,,,,,,,,,,,,,,,,,,\n46157,,,,,,,,,,,,,,,,,,,,,,\n46158,,,,,,,,,,,,,,,,,,,,,,\n46159,,,,,,,,,,,,,,,,,,,,,,\n46160,,,,,,,,,,,,,,,,,,,,,,\n46161,,,,,,,,,,,,,,,,,,,,,,\n46162,,,,,,,,,,,,,,,,,,,,,,\n46163,,,,,,,,,,,,,,,,,,,,,,\n46164,,,,,,,,,,,,,,,,,,,,,,\n46165,,,,,,,,,,,,,,,,,,,,,,\n46166,,,,,,,,,,,,,,,,,,,,,,\n46167,,,,,,,,,,,,,,,,,,,,,,\n46168,,,,,,,,,,,,,,,,,,,,,,\n46169,,,,,,,,,,,,,,,,,,,,,,\n46170,,,,,,,,,,,,,,,,,,,,,,\n46171,,,,,,,,,,,,,,,,,,,,,,\n46172,,,,,,,,,,,,,,,,,,,,,,\n46173,,,,,,,,,,,,,,,,,,,,,,\n46174,,,,,,,,,,,,,,,,,,,,,,\n46175,,,,,,,,,,,,,,,,,,,,,,\n46176,,,,,,,,,,,,,,,,,,,,,,\n46177,,,,,,,,,,,,,,,,,,,,,,\n46178,,,,,,,,,,,,,,,,,,,,,,\n46179,,,,,,,,,,,,,,,,,,,,,,\n46180,,,,,,,,,,,,,,,,,,,,,,\n46181,,,,,,,,,,,,,,,,,,,,,,\n46182,,,,,,,,,,,,,,,,,,,,,,\n46183,,,,,,,,,,,,,,,,,,,,,,\n46184,,,,,,,,,,,,,,,,,,,,,,\n46185,,,,,,,,,,,,,,,,,,,,,,\n46186,,,,,,,,,,,,,,,,,,,,,,\n46187,,,,,,,,,,,,,,,,,,,,,,\n46188,,,,,,,,,,,,,,,,,,,,,,\n46189,,,,,,,,,,,,,,,,,,,,,,\n46190,,,,,,,,,,,,,,,,,,,,,,\n46191,,,,,,,,,,,,,,,,,,,,,,\n46192,,,,,,,,,,,,,,,,,,,,,,\n46193,,,,,,,,,,,,,,,,,,,,,,\n46194,,,,,,,,,,,,,,,,,,,,,,\n46195,,,,,,,,,,,,,,,,,,,,,,\n46196,,,,,,,,,,,,,,,,,,,,,,\n46197,,,,,,,,,,,,,,,,,,,,,,\n46198,,,,,,,,,,,,,,,,,,,,,,\n46199,,,,,,,,,,,,,,,,,,,,,,\n46200,,,,,,,,,,,,,,,,,,,,,,\n46201,,,,,,,,,,,,,,,,,,,,,,\n46202,,,,,,,,,,,,,,,,,,,,,,\n46203,,,,,,,,,,,,,,,,,,,,,,\n46204,,,,,,,,,,,,,,,,,,,,,,\n46205,,,,,,,,,,,,,,,,,,,,,,\n46206,,,,,,,,,,,,,,,,,,,,,,\n46207,,,,,,,,,,,,,,,,,,,,,,\n46208,,,,,,,,,,,,,,,,,,,,,,\n46209,,,,,,,,,,,,,,,,,,,,,,\n46210,,,,,,,,,,,,,,,,,,,,,,\n46211,,,,,,,,,,,,,,,,,,,,,,\n";
-var KEY = 'f4d_viewer_sites_v1';
+var KEY = 'f4d_viewer_sites_v1', CKEY = 'f4d_viewer_cache_v1';
+function cacheGet() { try { return JSON.parse(localStorage.getItem(CKEY) || '{}') || {}; } catch (e) { return {}; } }
+function cachePut(u, txt) { var c = cacheGet(); c[u] = {t: txt, at: new Date().toISOString()}; Object.keys(c).forEach(function (k) { if (!LIST.some(function (e) { return e.u === k; })) delete c[k]; }); try { localStorage.setItem(CKEY, JSON.stringify(c)); } catch (e) {} }
+function fmtT(iso) { var d = new Date(iso); return d.toLocaleDateString('en-GB', {day: 'numeric', month: 'short'}) + ' ' + d.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'}); }
 var PAL = ['#0072B2', '#D55E00', '#009E73', '#CC79A7', '#E69F00', '#56B4E9', '#8c564b', '#7f7f7f', '#bcbd22', '#17becf'];
 var CFG = {responsive: true, displaylogo: false};
 var LIST = [], DATA = {}, DEMO = false, SEL = {};
@@ -193,22 +202,24 @@ async function fetchSite(entry) {
       if (!r.ok) throw new Error('http');
       var txt = await r.text();
       if (/^\s*</.test(txt)) throw new Error('private');
-      return siteFromCsv(txt, entry.u);
-    } catch (e) { last = e instanceof TypeError ? new Error('private') : e; }
+      var d = siteFromCsv(txt, entry.u); cachePut(entry.u, txt); entry.off = ''; return d;
+    } catch (e) { last = e instanceof TypeError ? new Error(navigator.onLine === false ? 'offline' : 'private') : e; }
   }
+  var c = cacheGet()[entry.u];
+  if (c && (last.message === 'offline' || last.message === 'private' || last.message === 'http')) { entry.off = c.at; return siteFromCsv(c.t, entry.u); }
   throw last;
 }
 function errText(e) {
   var m = String(e && e.message || e);
   return {published: 'Use the normal sheet link (or a published CSV link of the tab Data_Farmer).', notsheet: 'Not a Google Sheets link.', format: 'Not the 3F4D Water Monitor sheet (tab Viewer_export / Data_Farmer not found).',
-    private: 'The sheet is not shared as "Anyone with the link: Viewer".', http: 'Could not read the sheet (sharing or link).'}[m] || 'Could not read (check the internet and the sharing setting).';
+    offline: 'Offline, and no saved data for this site yet.', private: 'The sheet is not shared as "Anyone with the link: Viewer".', http: 'Could not read the sheet (sharing or link).'}[m] || 'Could not read (check the internet and the sharing setting).';
 }
 
 /* ---------- list UI */
 function color(i) { return PAL[i % PAL.length]; }
 function renderList() {
   $('sites').innerHTML = LIST.length ? LIST.map(function (e, i) {
-    var d = DATA[e.u], st = e.err ? '<span class="st-err">' + esc(e.err) + '</span>' : (d ? '<span class="st-ok">Loaded: ' + d.sum.days + ' days, last ' + esc(fmtD(d.sum.last)) + '</span>' : '<span class="muted">not loaded</span>');
+    var d = DATA[e.u], st = e.err && !d ? '<span class="st-err">' + esc(e.err) + '</span>' : (d ? (e.off ? '<span class="st-err">Offline: saved data of ' + esc(fmtT(e.off)) + ' (' + d.sum.days + ' days, last ' + esc(fmtD(d.sum.last)) + ')</span>' : '<span class="st-ok">Loaded: ' + d.sum.days + ' days, last ' + esc(fmtD(d.sum.last)) + '</span>') : '<span class="muted">not loaded</span>');
     return '<div class="site"><span class="dot" style="background:' + color(i) + '"></span><div><b>' + esc(e.n || (d && d.name) || 'Site ' + (i + 1)) + '</b><div class="u">' + esc(e.u) + '</div>' + st + '</div>' +
       (DEMO ? '' : '<button type="button" class="del" data-rm="' + i + '">✕</button>') + '</div>';
   }).join('') : '<p class="muted">No sites yet.</p>';
@@ -220,7 +231,7 @@ async function loadAll() {
   await Promise.all(LIST.map(function (e) {
     return fetchSite(e).then(function (d) { DATA[e.u] = d; e.err = ''; if (!e.n) e.n = d.name; }, function (err) { e.err = errText(err); });
   }));
-  save(); $('info').textContent = 'Loaded ' + LIST.filter(function (e) { return DATA[e.u]; }).length + ' / ' + LIST.length;
+  save(); $('info').textContent = (navigator.onLine === false ? 'Offline - ' : '') + 'Loaded ' + LIST.filter(function (e) { return DATA[e.u]; }).length + ' / ' + LIST.length;
   renderList(); render();
 }
 function addSite() {
@@ -349,6 +360,8 @@ if (/^#l=/.test(h)) {
   try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
 }
 if (h === '#demo') startDemo(); else { renderList(); if (LIST.length) loadAll(); }
+if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(function () {});
+window.addEventListener('online', function () { toast('Online again'); if (!DEMO && LIST.length) loadAll(); });
 </script>
 </body>
 </html>

@@ -19,6 +19,9 @@ Online: https://akamiyat-cyber.github.io/ati-monitor/viewer/
 
 The data are read from the tab `Viewer_export` (all text, so Google keeps every value). Older sheets without that tab are read from `Data_Farmer`.
 
-Files: `index.html` (the viewer), `plotly.min.js` (graphs, offline copy), `3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx` (the sheet template for the sites).
+## Offline
+The viewer works without internet after the first visit (service worker). The data of the last successful load of each site are kept on the device and shown with the mark "Offline". Install it as an app from the browser menu ("Add to Home screen" / "Install app").
+
+Files: `index.html` (the viewer), `plotly.min.js` (graphs, offline copy), `sw.js` (offline), `manifest.webmanifest` and `icon*.png` / `icon.svg` / `apple-touch-icon.png` (app icon), `3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx` (the sheet template for the sites).
 
 Template download: https://akamiyat-cyber.github.io/ati-monitor/viewer/3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx
