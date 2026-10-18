@@ -1,7 +1,7 @@
 /* 3F4D Site Viewer - service worker (offline). Bump VERSION when files change. */
-const VERSION = 'f4d-viewer-v5';
+const VERSION = 'f4d-viewer-v6';
 const FILES = ['./', './index.html', './plotly.min.js', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx', './3F4D_Water_Monitor_Sheet_TEMPLATE_BN.xlsx'];
-self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
+self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES.map(f => new Request(f, {cache: 'reload'})))).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.indexOf('f4d-viewer-') === 0 && k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });

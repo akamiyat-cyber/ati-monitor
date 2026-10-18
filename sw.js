@@ -1,7 +1,7 @@
 /* ATI Water Monitor - service worker (offline cache). Bump VERSION when files change. */
-const VERSION = 'ati-monitor-v26';
+const VERSION = 'ati-monitor-v27';
 const FILES = ['./', './index.html', './plotly.min.js', './manifest.webmanifest', './icon.svg', './water_level.png', './ATI_Monitor_Shared_TEMPLATE.xlsx', './ATI_Monitor_Sheet.gs'];
-self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
+self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES.map(f => new Request(f, {cache: 'reload'})))).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.indexOf('ati-monitor-') === 0 && k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
