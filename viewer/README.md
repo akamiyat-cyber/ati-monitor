@@ -19,4 +19,6 @@ Online: https://akamiyat-cyber.github.io/ati-monitor/viewer/
 
 The data are read from the tab `Viewer_export` (all text, so Google keeps every value). Older sheets without that tab are read from `Data_Farmer`.
 
-Files: `index.html` (the viewer), `plotly.min.js` (graphs, offline copy).
+Files: `index.html` (the viewer), `plotly.min.js` (graphs, offline copy), `3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx` (the sheet template for the sites).
+
+Template download: https://akamiyat-cyber.github.io/ati-monitor/viewer/3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx

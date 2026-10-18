@@ -61,6 +61,7 @@ details summary{cursor:pointer;color:var(--accent);font-weight:700}
     <div id="sites" style="margin-top:8px"></div>
     <div class="row" style="margin-top:10px"><button id="load" type="button" class="pri">Load / refresh all</button><button id="share" type="button">Share this list</button><button id="csv" type="button">Download data (CSV)</button><button id="demo" type="button">Try demo</button><span class="muted" id="info"></span></div>
     <textarea id="shareTxt" readonly style="display:none;margin-top:8px"></textarea>
+    <div class="row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)"><span class="muted" style="flex:1 1 260px">Sheet template for the sites (upload to Google Drive and save as Google Sheets; one copy per site):</span><a href="3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx" download><button type="button">Download sheet template (.xlsx)</button></a></div>
   </div>
   <div class="card" id="sumCard" style="display:none">
     <h2>Summary</h2>
@@ -77,7 +78,7 @@ details summary{cursor:pointer;color:var(--accent);font-weight:700}
   <div class="card">
     <details><summary>How to use / help</summary>
       <ol class="muted">
-        <li>Each site uses its own copy of <b>3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx</b> converted to a Google Sheet.</li>
+        <li>Each site uses its own copy of <b>3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx</b> (button "Download sheet template" above) converted to a Google Sheet: upload it to Google Drive, open it and choose File &gt; Save as Google Sheets.</li>
         <li>The site shares the sheet: <b>Share &gt; General access &gt; Anyone with the link &gt; Viewer</b>, and sends you the link.</li>
         <li>Paste the link above and press "Add site". Repeat for every site. The list is kept in this browser; "Share this list" makes a link that opens the same list on another device.</li>
         <li>"Compare sites" draws all sites in the same graphs (x axis: days after transplanting or date). "Each site" shows the graphs of every site separately, with the MD, Pitan and 3F4D periods.</li>
