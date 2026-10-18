@@ -321,6 +321,7 @@ input.big{font-size:24px;font-weight:700;text-align:center;min-height:58px;font-
     <p class="muted" data-t="n_cmp">Your site is shown with thick lines. All sites come from the shared Google Sheet. X axis: days after transplanting (DAT).</p>
     <div class="row"><button class="pri" id="c-load" type="button" data-t="b_load">Refresh from sheet</button><span class="muted" id="c-info"></span></div>
     <div class="row" style="margin-top:8px"><label style="width:auto" data-t="c_mode">View</label><select id="c-mode" style="width:auto"><option value="overlay" data-t="c_overlay">Overlay (compare)</option><option value="each" data-t="c_each">Each site</option></select></div>
+    <div class="muted" id="c-peers" style="margin-top:8px"></div>
     <div class="cmpl" id="c-list" style="margin-top:8px"></div>
   </div>
   <div id="c-out"></div>
@@ -338,7 +339,7 @@ input.big{font-size:24px;font-weight:700;text-align:center;min-height:58px;font-
     <ul><li><b>Today</b>: what to do today, the latest water level and the next events of the schedule.</li>
     <li><b>Entry</b>: Water level (every day), Field records (fertilizer, pesticide, tillers) and TP / b (re-measurement).</li>
     <li><b>Graphs</b>: water level, irrigation and saving of your site.</li>
-    <li><b>Compare</b>: your site against the other sites in the shared sheet.</li>
+    <li><b>Compare</b>: your site against other sites (added with compare links).</li>
     <li><b>More</b>: Setup, Schedule, Google Sheet &amp; sharing, Help, For the administrator, demo.</li></ul>
     <h3>1. First time</h3>
     <ol start="0"><li><b>Administrator, once</b>: More &gt; For the administrator. Download the Excel template, make the shared Google Sheet from it, add the script and create the setup link.</li>
@@ -358,7 +359,7 @@ input.big{font-size:24px;font-weight:700;text-align:center;min-height:58px;font-
     <h3>4. Schedule</h3>
     <p>More &gt; Schedule. Planned dates appear by themselves. When an event happens, open it and enter the actual date. The Today screen shows the next events.</p>
     <h3>5. Compare</h3>
-    <p>Compare loads all sites of the shared sheet when the app opens ("Refresh from sheet" reads again). Tick the sites to show.</p>
+    <p>Compare shows your site and the other sites that your administrator added with compare links (More &gt; For the administrator &gt; Compare with other sites). It loads by itself when the app opens; "Refresh from sheet" reads again. Tick the sites to show. A compare link only lets others read; they cannot change your data.</p>
     <h3>6. Demo, new phone, backup</h3>
     <p>More &gt; Try with demo data: example data, nothing is saved. On a new phone: open the setup link, then More &gt; Google Sheet &amp; sharing &gt; Restore from the sheet. The shared Google Sheet is the master copy.</p>
     <h3>7. Install on a phone</h3>
@@ -407,7 +408,7 @@ input.big{font-size:24px;font-weight:700;text-align:center;min-height:58px;font-
   </div>
   <div class="card editonly">
     <h2 data-t="h_tch">For the administrator (once)</h2>
-    <ol class="muted" style="margin:6px 0 8px 18px;padding:0"><li data-t="t_s1">Download the Excel template (above), upload it to Google Drive and open it with "Save as Google Sheets".</li><li data-t="t_s2">In the sheet: Extensions > Apps Script. Delete the sample code, paste the script (button below) and save.</li><li data-t="t_s3">Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Authorize, then copy the web app URL.</li><li data-t="t_s4">Paste the URL below, press "Test connection", then "Create setup link" and send that link to the users.</li></ol>
+    <ol class="muted" style="margin:6px 0 8px 18px;padding:0"><li data-t="t_s1">Download the Excel template (above), upload it to Google Drive and open it with "Save as Google Sheets".</li><li data-t="t_s2">In the sheet: Extensions > Apps Script. Delete the sample code, paste the script (button below) and save.</li><li data-t="t_s3">Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Authorize, then copy the web app URL.</li><li data-t="t_s4">Paste the URL below, press "Test connection", then "Create setup link" and send that link to the users.</li><li data-t="t_s5">To compare with other sites: exchange compare links with their administrators (below).</li></ol>
     <div class="row"><button id="y-script" type="button" data-t="b_script">Copy script</button><a href="ATI_Monitor_Sheet.gs" download><button type="button" data-t="b_gs">Download script (.gs)</button></a></div>
     <div style="margin-top:10px"><label data-t="f_url2">Web app URL (from the deployment)</label><input data-b="sync.url" placeholder="https://script.google.com/macros/s/.../exec"></div>
     <div class="muted ycfg" style="margin-top:6px"></div>
@@ -417,6 +418,18 @@ input.big{font-size:24px;font-weight:700;text-align:center;min-height:58px;font-
     <div class="row"><button class="pri" id="y-mk" type="button" data-t="b_mk">Create setup link</button><button id="y-lcopy" type="button" data-t="b_copy">Copy</button></div>
     <textarea id="y-link" readonly style="margin-top:8px" class="mono"></textarea>
     <div class="muted" id="y-tinfo" style="margin-top:6px"></div>
+  </div>
+    <div class="card editonly">
+    <h2 data-t="h_peer">Compare with other sites</h2>
+    <p class="muted" data-t="n_peer">Each site has its own Google Sheet. To compare sites, the administrators exchange compare links. A compare link only lets others read your site's data; they cannot change it.</p>
+    <h3 data-t="h_peer1">1. Your compare link (give it to other sites)</h3>
+    <div class="row"><button class="pri" id="y-cmpmk" type="button" data-t="b_cmpmk">Create compare link</button><button id="y-cmpcopy" type="button" data-t="b_copy">Copy</button></div>
+    <textarea id="y-cmplink" readonly style="margin-top:8px" class="mono"></textarea>
+    <div class="muted" id="y-pinfo" style="margin-top:6px"></div>
+    <h3 data-t="h_peer2">2. Add other sites (paste their compare link)</h3>
+    <p class="muted" data-t="n_peer2">Sites added here appear in Compare for every user of your site.</p>
+    <div class="row"><input id="y-peer" style="flex:1 1 220px" placeholder="https://…#p=…"><button id="y-peeradd" type="button" data-t="b_peeradd">Add site</button></div>
+    <div id="y-peers" style="margin-top:8px"></div>
   </div>
   <div class="card" id="dl-card">
     <h2 data-t="h_dl">Downloads</h2>
@@ -536,7 +549,14 @@ var I18N = {
     w_cfg: 'Google Sheet is not connected yet. Open the setup link from your administrator, or enter the web app URL in More > Google Sheet & sharing. You cannot save entries until this is done.', b_cfggo: 'Open Google Sheet & sharing',
     n_xl: 'Template of the shared sheet (tab "Data" and a guide). Upload it to Google Drive and make the shared Google Sheet from it (steps below).',
     f_url2: 'Web app URL (from the deployment)',
-    ts_0: 'Administrator, once: download the Excel template, make the Google Sheet and add the script (More > For the administrator)'
+    ts_0: 'Administrator, once: download the Excel template, make the Google Sheet and add the script (More > For the administrator)',
+    h_peer: 'Compare with other sites', n_peer: "Each site has its own Google Sheet. To compare sites, the administrators exchange compare links. A compare link only lets others read your site's data; they cannot change it.",
+    h_peer1: '1. Your compare link (give it to other sites)', h_peer2: '2. Add other sites (paste their compare link)', n_peer2: 'Sites added here appear in Compare for every user of your site.',
+    b_cmpmk: 'Create compare link', b_peeradd: 'Add site', cmp_ok: 'Compare link created. Send it to the administrators of other sites.',
+    peer_bad: 'This is not a compare link.', peer_self: 'This is the link of your own site.', peer_added: 'Site added. All users of your site will see it in Compare.', peer_local: 'Site added on this phone only.', peer_fail: 'Could not save. Check the internet and the setup link.',
+    peer_none: 'No other sites added yet.', peer_onlyhere: 'this phone only', peer_rmq: 'Remove this site from Compare?', c_peers: 'Other sites', c_nopeers: 'No other sites added. Your administrator adds them in More > For the administrator.', c_peerfail: 'Could not read',
+    ss_badkey: 'The sheet refused the write key. Open the latest setup link from your administrator.',
+    t_s5: 'To compare with other sites: exchange compare links with their administrators (below).'
   },
   bn: {
     h_rec: 'মাঠের রেকর্ড', n_rec: 'সার, বালাইনাশক ও কুশির সংখ্যা লিখুন। এগুলো শেয়ার লিংক ও এক্সপোর্টে থাকবে।', h_fert: 'সার', h_pest: 'বালাইনাশক', h_till: 'কুশির সংখ্যা',
@@ -596,7 +616,8 @@ var I18N = {
     t_levels: 'সর্বশেষ পানির স্তর', t_afterirr: 'সেচের পর', t_graphs: 'গ্রাফ খুলুন', t_next: 'সময়সূচি', t_now: 'এখন', t_until: 'পর্যন্ত', t_none_next: 'আর কোনো কাজ পরিকল্পিত নেই।', t_full: 'পূর্ণ সময়সূচি', t_over: 'প্রকৃত তারিখ দেওয়া হয়নি',
     lv_wl: 'পানির স্তর', lv_above: 'মাটির উপরে পানি', lv_below: 'মাটির নিচে পানি', lv_at: 'মাটির সমতলে', lv_notpb: 'পানির স্তর দেখতে TP ও b দিন (আরও > সেটআপ)', lv_irr: 'সেচ', lv_bad: 'সেচের পরের মাপ আগের চেয়ে কম',
     f_photo: 'ছবি (এই ফোনেই থাকে, শিটে যায় না)', b_photo: 'ছবি যোগ করুন', b_phdel: 'ছবি মুছুন', w_cfg: 'গুগল শিট এখনও সংযুক্ত নয়। প্রশাসকের সেটআপ লিংকটি খুলুন। এটি না করলে এন্ট্রি সংরক্ষণ করা যাবে না।', b_cfggo: 'গুগল শিট ও শেয়ার খুলুন',
-    ts_0: 'প্রশাসক, একবার: এক্সেল টেমপ্লেট ডাউনলোড করে গুগল শিট তৈরি করুন ও স্ক্রিপ্ট যোগ করুন (আরও > প্রশাসকের জন্য)'
+    ts_0: 'প্রশাসক, একবার: এক্সেল টেমপ্লেট ডাউনলোড করে গুগল শিট তৈরি করুন ও স্ক্রিপ্ট যোগ করুন (আরও > প্রশাসকের জন্য)',
+    h_peer: 'অন্য সাইটের সাথে তুলনা', b_cmpmk: 'তুলনার লিংক তৈরি', b_peeradd: 'সাইট যোগ করুন', c_peers: 'অন্য সাইট', peer_added: 'সাইট যোগ হয়েছে।', ss_badkey: 'শিট লেখার চাবি গ্রহণ করেনি। প্রশাসকের সর্বশেষ সেটআপ লিংক খুলুন।'
   }
 };
 
@@ -624,17 +645,17 @@ function setPath(o, p, v) { var ks = p.split('.'), last = ks.pop(); var x = ks.r
 function defaults() {
   return {v: 1,
     site: {name: '', place: '', lat: '', lon: '', variety: '', sow: '', age: '', fpId: 'FP-1', mdId: 'MD-1', fpArea: '', mdArea: '', fpTP: '', fpB: '', mdTP: '', mdB: '', tpDate: ''},
-    set: SETTINGS.map(function (s) { return s[2]; }), ovr: {}, act: {}, rem: [], days: [], ferts: [], pests: [], tillers: [], sync: {url: '', rev: '', sent: '', sentAt: '', seen: ''}};
+    set: SETTINGS.map(function (s) { return s[2]; }), ovr: {}, act: {}, rem: [], days: [], ferts: [], pests: [], tillers: [], sync: {url: '', key: '', rev: '', sent: '', sentAt: '', seen: '', peers: '', lpeers: ''}, ts: {}, del: {}};
 }
 var S = defaults(), readOnly = false, snapshotTime = '', demo = false, editing = null;
-var mem = null, cfgJustSet = false;
+var mem = null, cfgJustSet = false, peerJust = null;
 function loadLocal() {
   try { var j = localStorage.getItem(KEY); if (j) return JSON.parse(j); } catch (e) { return mem; }
   return null;
 }
 function saveLocal(cfgOnly) {
   if (readOnly || demo) return;
-  if (!cfgOnly) { S.sync.rev = stamp(); schedulePush(); }
+  if (!cfgOnly) { stampDiff(); S.sync.rev = stamp(); schedulePush(); }
   var j = JSON.stringify(S);
   try { localStorage.setItem(KEY, j); } catch (e) { mem = JSON.parse(j); }
 }
@@ -649,13 +670,62 @@ function normalize(o) {
   d.days = Array.isArray(o.days) ? o.days.filter(function (r) { return r && isDate(r.d); }) : [];
   d.ferts = Array.isArray(o.ferts) ? o.ferts.filter(function (r) { return r && isDate(r.d) && r.kg && typeof r.kg === 'object'; }).map(function (r) {
     var kg = {}; FERTS.forEach(function (f) { if (num(r.kg[f]) != null && num(r.kg[f]) > 0) kg[f] = num(r.kg[f]); });
-    return {d: r.d, p: PLOTSEL.indexOf(r.p) >= 0 ? r.p : 'Both', kg: kg, n: String(r.n || '')}; }) : [];
+    return {id: r.id ? String(r.id) : undefined, d: r.d, p: PLOTSEL.indexOf(r.p) >= 0 ? r.p : 'Both', kg: kg, n: String(r.n || '')}; }) : [];
   d.pests = Array.isArray(o.pests) ? o.pests.filter(function (r) { return r && isDate(r.d); }).map(function (r) {
-    return {d: r.d, p: PLOTSEL.indexOf(r.p) >= 0 ? r.p : 'Both', t: PESTT.indexOf(r.t) >= 0 ? r.t : 'Other', c: String(r.c || ''), u: String(r.u || ''), n: String(r.n || '')}; }) : [];
+    return {id: r.id ? String(r.id) : undefined, d: r.d, p: PLOTSEL.indexOf(r.p) >= 0 ? r.p : 'Both', t: PESTT.indexOf(r.t) >= 0 ? r.t : 'Other', c: String(r.c || ''), u: String(r.u || ''), n: String(r.n || '')}; }) : [];
   d.tillers = Array.isArray(o.tillers) ? o.tillers.filter(function (r) { return r && isDate(r.d) && TR.indexOf(r.p) >= 0 && Array.isArray(r.h) && r.h.length === 5 && r.h.every(function (v) { return num(v) != null && num(v) >= 0; }); }).map(function (r) {
-    return {d: r.d, p: r.p, h: r.h.map(num)}; }) : [];
+    return {id: r.id ? String(r.id) : undefined, d: r.d, p: r.p, h: r.h.map(num)}; }) : [];
   if (o.sync && typeof o.sync === 'object') Object.keys(d.sync).forEach(function (k) { d.sync[k] = String(o.sync[k] || ''); });
+  ['ts', 'del'].forEach(function (k) { if (o[k] && typeof o[k] === 'object') Object.keys(o[k]).forEach(function (x) { d[k][x] = String(o[k][x]); }); });
+  ['ferts', 'pests', 'tillers'].forEach(function (a) { d[a].forEach(function (r) { if (r.id === undefined) delete r.id; }); });
   return d;
+}
+/* ====================================================== multi-user merge (per record stamps + tombstones) */
+var LF = {};
+function rid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
+function flatten(o) {
+  var f = {};
+  Object.keys(o.site || {}).forEach(function (k) { var v = o.site[k]; if (v !== '' && v != null) f['S|' + k] = JSON.stringify(v); });
+  (o.set || []).forEach(function (v, i) { f['G|' + i] = JSON.stringify(v); });
+  Object.keys(o.ovr || {}).forEach(function (k) { if (o.ovr[k]) f['O|' + k] = JSON.stringify(o.ovr[k]); });
+  Object.keys(o.act || {}).forEach(function (k) { if (o.act[k]) f['A|' + k] = JSON.stringify(o.act[k]); });
+  (o.days || []).forEach(function (r) { f['D|' + r.d] = JSON.stringify(r); });
+  [['F', 'ferts'], ['P', 'pests'], ['T', 'tillers'], ['R', 'rem']].forEach(function (x) {
+    (o[x[1]] || []).forEach(function (r) { if (!r.id) r.id = rid(); f[x[0] + '|' + r.id] = JSON.stringify(r); });
+  });
+  return f;
+}
+function unflatten(f) {
+  var o = defaults();
+  Object.keys(f).forEach(function (k) {
+    var i = k.indexOf('|'), ty = k.slice(0, i), id = k.slice(i + 1), v;
+    try { v = JSON.parse(f[k]); } catch (e) { return; }
+    if (ty === 'S') o.site[id] = v; else if (ty === 'G') o.set[+id] = v; else if (ty === 'O') o.ovr[id] = v; else if (ty === 'A') o.act[id] = v;
+    else if (ty === 'D') o.days.push(v); else if (ty === 'F') o.ferts.push(v); else if (ty === 'P') o.pests.push(v); else if (ty === 'T') o.tillers.push(v); else if (ty === 'R') o.rem.push(v);
+  });
+  ['days', 'ferts', 'pests', 'tillers', 'rem'].forEach(function (a) { o[a].sort(function (x, y) { return x.d < y.d ? -1 : x.d > y.d ? 1 : 0; }); });
+  return o;
+}
+function canon(f) { return Object.keys(f).sort().map(function (k) { return k + '=' + f[k]; }).join('\n'); }
+/* give a stamp to every key that changed since the last save; keys that disappeared get a tombstone */
+function stampDiff(noDelete) {
+  var cur = flatten(S), now = stamp();
+  S.ts = S.ts || {}; S.del = S.del || {};
+  Object.keys(cur).forEach(function (k) { if (LF[k] !== cur[k]) { S.ts[k] = now; delete S.del[k]; } });
+  if (!noDelete) Object.keys(LF).forEach(function (k) { if (!(k in cur)) { S.del[k] = now; delete S.ts[k]; } });
+  LF = cur;
+}
+function mergeStates(L, R) {
+  var fl = flatten(L), fr = flatten(R), lt = L.ts || {}, rt = R.ts || {}, del = {}, out = {}, ts = {};
+  [L.del || {}, R.del || {}].forEach(function (d) { Object.keys(d).forEach(function (k) { if (!del[k] || Number(d[k]) > Number(del[k])) del[k] = d[k]; }); });
+  var keys = {}; Object.keys(fl).forEach(function (k) { keys[k] = 1; }); Object.keys(fr).forEach(function (k) { keys[k] = 1; });
+  Object.keys(keys).forEach(function (k) {
+    var a = fl[k], b = fr[k], ta = a != null ? (lt[k] || '0') : null, tb = b != null ? (rt[k] || '0') : null, v, t;
+    if (a != null && (b == null || Number(ta) > Number(tb))) { v = a; t = ta; } else { v = b; t = tb; }
+    if (del[k] && Number(del[k]) >= Number(t)) return;
+    out[k] = v; if (t && t !== '0') ts[k] = t; delete del[k];
+  });
+  var o = unflatten(out); o.ts = ts; o.del = del; return o;
 }
 function stripSync(o) { var c = JSON.parse(JSON.stringify(o)); delete c.sync; return c; }
 function tillerMean(h) { var a = h.slice().sort(function (x, y) { return y - x; }); return (a[1] + a[2] + a[3]) / 3; }
@@ -1173,58 +1243,103 @@ function sheetRows(rev) {
   S.pests.forEach(function (r) { add('Pesticide', {3: r.d, 4: P.trans ? dayDiff(r.d, P.trans) : '', 5: r.p, 12: r.t, 14: [r.c, r.u, r.n].filter(Boolean).join('; ')}); });
   return R;
 }
-async function pushSheet(manual) {
-  if (demo || readOnly) return;
-  if (!urlOk() || missingSetup().length || !S.days.length) { renderStat(); return; }
-  if (!S.sync.rev) S.sync.rev = stamp();
-  var rev = S.sync.rev, snap;
-  try { snap = await encodeSnap(); } catch (e) { SYNCST.err = 'nocompress'; renderStat(); return; }
-  if (snap.length > 45000) { SYNCST.err = 'toolarge'; renderStat(); return; }
-  var sm = buildPub().summary;
-  var body = JSON.stringify({action: 'push', ati: S.site.name.trim(), rev: rev, snap: snap,
-    summary: {place: S.site.place, sow: S.site.sow, last: sm.last, days: sm.days, fp: sm.fp, md: sm.md, save: sm.save, pct: sm.pct}, rows: sheetRows(rev)});
-  try {
-    var r = await fetch(S.sync.url.trim(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: body});
-    var j = await r.json();
-    if (j && j.ok) { S.sync.sent = rev; if (Number(rev) > (Number(S.sync.seen) || 0)) S.sync.seen = rev; S.sync.sentAt = String(Date.now()); saveLocal(true); SYNCST.err = ''; }
-    else SYNCST.err = 'rejected';
-  } catch (e) { SYNCST.err = 'offline'; }
-  renderStat();
-}
-async function sheetFetch() {
-  var u = S.sync.url.trim(), r = await fetch(u + '?action=list&_=' + Date.now(), {cache: 'no-store'});
+async function fetchSite(u) {
+  var r = await fetch(u + '?action=list&_=' + Date.now(), {cache: 'no-store'});
   if (!r.ok) throw new Error('http ' + r.status);
   var j = await r.json();
   if (!j || !j.ok || !Array.isArray(j.atis)) throw new Error('format');
-  return j.atis.filter(function (e) { return e && e.ati && /^v1\./.test(String(e.data || '')); }).map(function (e) { return {ati: String(e.ati).trim(), rev: Number(e.rev) || 0, data: String(e.data)}; });
+  return {atis: j.atis.filter(function (e) { return e && e.ati && /^v1\./.test(String(e.data || '')); }).map(function (e) { return {ati: String(e.ati).trim(), rev: Number(e.rev) || 0, data: String(e.data)}; }),
+    peers: Array.isArray(j.peers) ? j.peers : []};
 }
 function withState(o, fn) { var keep = S; S = normalize(o); try { return fn(); } finally { S = keep; } }
+function jparse(s, d) { try { var v = JSON.parse(s || ''); return v == null ? d : v; } catch (e) { return d; } }
+function peerList() {
+  var own = String(S.sync.url || '').trim(), seen = {}, out = [];
+  jparse(S.sync.peers, []).map(function (p) { return {u: p.u, n: p.n || '', shared: true}; }).concat(jparse(S.sync.lpeers, []).map(function (p) { return {u: p.u, n: p.n || '', shared: false}; }))
+    .forEach(function (p) { if (p.u && p.u !== own && !seen[p.u]) { seen[p.u] = 1; out.push(p); } });
+  return out;
+}
+/* merge the sheet's copy of my site into this phone; returns {changed: local data changed, same: phone equals sheet} */
+async function applyRemote(own) {
+  var R = normalize(await decodeState(own.data.slice(3)));
+  var fS = canon(flatten(S)), M = mergeStates(S, R);
+  M.sync = S.sync; S = M; LF = flatten(S);
+  var fM = canon(LF), same = fM === canon(flatten(R));
+  if (same) { S.sync.rev = S.sync.sent = S.sync.seen = String(own.rev); S.sync.sentAt = ''; }
+  else if (Number(S.sync.seen || 0) < own.rev) S.sync.seen = String(own.rev);
+  saveLocal(true);
+  return {changed: fM !== fS, same: same};
+}
+function refreshLite() {
+  bindInputs(); renderSched(); renderLists(); renderStat();
+  var cur = ''; try { cur = sessionStorage.getItem('ati_tab') || ''; } catch (e) {}
+  if (cur === 'today') renderToday(); if (cur === 'dash') renderDash();
+}
+async function pushSheet(manual) {
+  if (demo || readOnly) return;
+  if (!urlOk() || missingSetup().length || !S.days.length) { renderStat(); return; }
+  if (!S.sync.key) { S.sync.key = rid() + rid(); saveLocal(true); }
+  if (!S.sync.rev) S.sync.rev = stamp();
+  var url = S.sync.url.trim();
+  try {
+    var res = await fetchSite(url), nm = S.site.name.trim().toLowerCase();
+    var own = res.atis.filter(function (e) { return e.ati.toLowerCase() === nm; })[0];
+    if (own) { var a = await applyRemote(own); if (a.changed) refreshLite(); if (a.same) { SYNCST.err = ''; renderStat(); return; } }
+  } catch (e) { SYNCST.err = 'offline'; renderStat(); return; }
+  var rev = stamp(), snap;
+  S.sync.rev = rev;
+  try { snap = await encodeSnap(); } catch (e) { SYNCST.err = 'nocompress'; renderStat(); return; }
+  if (snap.length > 45000) { SYNCST.err = 'toolarge'; renderStat(); return; }
+  var sm = buildPub().summary;
+  var body = JSON.stringify({action: 'push', key: S.sync.key, ati: S.site.name.trim(), rev: rev, snap: snap,
+    summary: {place: S.site.place, sow: S.site.sow, last: sm.last, days: sm.days, fp: sm.fp, md: sm.md, save: sm.save, pct: sm.pct}, rows: sheetRows(rev)});
+  try {
+    var r = await fetch(url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: body});
+    var j = await r.json();
+    if (j && j.ok) { S.sync.sent = rev; if (Number(rev) > (Number(S.sync.seen) || 0)) S.sync.seen = rev; S.sync.sentAt = String(Date.now()); saveLocal(true); SYNCST.err = ''; }
+    else SYNCST.err = (j && j.error === 'bad key') ? 'badkey' : 'rejected';
+  } catch (e) { SYNCST.err = 'offline'; }
+  renderStat();
+}
 async function sheetPull(opts) {
   opts = opts || {};
-  if (demo || !urlOk()) return 'none';
-  var list, res = 'none';
-  try { list = await sheetFetch(); SYNCST.fetchErr = ''; }
-  catch (e) { SYNCST.fetchErr = 'fail'; renderStat(); return 'fail'; }
-  var pubs = [];
-  for (var i = 0; i < list.length; i++) {
-    try { var o = await decodeState(list[i].data.slice(3)); var p = withState(o, buildPub); p.ati = list[i].ati; p.updated = String(list[i].rev); pubs.push(p); } catch (e) {}
-  }
-  CMP.atis = pubs; CMP.src = 'sheet';
-  var key = (opts.name || S.site.name || '').trim().toLowerCase(), own = key ? list.filter(function (e) { return e.ati.trim().toLowerCase() === key; })[0] : null;
-  if (own) {
-    var lr = Number(S.sync.rev) || 0;
-    if (opts.force || own.rev > lr) {
-      if (opts.force && S.days.length && !confirm(t('restore_q'))) res = 'cancel';
-      else {
+  if (demo || readOnly) return 'none';
+  var hasOwn = urlOk(), peers = peerList();
+  if (!hasOwn && !peers.length) return 'none';
+  var res = 'none', all = [], errs = [];
+  if (hasOwn) {
+    var mine;
+    try { mine = await fetchSite(S.sync.url.trim()); SYNCST.fetchErr = ''; }
+    catch (e) { SYNCST.fetchErr = 'fail'; renderStat(); mine = null; }
+    if (mine) {
+      S.sync.peers = JSON.stringify(mine.peers || []); saveLocal(true); peers = peerList();
+      mine.atis.forEach(function (e) { e.from = ''; all.push(e); });
+      var key = (opts.name || S.site.name || '').trim().toLowerCase(), own = key ? mine.atis.filter(function (e) { return e.ati.toLowerCase() === key; })[0] : null;
+      if (own) {
         try {
-          var st = await decodeState(own.data.slice(3)), kp = S.sync;
-          S = normalize(st); S.sync.url = kp.url; S.sync.rev = S.sync.sent = S.sync.seen = String(own.rev); S.sync.sentAt = '';
-          saveLocal(true); res = 'adopted'; refreshAll();
+          var differentSite = opts.name && opts.name.trim().toLowerCase() !== String(S.site.name || '').trim().toLowerCase();
+          if (differentSite) {
+            if (S.days.length && !confirm(t('restore_q'))) res = 'cancel';
+            else { var kp = S.sync; S = normalize(await decodeState(own.data.slice(3))); S.sync = kp; LF = flatten(S); S.sync.rev = S.sync.sent = S.sync.seen = String(own.rev); saveLocal(true); res = 'adopted'; refreshAll(); }
+          } else {
+            var a = await applyRemote(own);
+            if (a.changed) refreshLite();
+            if (!a.same) { if (syncState() !== 'unsent') S.sync.rev = stamp(); saveLocal(true); schedulePush(); }
+            res = opts.name ? 'adopted' : 'same';
+          }
         } catch (e) { res = 'fail'; }
-      }
-    } else { if (own.rev >= (Number(S.sync.seen) || 0)) { S.sync.seen = String(own.rev); saveLocal(true); } res = 'same'; }
-  } else if (opts.force) res = 'notfound';
-  renderStat();
+      } else if (opts.force) res = 'notfound';
+    } else res = 'fail';
+  }
+  var got = await Promise.all(peers.map(function (p) { return fetchSite(p.u).then(function (r) { return {p: p, r: r}; }, function () { return {p: p, err: 1}; }); }));
+  got.forEach(function (g) { if (g.err) errs.push(g.p.n || g.p.u.slice(-12)); else g.r.atis.forEach(function (e) { e.from = g.p.n || ''; all.push(e); }); });
+  var pubs = [], seenA = {};
+  for (var i = 0; i < all.length; i++) {
+    var k = all[i].ati.toLowerCase(); if (seenA[k]) continue; seenA[k] = 1;
+    try { var o = await decodeState(all[i].data.slice(3)); var p = withState(o, buildPub); p.ati = all[i].ati; p.updated = String(all[i].rev); p.from = all[i].from; pubs.push(p); } catch (e) {}
+  }
+  CMP.atis = pubs; CMP.src = 'sheet'; CMP.errs = errs;
+  renderStat(); renderPeers();
   if ($('p-compare').className.indexOf('on') >= 0) renderCompare();
   return res;
 }
@@ -1240,7 +1355,7 @@ async function restoreFromSheet() {
   if (!urlOk()) { say('ss_cfg', 'warn'); return; }
   yi.textContent = '...';
   var r = await sheetPull({name: nm, force: true});
-  if (r === 'adopted') say('rst_ok', 'okc'); else if (r === 'notfound') say('rst_none', 'warn'); else if (r === 'cancel') yi.textContent = ''; else say('ss_fetchfail', 'warn');
+  if (r === 'adopted' || r === 'same') say('rst_ok', 'okc'); else if (r === 'notfound') say('rst_none', 'warn'); else if (r === 'cancel') yi.textContent = ''; else say('ss_fetchfail', 'warn');
 }
 async function testConn() {
   var yi = $('y-tinfo');
@@ -1254,14 +1369,61 @@ async function copyScript() {
   try { var r = await fetch('ATI_Monitor_Sheet.gs'); if (!r.ok) throw new Error('x'); var tx = await r.text(); await navigator.clipboard.writeText(tx); yi.innerHTML = '<span class="okc">' + esc(t('scr_ok')) + '</span>'; }
   catch (e) { yi.innerHTML = '<span class="warn">' + esc(t('scr_bad')) + '</span>'; }
 }
+function linkFor(tag, obj) { return location.href.split('#')[0] + '#' + tag + '=' + b64u(new TextEncoder().encode(JSON.stringify(obj))); }
+function readLink(s, tag) {
+  var m = String(s || '').match(new RegExp('#' + tag + '=([A-Za-z0-9_-]+)'));
+  if (!m) return null;
+  try { return JSON.parse(new TextDecoder().decode(unb64u(m[1]))); } catch (e) { return null; }
+}
 function classLink() {
   var yi = $('y-tinfo');
   if (!urlOk()) { yi.innerHTML = '<span class="warn">' + esc(t('y_cfgbad')) + '</span>'; return; }
-  var url = location.href.split('#')[0] + '#c=' + b64u(new TextEncoder().encode(JSON.stringify({u: S.sync.url.trim()})));
-  $('y-link').value = url; yi.innerHTML = '<span class="okc">' + esc(t('cls_ok')) + '</span>';
+  if (!S.sync.key) { S.sync.key = rid() + rid(); saveLocal(true); }
+  $('y-link').value = linkFor('c', {u: S.sync.url.trim(), k: S.sync.key}); yi.innerHTML = '<span class="okc">' + esc(t('cls_ok')) + '</span>';
+}
+/* compare links: read-only access to another site's sheet */
+function cmpLink() {
+  var yi = $('y-pinfo');
+  if (!urlOk()) { yi.innerHTML = '<span class="warn">' + esc(t('y_cfgbad')) + '</span>'; return; }
+  $('y-cmplink').value = linkFor('p', {u: S.sync.url.trim(), n: String(S.site.name || '').trim()}); yi.innerHTML = '<span class="okc">' + esc(t('cmp_ok')) + '</span>';
+}
+function peerUrlOk(u) { return /^https:\/\/script\.google\.com\/(a\/macros\/[\w.-]+\/|macros\/)s\/[\w-]+\/exec$/.test(String(u || '')); }
+async function savePeers(list) {
+  var r = await fetch(S.sync.url.trim(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({action: 'peers', key: S.sync.key, peers: list})});
+  var j = await r.json(); if (!j || !j.ok) throw new Error(j && j.error || 'x');
+  S.sync.peers = JSON.stringify(j.peers || list); saveLocal(true);
+}
+async function addPeer(p) {
+  if (!p || !peerUrlOk(p.u)) { toast(t('peer_bad')); return false; }
+  if (p.u === String(S.sync.url || '').trim()) { toast(t('peer_self')); return false; }
+  var shared = jparse(S.sync.peers, []);
+  if (urlOk() && S.sync.key) {
+    try { await savePeers(shared.filter(function (x) { return x.u !== p.u; }).concat([{u: p.u, n: p.n || ''}])); toast(t('peer_added')); }
+    catch (e) { toast(t('peer_fail')); return false; }
+  } else {
+    var lp = jparse(S.sync.lpeers, []).filter(function (x) { return x.u !== p.u; }); lp.push({u: p.u, n: p.n || ''});
+    S.sync.lpeers = JSON.stringify(lp); saveLocal(true); toast(t('peer_local'));
+  }
+  renderPeers(); sheetPull(); return true;
+}
+async function removePeer(u) {
+  var shared = jparse(S.sync.peers, []);
+  if (shared.some(function (x) { return x.u === u; })) {
+    if (!(urlOk() && S.sync.key)) { toast(t('peer_fail')); return; }
+    try { await savePeers(shared.filter(function (x) { return x.u !== u; })); } catch (e) { toast(t('peer_fail')); return; }
+  }
+  S.sync.lpeers = JSON.stringify(jparse(S.sync.lpeers, []).filter(function (x) { return x.u !== u; })); saveLocal(true);
+  CMP.atis = CMP.atis.filter(function (a) { return true; }); renderPeers(); sheetPull(); toast(t('deleted'));
+}
+function renderPeers() {
+  var L = peerList(), h = L.length ? L.map(function (p) {
+    return '<div class="ev"><div class="h"><div><b>' + esc(p.n || '?') + '</b><div class="muted mono">…' + esc(p.u.slice(-24)) + (p.shared ? '' : ' &middot; ' + esc(t('peer_onlyhere'))) + '</div></div><button type="button" class="del" data-rmpeer="' + esc(p.u) + '">✕</button></div></div>';
+  }).join('') : '<p class="muted">' + esc(t('peer_none')) + '</p>';
+  if ($('y-peers')) $('y-peers').innerHTML = h;
+  if ($('c-peers')) $('c-peers').innerHTML = L.length ? esc(t('c_peers')) + ': ' + L.map(function (p) { return esc(p.n || '?'); }).join(', ') : esc(t('c_nopeers'));
 }
 
-var CMP = {atis: [], sel: {}, src: '', mode: 'overlay'};
+var CMP = {atis: [], sel: {}, src: '', mode: 'overlay', errs: []};
 var PAL = ['#009E73', '#E69F00', '#CC79A7', '#56B4E9', '#8c564b', '#7f7f7f', '#bcbd22', '#17becf'];
 function demoOthers() {
   var base = buildPub(), spec = [['Demo Site-02 (Bogura)', 1.25, 1.15, 0.9, 2], ['Demo Site-03 (Rangpur)', 0.85, 0.7, 1.1, -3], ['Demo Site-04 (Cumilla)', 1.05, 0.95, 0.8, 1]];
@@ -1275,7 +1437,7 @@ function demoOthers() {
   });
 }
 async function cmpLoad() {
-  if (!urlOk()) { $('c-info').innerHTML = '<span class="warn">' + esc(t('ss_cfg')) + '</span>'; return; }
+  if (!urlOk() && !peerList().length) { $('c-info').innerHTML = '<span class="warn">' + esc(t('ss_cfg')) + '</span>'; return; }
   $('c-info').textContent = '...';
   await sheetPull();
   renderCompare();
@@ -1340,7 +1502,7 @@ function figEach(a, vi, kind) {
 function renderCompare() {
   var L = cmpSet(), out = $('c-out'), list = $('c-list');
   if (demo && !CMP.atis.length) { CMP.atis = demoOthers(); CMP.src = 'demo'; L = cmpSet(); }
-  $('c-info').innerHTML = SYNCST.fetchErr ? '<span class="warn">' + esc(t('ss_fetchfail')) + '</span>' : (CMP.src ? esc(t('c_loaded') + ': ' + (CMP.src === 'demo' ? 'DEMO ' : '') + CMP.atis.length) : '');
+  $('c-info').innerHTML = (SYNCST.fetchErr ? '<span class="warn">' + esc(t('ss_fetchfail')) + '</span> ' : '') + (CMP.src ? esc(t('c_loaded') + ': ' + (CMP.src === 'demo' ? 'DEMO ' : '') + CMP.atis.length) : '') + (CMP.errs && CMP.errs.length ? ' <span class="warn">' + esc(t('c_peerfail')) + ': ' + esc(CMP.errs.join(', ')) + '</span>' : '');
   list.innerHTML = L.others.length ? L.others.map(function (a, i) { return '<label><input type="checkbox" data-c="' + esc(a.ati) + '"' + (CMP.sel[a.ati] ? ' checked' : '') + '>' + esc(a.ati) + '</label>'; }).join('') + (L.hasOwn ? '<label><b>' + esc(S.site.name || 'My site') + ' ' + esc(t('c_you')) + '</b></label>' : '') : '<span class="muted">' + esc(t('c_none')) + '</span>';
   Array.prototype.forEach.call(list.querySelectorAll('input[data-c]'), function (el) { el.onchange = function () { CMP.sel[el.getAttribute('data-c')] = el.checked; renderCompare(); }; });
   if (!L.shown.length) { out.innerHTML = '<div class="card"><p>' + esc(t('cmp_nodata')) + '</p></div>'; return; }
@@ -1602,7 +1764,7 @@ function applyLang() {
   $('langBtn').textContent = lang === 'bn' ? 'English' : 'বাংলা';
   $('aboutTxt').textContent = t('about');
   plotBox('e-fp', 'FP'); plotBox('e-md', '3F4D+MD'); buildRecForms(); markRequired(); setEditing(editing ? editing.k : null, editing ? editing.i : 0);
-  buildNav(); renderSched(); renderStat();
+  buildNav(); renderSched(); renderStat(); renderPeers();
   var cur = ''; try { cur = sessionStorage.getItem('ati_tab') || ''; } catch (e) {}
   show(readOnly ? 'dash' : (TABS.indexOf(cur) >= 0 ? cur : 'today'));
   fillEntry($('e-date').value && isDate($('e-date').value) ? $('e-date').value : todayStr());
@@ -1646,7 +1808,9 @@ function initHandlers() {
   $('cfgGo').onclick = function () { show('share'); };
   document.addEventListener('click', function (ev) { var c = ev.target.className || ''; if (/srcsend/.test(c)) pushSheet(true); else if (/srcref/.test(c)) sheetPull(); });
   $('y-mk').onclick = classLink; $('y-lcopy').onclick = async function () { var v = $('y-link').value; if (!v) return; try { await navigator.clipboard.writeText(v); toast(t('copied')); } catch (e) { $('y-link').select(); toast(t('copyfail')); } };
-  $('y-restore').onclick = restoreFromSheet; $('y-test').onclick = testConn; $('y-script').onclick = copyScript;
+  $('y-restore').onclick = restoreFromSheet; $('y-cmpmk').onclick = cmpLink; $('y-cmpcopy').onclick = async function () { var v = $('y-cmplink').value; if (!v) return; try { await navigator.clipboard.writeText(v); toast(t('copied')); } catch (e) { $('y-cmplink').select(); toast(t('copyfail')); } };
+  $('y-peeradd').onclick = function () { var p = readLink($('y-peer').value, 'p'); if (!p) { toast(t('peer_bad')); return; } addPeer(p).then(function (ok) { if (ok) $('y-peer').value = ''; }); };
+  document.addEventListener('click', function (ev) { var b = ev.target.closest ? ev.target.closest('[data-rmpeer]') : null; if (b && confirm(t('peer_rmq'))) removePeer(b.getAttribute('data-rmpeer')); }); $('y-test').onclick = testConn; $('y-script').onclick = copyScript;
   window.addEventListener('online', function () { sheetPull().then(function () { if (syncState() === 'unsent') pushSheet(); }); });
   setInterval(function () { if (!document.hidden && !demo && !readOnly) sheetPull(); }, 300000);
   $('c-mode').onchange = function () { CMP.mode = this.value; renderCompare(); }; $('c-load').onclick = cmpLoad;
@@ -1667,10 +1831,10 @@ function initHandlers() {
   $('x-imp').onclick = function () { $('x-file').click(); };
   $('x-file').onchange = function () {
     var f = this.files[0]; if (!f) return; var rd = new FileReader();
-    rd.onload = function () { try { var kp = S.sync; S = normalize(JSON.parse(rd.result)); S.sync.url = kp.url; saveLocal(); bindInputs(); renderLists(); fillEntry(todayStr()); toast(t('imp_ok')); } catch (e) { toast(t('imp_bad')); } };
+    rd.onload = function () { try { var kp = S.sync; S = normalize(JSON.parse(rd.result)); S.sync = kp; stampDiff(true); S.sync.rev = stamp(); saveLocal(true); schedulePush(); bindInputs(); renderLists(); fillEntry(todayStr()); toast(t('imp_ok')); } catch (e) { toast(t('imp_bad')); } };
     rd.readAsText(f); this.value = '';
   };
-  $('x-reset').onclick = function () { if (confirm(t('reset_q'))) { var kp = S.sync; S = defaults(); S.sync.url = kp.url; saveLocal(true); bindInputs(); renderLists(); fillEntry(todayStr()); show('setup'); } };
+  $('x-reset').onclick = function () { if (confirm(t('reset_q'))) { var kp = S.sync; S = defaults(); S.sync.url = kp.url; S.sync.key = kp.key; S.sync.peers = kp.peers; S.sync.lpeers = kp.lpeers; LF = flatten(S); saveLocal(true); bindInputs(); renderLists(); fillEntry(todayStr()); show('setup'); } };
 }
 async function boot() {
   try { lang = localStorage.getItem(LKEY) || ((navigator.language || '').slice(0, 2) === 'bn' ? 'bn' : 'en'); } catch (e) { lang = 'en'; }
@@ -1681,9 +1845,13 @@ async function boot() {
     catch (e) { S = normalize(loadLocal()); toast(t('imp_bad')); }
   } else if (/^#c=/.test(h)) {
     S = normalize(loadLocal()); cfgJustSet = false;
-    try { var cj = JSON.parse(new TextDecoder().decode(unb64u(h.slice(3)))); if (/^https:\/\/script\.google\.com\//.test(cj.u || '')) { S.sync.url = cj.u; if (urlOk()) { saveLocal(true); cfgJustSet = true; } else S.sync.url = ''; } } catch (e) {}
+    try { var cj = JSON.parse(new TextDecoder().decode(unb64u(h.slice(3)))); if (/^https:\/\/script\.google\.com\//.test(cj.u || '')) { S.sync.url = cj.u; if (urlOk()) { if (cj.k) S.sync.key = String(cj.k); saveLocal(true); cfgJustSet = true; } else S.sync.url = ''; } } catch (e) {}
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { location.hash = ''; }
+  } else if (/^#p=/.test(h)) {
+    S = normalize(loadLocal()); peerJust = readLink(h, 'p');
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { location.hash = ''; }
   } else { S = normalize(loadLocal()); }
+  LF = flatten(S);
   initHandlers(); bindInputs(); applyLang(); renderLists();
   phLoadKeys().then(function () { renderLists(); });
   if (cfgJustSet) toast(t('cfg_ok'));
@@ -1691,6 +1859,7 @@ async function boot() {
   if (!demo && !readOnly) {
     if (!S.sync.rev && S.days.length) { S.sync.rev = stamp(); saveLocal(true); }
     sheetPull().then(function () { if (syncState() === 'unsent') pushSheet(); });
+    if (peerJust) { addPeer(peerJust).then(function () { show('compare'); }); }
   }
   if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(function () {});
 }

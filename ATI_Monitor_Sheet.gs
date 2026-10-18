@@ -13,6 +13,10 @@
  *   Data   : readable daily results of all sites (one block of rows per site, replaced on every save)
  *   Sites  : one summary row per site
  *   _Store : machine copy used by the app (hidden, do not edit)
+ *
+ * Writing needs the write key that is inside the setup link (the first key the script
+ * receives is kept). Reading (Compare) needs only the URL, so the URL can be given to
+ * other sites as a read-only compare link.
  */
 var HEAD_DATA = ['Site', 'Upload', 'Type', 'Date', 'DAT', 'Plot', 'Water level (cm)', 'Irrigated', 'Irrigation (mm)', 'Cumulative irrigation (mm)', 'Daily decrease (mm)', 'Tillers per hill', 'Item', 'Amount (kg)', 'Note'];
 var HEAD_ATIS = ['Site', 'Place', 'Sowing date', 'Last entry', 'Days of data', 'FP irrigation (mm)', '3F4D+MD irrigation (mm)', 'Saving (mm)', 'Saving (%)', 'Last updated (UTC)'];
@@ -22,6 +26,7 @@ function onOpen() {
   SpreadsheetApp.getUi().createMenu('3F4D Monitor')
     .addItem('Show web app URL', 'showUrl')
     .addItem('Check sheets', 'checkSheets')
+    .addItem('Reset write key', 'resetKey')
     .addSeparator()
     .addItem('Delete ALL site data', 'clearAll')
     .addToUi();
@@ -49,6 +54,20 @@ function showUrl() {
   SpreadsheetApp.getUi().alert(u ? 'Web app URL:\n\n' + u + '\n\nIf you change the code: Deploy > Manage deployments > Edit > New version.' :
     'The web app is not deployed yet.\nDeploy > New deployment > Web app (Execute as: Me, Who has access: Anyone).');
 }
+function resetKey() {
+  var ui = SpreadsheetApp.getUi();
+  if (ui.alert('Reset the write key?', 'The next setup link that sends data sets a new key. Phones with the old key can no longer save until they open the new setup link.', ui.ButtonSet.YES_NO) !== ui.Button.YES) return;
+  PropertiesService.getScriptProperties().deleteProperty('WRITE_KEY');
+}
+function props_() { return PropertiesService.getScriptProperties(); }
+function keyOk_(k) {
+  k = String(k || '');
+  if (k.length < 8) return false;
+  var p = props_(), cur = p.getProperty('WRITE_KEY');
+  if (!cur) { p.setProperty('WRITE_KEY', k); return true; }
+  return cur === k;
+}
+function peers_() { try { var v = JSON.parse(props_().getProperty('PEERS') || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
 function clearAll() {
   var ui = SpreadsheetApp.getUi();
   if (ui.alert('Delete all site data?', 'This removes every site from Data, Sites and the app store.', ui.ButtonSet.YES_NO) !== ui.Button.YES) return;
@@ -63,7 +82,7 @@ function doGet(e) {
   try {
     var a = (e && e.parameter && e.parameter.action) || 'ping';
     if (a === 'ping') return json_({ok: true, app: 'ati-monitor', v: 2});
-    if (a === 'list') return json_({ok: true, atis: readStore_()});
+    if (a === 'list') return json_({ok: true, atis: readStore_(), peers: peers_()});
     return json_({ok: false, error: 'unknown action'});
   } catch (err) { return json_({ok: false, error: String(err)}); }
 }
@@ -73,7 +92,9 @@ function doPost(e) {
   try {
     lock.waitLock(25000);
     var b = JSON.parse(e.postData.contents);
+    if (!keyOk_(b.key)) return json_({ok: false, error: 'bad key'});
     if (b.action === 'push') return json_(push_(b));
+    if (b.action === 'peers') return json_(setPeers_(b.peers));
     return json_({ok: false, error: 'unknown action'});
   } catch (err) { return json_({ok: false, error: String(err)}); }
   finally { try { lock.releaseLock(); } catch (x) {} }
@@ -101,6 +122,17 @@ function replaceRows_(sheet, ati, rows, width) {
     if (sheet.getMaxRows() < all.length + 1) sheet.insertRowsAfter(sheet.getMaxRows(), all.length + 1 - sheet.getMaxRows());
     sheet.getRange(2, 1, all.length, width).setValues(all);
   }
+}
+
+function setPeers_(list) {
+  var out = [], seen = {};
+  (Array.isArray(list) ? list : []).slice(0, 40).forEach(function (x) {
+    var u = String((x && x.u) || '').trim();
+    if (!/^https:\/\/script\.google\.com\/(a\/macros\/[\w.-]+\/|macros\/)s\/[\w-]+\/exec$/.test(u) || seen[u]) return;
+    seen[u] = 1; out.push({u: u, n: String((x && x.n) || '').slice(0, 80)});
+  });
+  props_().setProperty('PEERS', JSON.stringify(out));
+  return {ok: true, peers: out};
 }
 
 function push_(b) {
