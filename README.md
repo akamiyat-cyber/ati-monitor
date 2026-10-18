@@ -67,7 +67,7 @@ Stand-alone, offline-capable web app for FP vs 3F4D+MD water-level monitoring. N
 ## シート版 / Sheet-only version
 - アプリを使わず、Googleシートに直接入力するサイト向け: `3F4D_Water_Monitor_Sheet_TEMPLATE.xlsx`(空)と `3F4D_Water_Monitor_Sheet_DEMO.xlsx`(例のデータ入り)。アプリの More ▸ For the administrator からもダウンロードできます。
 - Googleドライブに上げて「Googleスプレッドシートとして保存」。スクリプト不要。サイトごとに別のコピーを使います。
-- 計算・チェック・スケジュール・グラフはアプリと同じ(数式のみ)。サイト間の比較は含みません。デモ186行でアプリの計算と一致を確認済み。
+- 現場の灌漑スケジュール表と同じ形(日付が横に並ぶ)。Calendar、Data_Farmer、Schedule_Farmer、Other_info(N・P)、How_to_measure、pull-down list などのタブ。計算はアプリと同じ(数式のみ、デモ186行で一致を確認済み)。サイト間の比較は含みません。
 
 ## 限界 / Limits
 - 保存のたびに、そのサイトの全データがシートに書き込まれ、そのサイトの行が置き換わります(行は増え続けません)。
