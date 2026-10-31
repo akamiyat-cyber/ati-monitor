@@ -45,6 +45,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:800px){.two{grid-template-columns:1fr}}
 .plot{width:100%;min-height:340px}
+.fhead{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin:0 0 6px}.fhead h2,.fhead h3{margin:0}.fhead h3{font-size:15px}.funit{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;background:#FFF4D6;border:1px solid #E6B800;border-radius:8px;padding:4px 8px;color:#3a2e00}.card > .fhead + .plot,.fhead:not(:first-child){margin-top:14px}.funit select{font-size:14px;font-weight:600}
 .chk label{display:inline-flex;gap:6px;align-items:center;margin:4px 14px 4px 0}
 textarea{width:100%;font:12px Menlo,Consolas,monospace;min-height:60px;border:1.5px solid var(--line);border-radius:12px;background:var(--in);color:var(--fg);padding:8px}
 #msg{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#14221b;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none}
@@ -114,7 +115,6 @@ details summary{cursor:pointer;color:var(--accent);font-weight:700}
     <div class="row">
       <label><span data-t="l_view">View</span> <select id="mode"><option value="overlay" data-t="o_cmp">Compare sites</option><option value="each" data-t="o_each">Each site</option></select></label>
       <label><span data-t="l_x">X axis</span> <select id="xaxis"><option value="dat" data-t="o_dat">Days after transplanting</option><option value="date" data-t="o_date">Date</option></select></label>
-      <label><span data-t="l_funit">Fertilizer unit</span> <select id="funit"><option value="kg" data-t="o_fkg">kg (total of the plot)</option><option value="10a" data-t="o_f10a">kg per 10a</option><option value="bigha" data-t="o_fbigha">kg per bigha</option></select></label>
     </div>
     <div class="chk" id="pick" style="margin-top:8px"></div>
   </div>
@@ -218,7 +218,12 @@ function npOf(f, p) {   // pure N and P (kg) of a plot; older sheets: from urea,
   if (f.np) return f.np[p];
   var k = f[p]; return {N: (k.Urea || 0) * 0.46 + (k.DAP || 0) * 0.18, P: ((k.TSP || 0) + (k.DAP || 0)) * 0.20};
 }
-function fUnit() { return $('funit').value; }
+var FU = (function () { try { var v = localStorage.getItem('f4d-viewer-funit'); if (v === 'kg' || v === '10a' || v === 'bigha') return v; } catch (e) {} return 'kg'; })();
+function fUnit() { return FU; }
+function fuSel() {   // unit selector shown next to the title of the fertilizer graph
+  return '<label class="funit"><span>' + esc(t('l_funit')) + '</span> <select class="funit-sel">' + ['kg', '10a', 'bigha'].map(function (u) { return '<option value="' + u + '"' + (u === FU ? ' selected' : '') + '>' + esc(t('u_' + u)) + '</option>'; }).join('') + '</select></label>';
+}
+function fertHead(tag, extra) { return '<div class="fhead"><' + tag + '>' + esc(t('g_fert') + ' (' + fUnitLabel() + ')') + (extra || '') + '</' + tag + '>' + fuSel() + '</div>'; }
 function fFactor(f, p) {   // kg -> chosen unit; null if the plot area is unknown
   var u = fUnit(), dec = f.area && f.area[p]; if (u === 'kg') return 1; if (!dec) return null;
   return u === '10a' ? 1000 / (dec * 40.4686) : f.bigha / dec;
@@ -414,7 +419,7 @@ function render() {
       html += '<div class="card"><h2>' + esc(g[1]) + '</h2><div class="two">' + S.map(function (x, j) { return '<div class="plot" id="p-' + gi + '-' + j + '" style="min-height:300px"></div>'; }).join('') + '</div></div>';
     });
     var FN = fertBars(S);
-    html += '<div class="card"><h2>' + esc(t('g_fert') + ' (' + fUnitLabel() + ')') + '</h2><p class="muted">' + esc(t('fert_note')) + '</p>' + (FN.length ? '<div class="two">' + S.map(function (x, j) { return '<div class="plot" id="pf-' + j + '" style="min-height:300px"></div>'; }).join('') + '</div>' : '<p class="muted">' + esc(t('nofert')) + '</p>') + '</div>';
+    html += '<div class="card">' + fertHead('h2') + '<p class="muted">' + esc(t('fert_note')) + '</p>' + (FN.length ? '<div class="two">' + S.map(function (x, j) { return '<div class="plot" id="pf-' + j + '" style="min-height:300px"></div>'; }).join('') + '</div>' : '<p class="muted">' + esc(t('nofert')) + '</p>') + '</div>';
     out.insertAdjacentHTML('beforeend', html);
     if (FN.length) {
       var fmax = 0; S.forEach(function (x) { if (x.d.fert.has) fmax = Math.max(fmax, fertMax(x.d, FN)); });
@@ -448,7 +453,7 @@ function render() {
   } else {
     out.innerHTML = S.map(function (x, j) {
       var s = x.d.sum;
-      return '<div class="card"><h2><span class="dot" style="display:inline-block;background:' + color(x.i) + '"></span> ' + esc(x.e.n || x.d.name) + '</h2><p class="muted">' + esc(t('each_line', {p: x.d.place, t: fmtD(x.d.trans), l: fmtD(s.last), f: fmt(s.fp), m: fmt(s.md), s: fmt(s.pct)})) + '</p><div class="plot" id="e-w' + j + '" style="min-height:420px"></div><div class="two"><div class="plot" id="e-c' + j + '"></div><div class="plot" id="e-d' + j + '"></div></div><div class="plot" id="e-f' + j + '"></div></div>';
+      return '<div class="card"><h2><span class="dot" style="display:inline-block;background:' + color(x.i) + '"></span> ' + esc(x.e.n || x.d.name) + '</h2><p class="muted">' + esc(t('each_line', {p: x.d.place, t: fmtD(x.d.trans), l: fmtD(s.last), f: fmt(s.fp), m: fmt(s.md), s: fmt(s.pct)})) + '</p><div class="plot" id="e-w' + j + '" style="min-height:420px"></div><div class="two"><div class="plot" id="e-c' + j + '"></div><div class="plot" id="e-d' + j + '"></div></div>' + fertHead('h3') + '<div class="plot" id="e-f' + j + '"></div></div>';
     }).join('');
     S.forEach(function (x, j) {
       var d = x.d, X = xv(d), data = [], shapes = [], ann = [];
@@ -471,8 +476,8 @@ function render() {
       draw('e-c' + j, [['FP', '#D55E00'], ['3F4D+MD', '#0072B2']].map(function (p) { var xs = [], ys = []; d.plots[p[0]].cum.forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); } }); return {x: xs, y: ys, type: 'scatter', mode: 'lines', line: {color: p[1], width: 2.4, shape: 'hv'}, name: p[0]}; }), lay(t('g_cummm'), 'mm'));
       draw('e-d' + j, [['FP', '#D55E00'], ['3F4D+MD', '#0072B2']].map(function (p) { var xs = [], ys = []; d.plots[p[0]].till.forEach(function (v, k) { if (v != null) { xs.push(X[k]); ys.push(v); } }); return {x: xs, y: ys, type: 'scatter', mode: 'lines+markers', line: {color: p[1]}, marker: {size: 7, color: p[1]}, name: p[0]}; }), lay(t('g_till'), t('y_till'), {yaxis: {title: {text: t('y_till')}, rangemode: 'tozero'}}));
       var fn = fertBars([x]);
-      if (fn.length) { var LF = lay(t('g_fert') + ' (' + fUnitLabel() + ')', fUnitLabel(), {barmode: 'group', xaxis: {type: 'category', automargin: true}, yaxis: {title: {text: fUnitLabel()}, rangemode: 'tozero'}}); if (fertNoArea(d)) LF.annotations = [{text: t('noarea'), xref: 'paper', yref: 'paper', x: 0.5, y: 1.0, showarrow: false}]; draw('e-f' + j, fertTraces(d, fn), LF); }
-      else document.getElementById('e-f' + j).outerHTML = '<p class="muted">' + esc(t('g_fert')) + ': ' + esc(t('nofert')) + '</p>';
+      if (fn.length) { var LF = lay('', fUnitLabel(), {margin: {l: 56, r: 14, t: 16, b: 50}, barmode: 'group', xaxis: {type: 'category', automargin: true}, yaxis: {title: {text: fUnitLabel()}, rangemode: 'tozero'}}); if (fertNoArea(d)) LF.annotations = [{text: t('noarea'), xref: 'paper', yref: 'paper', x: 0.5, y: 1.0, showarrow: false}]; draw('e-f' + j, fertTraces(d, fn), LF); }
+      else document.getElementById('e-f' + j).outerHTML = '<p class="muted">' + esc(t('nofert')) + '</p>';
     });
   }
 }
@@ -515,8 +520,11 @@ function exitDemo() { DEMO = false; $('banner').style.display = 'none'; LIST = l
 $('add').onclick = addSite; $('load').onclick = function () { if (DEMO) { toast(t('demo_noload')); return; } loadAll(); };
 $('share').onclick = shareList; $('csv').onclick = exportCsv; $('demo').onclick = startDemo;
 $('mode').onchange = render; $('xaxis').onchange = render;
-try { var fu0 = localStorage.getItem('f4d-viewer-funit'); if (fu0) $('funit').value = fu0; } catch (e) {}
-$('funit').onchange = function () { try { localStorage.setItem('f4d-viewer-funit', fUnit()); } catch (e) {} render(); };
+document.addEventListener('change', function (ev) {
+  if (!ev.target.classList || !ev.target.classList.contains('funit-sel')) return;
+  FU = ev.target.value; try { localStorage.setItem('f4d-viewer-funit', FU); } catch (e) {}
+  var y = window.scrollY; render(); window.scrollTo(0, y);
+});
 $('vid2').onclick = function () { $('setupDet').open = true; stepState.touched = true; $('vid').click(); $('st0').scrollIntoView({behavior: 'smooth', block: 'start'}); };
 $('vid').onclick = function () { var c = $('vidCard'); c.style.display = ''; try { $('vidEl').play(); } catch (e) {} };
 $('setupDet').querySelector('summary').addEventListener('click', function () { stepState.touched = true; });
